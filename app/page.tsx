@@ -97,12 +97,14 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (itemsPerView === 1) return;
+
     const timer = window.setInterval(() => {
       setStartIndex((prev) => (prev + 1) % productCards.length);
     }, 5000);
 
     return () => window.clearInterval(timer);
-  }, []);
+  }, [itemsPerView]);
 
   const trackCards = useMemo(
     () => [...productCards, ...productCards.slice(0, itemsPerView)],
@@ -135,13 +137,13 @@ export default function Home() {
   return (
     <>
       <section
-        className="relative w-full overflow-hidden bg-cover bg-center min-h-[600px]"
+        className="relative w-full overflow-hidden bg-cover bg-center min-h-[520px] md:min-h-[600px]"
         style={{
           backgroundImage: "url('/hero-factory.png')",
         }}
       >
         <div className="absolute inset-0 bg-black/60" />
-        <div className="relative z-10 mx-auto flex min-h-[600px] w-full max-w-6xl items-center px-4 py-16 md:px-6 md:py-24">
+        <div className="relative z-10 mx-auto flex min-h-[520px] w-full max-w-6xl items-start px-4 pt-10 pb-12 md:min-h-[600px] md:items-center md:px-6 md:py-24">
           <div className="max-w-2xl space-y-4 lg:space-y-6">
             <p className="inline-flex items-center rounded-full border border-[#2b4f86] bg-[#13223a]/90 px-5 py-1.5 text-[11px] font-semibold tracking-[0.14em] text-[#82aef5] shadow-[inset_0_0_0_1px_rgba(59,130,246,0.2)] dark:border-[#2b4f86] dark:bg-[#13223a]/90 dark:text-[#82aef5]">
               AZEN INDUSTRIAL SOLUTIONS
@@ -200,14 +202,17 @@ export default function Home() {
           <div
             className="flex gap-4 transition-transform duration-700 ease-out"
             style={{
-              transform: `translateX(calc(-${startIndex * (100 / itemsPerView)}% - ${startIndex * (1 / itemsPerView)}rem))`,
+              transform:
+                itemsPerView === 1
+                  ? `translateX(calc(-${startIndex} * (88% + 1rem)))`
+                  : `translateX(calc(-${startIndex * (100 / itemsPerView)}% - ${startIndex * (1 / itemsPerView)}rem))`,
             }}
           >
             {trackCards.map((card, idx) => (
               <Link
                 key={`${card.id}-${idx}`}
                 href={`/products/${card.id}`}
-                className="glass-card w-full shrink-0 overflow-hidden rounded-lg border border-border bg-background md:w-[calc((100%-2rem)/3)]"
+                className="glass-card w-[88%] shrink-0 overflow-hidden rounded-lg border border-border bg-background md:w-[calc((100%-2rem)/3)]"
               >
                 <div className="relative h-[22rem] w-full">
                   <Image src={card.image} alt={card.title} fill className="object-cover" />

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
+import { ConditionalFooter } from "@/components/layout/ConditionalFooter";
+import { ConditionalHeader } from "@/components/layout/ConditionalHeader";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -34,9 +34,9 @@ export default function RootLayout({
       </head>
       <body className="min-h-full bg-background text-foreground">
         <div className="flex min-h-full flex-col">
-          <Header />
+          <ConditionalHeader />
           <main className="flex-1">{children}</main>
-          <Footer />
+          <ConditionalFooter />
         </div>
       </body>
     </html>

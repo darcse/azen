@@ -113,3 +113,47 @@
 - /login Vercel prerender 에러 수정: app/login/page.tsx에 `export const dynamic = "force-dynamic"` 추가
 - 목적: 빌드 시 /login 정적 프리렌더 충돌 회피 및 동적 렌더 강제
 - 검증: npm run lint 통과
+- ADMIN-001 구현: `app/admin/page.tsx`를 서버 컴포넌트 기반 제품 목록 테이블로 확장 (azen_products + azen_categories 조인 조회)
+- 관리자 목록 컬럼 구성: 제품명/카테고리/공개여부 뱃지/정렬순서/등록일/수정·삭제 액션 버튼
+- 상단 액션 추가: `제품 등록` 버튼(`/admin/products/new`) 및 기존 로그아웃 버튼 유지
+- 빈 상태/에러 상태 UI 추가: glass-card 스타일 메시지 및 안내 문구 반영
+- 삭제 플로우 구현: `components/features/AdminDeleteButton.tsx` 생성, confirm 다이얼로그 후 server action 호출로 제품 삭제
+- DB cascade 확인: `supabase/init-002.sql`의 `azen_product_images.product_id ... on delete cascade` 설정 기반 연관 이미지 자동 삭제
+- ADMIN-001 완료 처리: `feature_list/admin.json`의 ADMIN-001 passes=true 반영
+- ADMIN-002 구현: `app/admin/products/new/page.tsx`를 관리자 제품 등록 페이지로 전면 교체 (서버 액션 기반 저장 + `/admin` 리다이렉트)
+- 입력 필드 구성: 제품명(필수), 카테고리(서브카테고리 목록), 간단설명, 상세 HTML, 공개여부, 정렬순서
+- 대표 이미지 처리: 파일 업로드(Storage `product-images`) 또는 URL 직접 입력 탭 전환 지원, 결과를 `thumbnail_url`로 저장
+- 추가 이미지 처리: 파일 다중 업로드 또는 URL 복수 입력 지원, `azen_product_images`에 다건 insert
+- UI 구성: 상단 `← 목록으로` 버튼(`/admin`), glass-card 기반 폼, lucide-react 아이콘 버튼 적용
+- 유효성/에러 처리: 제품명/카테고리 필수 검증, URL 형식 검사, 서버 액션 에러 메시지 노출
+- ADMIN-002 완료 처리: `feature_list/admin.json`의 ADMIN-002 passes=true 반영
+- ADMIN-003 구현: `app/admin/products/[id]/edit/page.tsx`에 기존 제품/카테고리/이미지 조회 및 수정 폼 연동
+- 존재하지 않는 제품 ID 접근 시 `/admin`으로 리다이렉트 처리
+- 수정 폼 구성: ADMIN-002와 동일 구조(제품명/카테고리/설명/공개여부/정렬/대표이미지/추가이미지/상세 HTML)
+- 기존 이미지 관리: 목록 노출 + 개별 삭제 버튼(`AdminImageDeleteButton`)으로 DB row 삭제 및 Storage 파일 동시 제거
+- 신규 이미지 추가: 파일 업로드 또는 URL 입력으로 `azen_product_images` 추가 insert 지원
+- 저장/삭제 액션: server action으로 `azen_products` update 후 `/admin` 리다이렉트, 제품 삭제(confirm) 시 `azen_products` delete(cascade 적용)
+- 신규 컴포넌트 추가: `components/features/AdminProductEditForm.tsx`, `components/features/AdminImageDeleteButton.tsx`
+- ADMIN-003 완료 처리: `feature_list/admin.json`의 ADMIN-003 passes=true 반영
+- ADMIN-004 구현: `app/admin/page.tsx`에 URL 쿼리(`search`, `category`, `sort`) 기반 서버 필터링/정렬 추가
+- 검색 기능: `azen_products.name ilike` 조건으로 제품명 텍스트 검색 적용
+- 카테고리 필터: `azen_categories` 서브카테고리 목록 드롭다운 구성 및 `category_id` 조건 필터 적용
+- 정렬 기능: 이름 오름/내림, 등록일 최신/오래된순 드롭다운 선택에 따른 쿼리 정렬 적용
+- UI 구성: 목록 상단에 검색 input + 카테고리 select + 정렬 select를 한 줄 form으로 배치
+- 검색 결과 빈 상태 문구를 필터링 맥락에 맞게 개선 (`조건에 맞는 제품이 없습니다`)
+- ADMIN-004 완료 처리: `feature_list/admin.json`의 ADMIN-004 passes=true 반영
+- ADMIN-005 구현: 관리자 전용 레이아웃 분리 (`app/admin/layout.tsx`) 및 AdminHeader/AdminFooter 구성
+- 전역 공개 레이아웃 분리: `ConditionalHeader` 추가, `ConditionalFooter` 확장으로 `/admin` 및 `/login`에서 공개 Header/Footer 비노출 처리
+- 관리자 GNB 추가: `components/layout/AdminHeader.tsx` (좌측 로고→`/admin`, 중앙 메뉴 `제품 등록`/`메인 관리`, 우측 ThemeToggle + 로그아웃)
+- 로그아웃 동작: AdminHeader 내 server action으로 `supabase.auth.signOut()` 후 `/login` redirect 구현
+- 관리자 푸터 추가: `components/layout/AdminFooter.tsx`에 카피라이트 중앙 정렬(`© 2025 AZEN. All rights reserved.`)
+- `/admin/main` placeholder 생성: `app/admin/main/page.tsx` (ADMIN-006 예정 안내)
+- ADMIN-005 완료 처리: `feature_list/admin.json`의 ADMIN-005 passes=true 반영
+- ADMIN-006 구현: `/admin/main` 메인 캐러셀 슬롯 관리 페이지 구성 (슬롯 1~6 카드 + 제품 드롭다운 + 비움 옵션)
+- 신규 컴포넌트: `components/features/AdminMainCarouselForm.tsx` (server action 연동 저장 버튼/성공·에러 안내)
+- 데이터 연동: `azen_main_carousel` 현재 값 fetch 후 슬롯별 초기값 표시, `azen_products` 전체 목록으로 선택 옵션 구성
+- 저장 처리: server action에서 슬롯 1~6 일괄 upsert(`onConflict: slot`)로 `azen_main_carousel` 업데이트
+- 홈 캐러셀 연동: `app/page.tsx`에서 더미 데이터 제거, `azen_main_carousel -> azen_products` 조인 데이터로 Products 구성
+- 슬롯 비움 처리: `product_id is null` 슬롯은 홈 캐러셀에서 자동 제외
+- 캐러셀 클라이언트 분리: `components/features/HomeProductsCarousel.tsx`로 인터랙션(autoplay/스와이프/화살표) 이전
+- ADMIN-006 완료 처리: `feature_list/admin.json`의 ADMIN-006 passes=true 반영

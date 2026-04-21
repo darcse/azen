@@ -1,54 +1,8 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Factory, ShieldCheck, Truck, Wrench } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-
-const productCards = [
-  {
-    id: "air-handling",
-    title: "공조기 필터",
-    description: "대형 공조 시스템 환경에 최적화된 고성능 필터",
-    image:
-      "https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=1600&q=80",
-  },
-  {
-    id: "dust-collector",
-    title: "집진기 필터",
-    description: "분진 환경의 포집 효율을 높이는 산업용 집진 필터",
-    image:
-      "https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?auto=format&fit=crop&w=1600&q=80",
-  },
-  {
-    id: "water-treatment",
-    title: "수처리 필터",
-    description: "수질 안정성과 공정 효율을 위한 정밀 여과 솔루션",
-    image:
-      "https://images.unsplash.com/photo-1517999144091-3d9dca6d1e43?auto=format&fit=crop&w=1600&q=80",
-  },
-  {
-    id: "others",
-    title: "기타 품목",
-    description: "현장 요구사항에 맞는 다양한 산업용 필터 품목",
-    image:
-      "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1600&q=80",
-  },
-  {
-    id: "electric-parts",
-    title: "전기 부품",
-    description: "산업 설비 운영에 필요한 핵심 전기 부품 공급",
-    image:
-      "https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&w=1600&q=80",
-  },
-  {
-    id: "hydraulic",
-    title: "유공압",
-    description: "유압·공압 계통의 안정성을 높이는 부품 라인업",
-    image:
-      "https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&w=1600&q=80",
-  },
-];
+import { Factory, ShieldCheck, Truck, Wrench } from "lucide-react";
+import { HomeProductsCarousel } from "@/components/features/HomeProductsCarousel";
+import { createClient } from "@/lib/supabase/server";
 
 const featureCards = [
   {
@@ -81,58 +35,35 @@ const featureCards = [
   },
 ];
 
-export default function Home() {
-  const [startIndex, setStartIndex] = useState(0);
-  const [itemsPerView, setItemsPerView] = useState(3);
-  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+export default async function Home() {
+  const supabase = await createClient();
+  const { data: slotRows } = await supabase
+    .from("azen_main_carousel")
+    .select("slot, product:azen_products(id, name, description, thumbnail_url)")
+    .not("product_id", "is", null)
+    .order("slot", { ascending: true });
 
-  useEffect(() => {
-    const updateItemsPerView = () => {
-      setItemsPerView(window.innerWidth < 768 ? 1 : 3);
-    };
-
-    updateItemsPerView();
-    window.addEventListener("resize", updateItemsPerView);
-    return () => window.removeEventListener("resize", updateItemsPerView);
-  }, []);
-
-  useEffect(() => {
-    if (itemsPerView === 1) return;
-
-    const timer = window.setInterval(() => {
-      setStartIndex((prev) => (prev + 1) % productCards.length);
-    }, 5000);
-
-    return () => window.clearInterval(timer);
-  }, [itemsPerView]);
-
-  const trackCards = useMemo(
-    () => [...productCards, ...productCards.slice(0, itemsPerView)],
-    [itemsPerView],
-  );
-
-  const moveCarousel = (direction: "prev" | "next") => {
-    setStartIndex((prev) => {
-      if (direction === "next") return (prev + 1) % productCards.length;
-      return (prev - 1 + productCards.length) % productCards.length;
-    });
-  };
-
-  const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
-    setTouchStartX(event.changedTouches[0].clientX);
-  };
-
-  const handleTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
-    const endX = event.changedTouches[0].clientX;
-
-    if (touchStartX === null) return;
-
-    const deltaX = touchStartX - endX;
-    const swipeThreshold = 40;
-
-    if (deltaX > swipeThreshold) moveCarousel("next");
-    if (deltaX < -swipeThreshold) moveCarousel("prev");
-  };
+  const productCards = (slotRows ?? [])
+    .map((row) => {
+      const product = Array.isArray(row.product) ? row.product[0] : row.product;
+      if (!product) return null;
+      return {
+        id: product.id as string,
+        title: product.name as string,
+        description: (product.description ?? null) as string | null,
+        image: (product.thumbnail_url ?? null) as string | null,
+      };
+    })
+    .filter(
+      (
+        value,
+      ): value is {
+        id: string;
+        title: string;
+        description: string | null;
+        image: string | null;
+      } => Boolean(value),
+    );
 
   return (
     <>
@@ -177,54 +108,7 @@ export default function Home() {
 
       <main className="mx-auto w-full max-w-6xl space-y-20 px-4 pt-12 pb-20 md:px-6 md:py-16 lg:space-y-32 lg:pt-24 lg:pb-32">
         <section className="space-y-6 lg:space-y-8">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-semibold text-foreground">Products</h2>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => moveCarousel("prev")}
-              className="glass-card rounded-md border border-border bg-background p-2"
-              aria-label="이전 제품 카드"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <button
-              type="button"
-              onClick={() => moveCarousel("next")}
-              className="glass-card rounded-md border border-border bg-background p-2"
-              aria-label="다음 제품 카드"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-        <div className="overflow-hidden" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-          <div
-            className="flex gap-4 transition-transform duration-700 ease-out"
-            style={{
-              transform:
-                itemsPerView === 1
-                  ? `translateX(calc(-${startIndex} * (88% + 1rem)))`
-                  : `translateX(calc(-${startIndex * (100 / itemsPerView)}% - ${startIndex * (1 / itemsPerView)}rem))`,
-            }}
-          >
-            {trackCards.map((card, idx) => (
-              <Link
-                key={`${card.id}-${idx}`}
-                href={`/products/${card.id}`}
-                className="glass-card w-[88%] shrink-0 overflow-hidden rounded-lg border border-border bg-background md:w-[calc((100%-2rem)/3)]"
-              >
-                <div className="relative h-[22rem] w-full">
-                  <Image src={card.image} alt={card.title} fill className="object-cover" />
-                </div>
-                <div className="p-5 lg:p-6 dark:bg-[#111114]">
-                  <h3 className="mb-2 text-lg font-semibold text-foreground dark:text-white">{card.title}</h3>
-                  <p className="text-sm text-muted-foreground dark:text-white/80">{card.description}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
+          <HomeProductsCarousel cards={productCards} />
         </section>
 
         <section className="space-y-6 lg:space-y-8">

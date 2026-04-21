@@ -24,9 +24,33 @@ export const updateSession = async (request: NextRequest) => {
     },
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const clearSupabaseAuthCookies = () => {
+    const cookieNames = request.cookies
+      .getAll()
+      .map((cookie) => cookie.name)
+      .filter((name) => name.startsWith("sb-"));
+
+    cookieNames.forEach((name) => {
+      response.cookies.set(name, "", {
+        path: "/",
+        maxAge: 0,
+      });
+    });
+  };
+
+  let user = null;
+  try {
+    const {
+      data: { user: authUser },
+    } = await supabase.auth.getUser();
+    user = authUser;
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("Invalid Refresh Token")) {
+      clearSupabaseAuthCookies();
+    } else {
+      throw error;
+    }
+  }
 
   if (request.nextUrl.pathname.startsWith("/admin") && !user) {
     const loginUrl = request.nextUrl.clone();

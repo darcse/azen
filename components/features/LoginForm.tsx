@@ -33,6 +33,16 @@ export const LoginForm = () => {
 
       router.push(redirectPath);
       router.refresh();
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message.includes("URL and API key are required")) {
+          setErrorMessage("Supabase 환경변수가 설정되지 않았습니다. .env.local 값을 확인해주세요.");
+          return;
+        }
+        setErrorMessage(error.message);
+        return;
+      }
+      setErrorMessage("로그인 중 오류가 발생했습니다.");
     } finally {
       setIsSubmitting(false);
     }

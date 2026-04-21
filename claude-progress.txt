@@ -110,3 +110,6 @@
 - 히어로 정렬 기준: 내부 콘텐츠를 max-w-7xl mx-auto px-8로 유지, min-h-[600px] 적용
 - 히어로 배경 개선: 공장 내부 톤 Unsplash 이미지로 교체, cover/center + dark overlay 유지
 - 검증: npm run lint 통과
+- /login Vercel prerender 에러 수정: app/login/page.tsx에 `export const dynamic = "force-dynamic"` 추가
+- 목적: 빌드 시 /login 정적 프리렌더 충돌 회피 및 동적 렌더 강제
+- 검증: npm run lint 통과

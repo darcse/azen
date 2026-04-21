@@ -1,0 +1,14 @@
+{
+    "id": "MEDIA-001",
+    "category": "media",
+    "title": "제품 이미지 등록 — 파일 업로드 + URL 직접 입력",
+    "description": "관리자가 제품 이미지를 Supabase Storage에 파일로 업로드하거나, 외부 이미지 URL을 직접 입력하는 두 가지 방식으로 등록할 수 있다.",
+    "steps": [
+      "파일 업로드 탭에서 이미지 선택 후 업로드 시 Storage에 저장되고 URL이 azen_product_images에 insert 확인",
+      "URL 입력 탭에서 외부 이미지 URL 입력 후 저장 시 azen_product_images에 insert 확인",
+      "등록된 이미지가 제품 상세 페이지 갤러리에 노출 확인",
+      "파일 업로드 시 이미지 외 파일(예: .pdf) 선택 시 에러 처리 확인",
+      "잘못된 URL 입력 시 이미지 로드 실패 처리 확인 (broken image 대응)"
+    ],
+    "passes": true
+  }

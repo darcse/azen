@@ -1,27 +1,29 @@
-export interface Product {
-  id: string;
-  categoryId: string;
-  name: string;
-  description: string | null;
-  isFeatured: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Category {
+export interface AzenCategory {
   id: string;
   name: string;
   slug: string;
-  parentId: string | null;
-  createdAt: string;
-  updatedAt: string;
+  parent_id: string | null;
+  sort_order: number;
+  created_at: string;
 }
 
-export interface ProductImage {
+export interface AzenProduct {
   id: string;
-  productId: string;
-  imageUrl: string;
-  altText: string | null;
-  displayOrder: number;
-  createdAt: string;
+  category_id: string;
+  name: string;
+  description: string | null;
+  content: string | null;
+  thumbnail_url: string | null;
+  is_published: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AzenProductImage {
+  id: string;
+  product_id: string;
+  url: string;
+  sort_order: number;
+  created_at: string;
 }

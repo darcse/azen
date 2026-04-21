@@ -9,3 +9,104 @@
 - 컨벤션 기반 폴더 생성: app/(public), app/admin, components/ui, components/layout, components/features, hooks, types
 - 공통 타입 파일 생성: types/index.ts (Product, Category, ProductImage)
 - 검증: npm run dev 실행 성공 (localhost:3001 기동 확인)
+- INIT-000 진행: Git 저장소 초기화(main), origin 연결(https://github.com/darcse/azen.git), 초기 커밋/푸시 완료
+- 원격 검증: origin/main 해시(0cfa50dc7558207071b136bf82fbe6a30cdc1b64) 확인
+- Vercel CLI 배포 시도 결과, 인증 토큰 불일치로 중단 (vercel login 또는 유효 토큰 필요)
+- 사용자 수행으로 Vercel 배포 완료 확인: https://azen-gilt.vercel.app
+- INIT-000 완료 처리 (feature_list/init.json의 INIT-000 passes=true)
+- INIT-001 보완 작업: CONVENTIONS 기준 라우트 파일 골격 생성 (about/products/[id]/service/admin/login)
+- types/index.ts를 AzenCategory/AzenProduct/AzenProductImage + snake_case 필드로 재정의
+- .env.local 템플릿을 플레이스홀더 값으로 재설정
+- 검증: npm run lint 통과
+- 골격 페이지 placeholder 반영: about/products/products/[id]/service/admin/admin products new/admin products [id] edit/login
+- 동적 라우트 placeholder에 params.id 출력 추가 (제품 상세/제품 수정)
+- 검증: npm run lint 통과
+- INIT-001 완료 처리: feature_list/init.json의 INIT-001 passes=true
+- INIT-002 작업: Supabase SQL 스크립트 추가 (supabase/init-002.sql)
+- 포함 내용: azen_categories/azen_products/azen_product_images 테이블, 인덱스, updated_at 트리거, RLS 정책, 카테고리 시드 데이터
+- 사용자 수동 검증 완료 기준으로 INIT-002 완료 처리 (feature_list/init.json의 INIT-002 passes=true)
+- INIT-003 작업: Storage 버킷/정책 SQL 추가 (supabase/init-003.sql)
+- 포함 내용: product-images public 버킷 upsert, 공개 읽기 정책, admin 쓰기(insert/update/delete) 정책, MIME/용량 제한
+- INIT-003 검증 체크리스트 문서 추가 (supabase/init-003-checklist.md)
+- INIT-003 완료 처리: feature_list/init.json의 INIT-003 passes=true
+- 테마 시스템 구현: light/dark/auto + localStorage(theme) + 시스템 테마(matchMedia) 연동 훅 추가 (hooks/useTheme.ts)
+- 폰트/토큰 반영: globals.css에 Manrope/Pretendard CDN import 및 CSS 변수 기반 라이트/다크 토큰 구성
+- Tailwind 확장: tailwind.config.ts 추가(darkMode class, 색상 토큰, fontFamily, borderRadius)
+- UI 반영: ThemeToggle(lucide-react Sun/Moon/Monitor 순환 버튼), Header(로고/네비/모바일 메뉴/토글) 추가
+- 레이아웃 반영: 깜빡임 방지 초기화 스크립트 + Header 포함하도록 app/layout.tsx 갱신
+- 검증: npm run lint 통과 (dev는 기존 3001 서버 실행 중 상태 확인)
+- UX-001 점검 완료: 테마 토큰/3단계 토글/auto 모드/localStorage/반응형 헤더 구조 충족 확인, feature_list/ux.json passes=true 반영
+- MEDIA-001 구현: 관리자 제품 이미지 등록 폼 추가 (파일 업로드 탭 + URL 입력 탭)
+- 구현 상세: Storage(product-images) 업로드 후 public URL을 azen_product_images insert, URL 직접 입력 insert
+- 예외 처리: 이미지 외 파일 업로드 차단, 잘못된 URL 형식 검사, 상세 갤러리 broken image 대응
+- 제품 상세 페이지에 이미지 갤러리 연동 (product_id 기준 조회)
+- MEDIA-001 완료 처리: feature_list/media.json passes=true 반영
+- 검증: npm run lint 통과
+- AUTH-001 구현: 로그인 폼 추가 (email/password + signInWithPassword + redirect 쿼리 지원)
+- 관리자 페이지 로그아웃 버튼 추가 (signOut 후 /login 이동)
+- 기존 middleware(/admin 보호)와 연계하여 미로그인 리다이렉트/로그인 후 진입 흐름 완성
+- 검증: npm run lint 통과
+- AUTH-001 완료 처리: feature_list/auth.json passes=true 반영
+- 로그인 화면 콘솔 에러 대응: layout의 인라인 script 태그를 next/script(beforeInteractive)로 교체
+- 하이드레이션 불일치 대응: useTheme 초기값을 auto로 통일하여 SSR/CSR 렌더 불일치 제거
+- 검증: npm run lint 통과
+- PAGE-001 구현: 메인 홈(/)에 히어로/카테고리/특징 벤토 섹션 구성 (정적 placeholder)
+- 히어로 영역: 좌측 카피 + CTA 2개, 우측 Unsplash 산업용 이미지(next/image) 적용
+- 카테고리 카드: 필터/전기·유공압/교체시공 3개 링크 카드 구성
+- 특징 섹션: lucide-react 아이콘 기반 4개 강점 카드, md:grid-cols-4 + col-span 조합 적용
+- next.config.ts에 images.unsplash.com remotePatterns 허용 추가
+- PAGE-001 완료 처리: feature_list/page.json passes=true 반영
+- 검증: npm run lint 통과
+- UX-001 다크 토큰 업데이트: globals.css .dark를 Obsidian Glass 값(background/surface/elevated/primary/secondary/success/foreground/muted/border)으로 교체
+- tailwind.config.ts 확장: surface/elevated/secondary/success 컬러 토큰 추가
+- app/page.tsx 다크 스타일 반영: 카드 glass 스타일(bg #1c1c1e, border-white/5, rounded-2xl, backdrop-blur-xl), 텍스트 다크 톤, primary 버튼 active scale 효과
+- Header 다크 스타일 반영: 헤더/드롭다운/모바일 메뉴에 surface glass 스타일(bg #0e0e10/80, backdrop-blur-xl, border-white/5) 적용
+- 검증: npm run lint 통과
+- globals.css @layer utilities 추가: glass-card / glass-header 유틸 클래스 정의
+- 카드/헤더 컴포넌트 인라인 Glass 다크 클래스 제거 후 glass-card, glass-header 사용으로 통일
+- CONVENTIONS.md에 Glass 유틸 사용 기준 추가 (카드=glass-card, 헤더/네비=glass-header)
+- 검증: npm run lint 통과
+- PAGE-001 섹션 개선: '제품 카테고리'→'Products', 'AZEN의 강점'→'AZEN Powers'로 섹션명 변경
+- Products 섹션을 커스텀 캐러셀로 전환: 3초 autoplay, 좌우 화살표, 데스크탑 3개/모바일 1개 카드 노출
+- Products 카드 6개 구성: Unsplash 이미지 + 카테고리명/설명 + /products/[id] 링크 적용
+- AZEN Powers 섹션 개선: 모바일 2열/데스크탑 4열 균등 카드, 배경 이미지+다크 오버레이+아이콘+텍스트, /about 링크
+- hover 효과 반영: AZEN Powers 카드 오버레이 밝기 완화(group-hover)
+- 검증: npm run lint 통과
+- PAGE-001 보완: Products/Powers 일부 더미 이미지 깨짐 URL을 정상 URL로 교체
+- Products 카드 이미지 높이 상향: h-44 -> h-[22rem] (약 2배)
+- AZEN Powers 카드 높이 상향: h-56 -> h-[28rem] (약 2배)
+- 캐러셀 전환 개선: 1칸 단위 이동 + translate 트랙 애니메이션(duration-700 ease-out), autoplay 5초로 조정
+- 검증: npm run lint 통과
+- Products 캐러셀 모바일 스와이프 추가: 터치 시작/종료 좌표 기반 임계치(40px)로 prev/next 이동
+- AZEN Powers 카드 인터랙션 강화: hover 시 카드 리프트/글로우 그림자, 이미지 scale, 오버레이 밝기 상승, 아이콘 미세 이동
+- 검증: npm run lint 통과
+- 히어로 문구 수정: 슬로건/서브카피 최신 문안 반영, 슬로건 첫 줄(멈추지 않는 공정)에 포인트 컬러 적용
+- CTA 문구 수정: '제품 보러가기' -> '현장 진단 신청'
+- 섹션 타이틀 수정: 'AZEN Powers' -> 'Core Values'
+- 히어로 이미지 교체: Factory filter/HVAC technician 톤의 Unsplash 이미지로 변경
+- 검증: npm run lint 통과
+- PAGE-002 구현: components/layout/Footer.tsx 추가 및 app/layout.tsx에 푸터 연결
+- 푸터 구성: SVG 로고(현재색상 fill), 회사 정보(주소/대표자/사업자번호), 카피라이트 배치
+- 반응형 레이아웃: 모바일 세로 스택 중앙정렬, 데스크탑 3열 justify-between
+- 스타일: glass-header 유틸 + border-t border-border로 본문과 구분, 라이트/다크 대응
+- PAGE-002 완료 처리: feature_list/page.json passes=true 반영
+- 검증: npm run lint 통과
+- UX-001 Header 개선: 텍스트 로고를 SVG 로고(footer 동일)로 교체, 높이 h-7(약 28px), 홈 링크 적용
+- 메뉴 레이아웃 조정: 로고+메뉴를 좌측 그룹으로 묶고 메뉴 폰트 text-base로 상향
+- 메뉴 hover 강화: 텍스트 강조 + 하단 border 하이라이트 + 배경 하이라이트 적용
+- 드롭다운 이탈 버그 수정: 패널 mt 제거 및 top-full 연결, pt-2 브리지로 hover 끊김 방지
+- 테마 토글 버튼 스타일 변경: border 제거, 아이콘 중심 버튼으로 단순화
+- 검증: npm run lint 통과
+- Header 접근성 보완: 드롭다운에 aria-expanded/aria-controls 추가
+- 키보드 제어 추가: Enter/Space로 열기·닫기, Escape로 닫기, blur 시 외부 포커스 이동이면 자동 닫기
+- hover/키보드 통합 오픈 상태 관리(openDropdown)로 데스크탑 사용성 안정화
+- 검증: npm run lint 통과
+- 헤더 스타일 미세조정: 로고-메뉴/메뉴 간격 확대, 인터랙션을 폰트 굵기+언더라인 중심으로 단순화
+- 언더라인 포인트 컬러 적용 및 underline offset 증가, 다크 모드 드롭다운 대비 개선
+- 푸터 정보 업데이트: 로고-정보 간격 40px, 주소/대표자 변경, 카피라이트 하단 이동 및 연도 2026 반영
+- PAGE-001 히어로 리디자인: 우측 이미지 컬럼 제거, 배경 이미지를 CSS background-image + dark overlay로 전환
+- 검증: npm run lint 통과
+- PAGE-001 히어로 레이아웃 재조정: full-width 섹션으로 분리, 본문 max-w 컨테이너와 분리 렌더링
+- 히어로 정렬 기준: 내부 콘텐츠를 max-w-7xl mx-auto px-8로 유지, min-h-[600px] 적용
+- 히어로 배경 개선: 공장 내부 톤 Unsplash 이미지로 교체, cover/center + dark overlay 유지
+- 검증: npm run lint 통과

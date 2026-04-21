@@ -46,14 +46,30 @@ azen/
 - 컴포넌트 파일: PascalCase (`ProductCard.tsx`)
 - 훅: camelCase, use 접두사 (`useProducts.ts`)
 - 유틸: camelCase (`formatDate.ts`)
-- DB 테이블: snake_case (`product_images`)
+- DB 테이블: `azen_` prefix + snake_case (예: `azen_products`, `azen_categories`)
 - 환경변수: UPPER_SNAKE_CASE
+
+## DB 테이블 목록
+
+| 테이블명 | 설명 |
+|---|---|
+| `azen_categories` | 메인/서브 카테고리 |
+| `azen_products` | 제품 목록 |
+| `azen_product_images` | 제품 이미지 (Storage URL) |
+
+> 기존 mylibrary/sshwrite와 동일한 Supabase 프로젝트 사용. 테이블 충돌 방지를 위해 `azen_` prefix 필수.
 
 ## 컴포넌트 패턴
 
 - named export 사용
 - 서버 컴포넌트 기본, 인터랙션 필요 시 'use client'
 - props 타입은 인터페이스로 별도 정의
+
+## 스타일 유틸 규칙
+
+- Glass 스타일은 인라인 다크 클래스 대신 `app/globals.css` 유틸 클래스를 사용
+- 카드 컴포넌트: `glass-card` 사용 (다크모드에서 elevated 배경/블러/보더 적용)
+- 헤더/네비 컨테이너: `glass-header` 사용 (다크모드에서 surface 배경/블러/하단 보더 적용)
 
 ## 카테고리 구조 (DB 기준)
 

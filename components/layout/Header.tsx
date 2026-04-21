@@ -153,7 +153,7 @@ export const Header = () => {
 
       {isMobileMenuOpen && (
         <div className="absolute left-0 top-full z-50 w-full md:hidden">
-          <div className="glass-header border-t border-border bg-background/95 px-4 py-3 shadow-lg dark:bg-[#0e0e10]/95">
+          <div className="border-t border-border bg-white px-4 py-3 shadow-lg dark:bg-[#0b0b0d]">
             <nav className="mx-auto w-full max-w-6xl">
               <div className="flex flex-col gap-2 pb-2">
                 <Link

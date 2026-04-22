@@ -1,6 +1,8 @@
 import type { Config } from "tailwindcss";
 
-const config: Config = {
+type ConfigWithSafelist = Config & { safelist: string[] };
+
+const config: ConfigWithSafelist = {
   darkMode: "class",
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",

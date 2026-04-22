@@ -294,4 +294,5 @@
 - 제품 상세 타이틀 간격 보정: 제목 아래 구분선과의 간격을 `mb-2` → `mb-8`로 확대해 상단 구분선-타이틀 간격과 동일하게 정렬
 - 제품 상세 스펙 섹션 타이틀 강조: `text-sm text-muted-foreground` → `text-lg font-bold text-foreground`, 앞에 `ListChecks` 아이콘 추가(동일 색상 톤)
 - 다크 모드 구분선 가시성 개선: `app/(public)/products/[id]/page.tsx`의 주요 `hr`에 `dark:border-white/20` 적용, `app/prose.css`에 `.dark .prose hr { border-color: rgba(255, 255, 255, 0.2); }` 추가
+- Vercel 빌드 실패(`tailwind.config.ts` 타입체크) 수정: `Config` 확장 타입(`ConfigWithSafelist`)으로 `safelist` 타입 오류 해소, `npm run build` 재검증 통과
 - 제품 목록 정렬 변경: `app/(public)/products/page.tsx`에서 공개 제품 조회를 `created_at` 오름차순(등록 빠른 순)으로 고정

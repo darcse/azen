@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { FileText, ListChecks } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { ProductDetailBackButton } from "@/components/features/ProductDetailBackButton";
 import { ProductDetailHtmlContent } from "@/components/features/ProductDetailHtmlContent";
@@ -145,7 +146,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               <span className="font-medium text-foreground">{name}</span>
             )}
           </nav>
-          <hr className="mt-6 border-border" aria-hidden />
+          <hr className="mt-6 border-border dark:border-white/20" aria-hidden />
         </div>
       </div>
 
@@ -164,8 +165,11 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             ) : null}
             {spec ? (
               <>
-                <hr className="my-4 border-border" />
-                <p className="text-sm font-semibold text-muted-foreground">스펙</p>
+                <hr className="my-4 border-border dark:border-white/20" />
+                <p className="inline-flex items-center gap-2 text-lg font-bold text-foreground">
+                  <ListChecks className="h-5 w-5 text-foreground" aria-hidden />
+                  스펙
+                </p>
                 <ProductDetailHtmlContent
                   html={spec}
                   className="prose prose-slate dark:prose-invert mt-2 min-w-0 max-w-none overflow-x-auto break-words text-sm leading-relaxed text-foreground [&_a]:text-primary [&_h3]:mb-2 [&_h3]:mt-4 [&_h3]:text-lg [&_h3]:font-semibold [&_img]:h-auto [&_img]:max-w-full [&_li]:mb-1 [&_ol]:mb-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:mb-2 [&_ul]:mb-2 [&_ul]:list-disc [&_ul]:pl-5"
@@ -179,8 +183,12 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       {/* 4. 하단 상세설명 */}
       {contentHtml ? (
         <div className={`${pageContainer} pb-16 pt-12`}>
-          <hr className="mb-8 border-border" />
-          <h2 className="mb-4 text-lg font-bold text-foreground">제품 상세</h2>
+          <hr className="mb-8 border-border dark:border-white/20" />
+          <h2 className="mb-8 inline-flex w-fit items-center gap-2 text-2xl font-bold text-foreground">
+            <FileText className="h-5 w-5 text-foreground" aria-hidden />
+            제품 상세
+          </h2>
+          <hr className="mb-8 border-border dark:border-white/20" />
           <ProductDetailHtmlContent
             html={contentHtml}
             className="prose prose-slate dark:prose-invert min-w-0 max-w-none overflow-x-auto break-words text-sm leading-relaxed text-foreground md:text-base [&_a]:text-primary [&_h3]:mb-2 [&_h3]:mt-4 [&_h3]:text-xl [&_h3]:font-semibold [&_img]:h-auto [&_img]:max-w-full [&_li]:mb-1 [&_ol]:mb-3 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:mb-3 [&_ul]:mb-3 [&_ul]:list-disc [&_ul]:pl-5"

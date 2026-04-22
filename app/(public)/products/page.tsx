@@ -83,8 +83,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           .select("id, name, description, thumbnail_url, category:azen_categories(name, slug)")
           .eq("is_published", true)
           .in("category_id", categoryIds)
-          .order("sort_order", { ascending: true })
-          .order("created_at", { ascending: false })
+          .order("created_at", { ascending: true })
       : { data: null, error: null };
 
   if (prodError) {

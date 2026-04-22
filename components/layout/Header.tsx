@@ -5,14 +5,14 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 
-const filterItems = [
+const filterMenuLinks = [
   { label: "공조기 필터", href: "/products?category=air_handling" },
   { label: "집진기 필터", href: "/products?category=dust_collector" },
   { label: "수처리 필터", href: "/products?category=water_treatment" },
   { label: "기타 품목", href: "/products?category=others" },
 ];
 
-const electricItems = [
+const electricMenuLinks = [
   { label: "전기 부품", href: "/products?category=electric_parts" },
   { label: "유공압", href: "/products?category=hydraulic" },
 ];
@@ -27,21 +27,7 @@ export const Header = () => {
     "px-2 py-2 text-base font-semibold text-foreground dark:text-[#fefbfe]";
   const mobileDepthTwoClass = `${navBaseClass} pl-4 text-sm`;
 
-  const handleDropdownKeyDown = (
-    event: React.KeyboardEvent<HTMLButtonElement>,
-    menu: "filter" | "electric",
-  ) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      setOpenDropdown((prev) => (prev === menu ? null : menu));
-    }
-
-    if (event.key === "Escape") {
-      setOpenDropdown(null);
-    }
-  };
-
-  const handleDropdownBlur = (event: React.FocusEvent<HTMLDivElement>) => {
+const handleDropdownBlur = (event: React.FocusEvent<HTMLDivElement>) => {
     if (!event.currentTarget.contains(event.relatedTarget)) {
       setOpenDropdown(null);
     }
@@ -76,15 +62,9 @@ export const Header = () => {
               onMouseLeave={() => setOpenDropdown((prev) => (prev === "filter" ? null : prev))}
               onBlur={handleDropdownBlur}
             >
-              <button
-                type="button"
-                className={navBaseClass}
-                aria-expanded={openDropdown === "filter"}
-                aria-controls="filter-menu"
-                onKeyDown={(event) => handleDropdownKeyDown(event, "filter")}
-              >
+              <Link href="/products?category=filter" className={navBaseClass}>
                 필터
-              </button>
+              </Link>
               <div
                 id="filter-menu"
                 className={`glass-card absolute left-0 top-full z-20 -mt-px min-w-44 rounded-md border border-border bg-background p-1 pt-2 shadow-sm dark:bg-[#1c1c1e] dark:border-white/10 ${
@@ -93,7 +73,7 @@ export const Header = () => {
                     : "invisible pointer-events-none opacity-0"
                 }`}
               >
-                {filterItems.map((item) => (
+                {filterMenuLinks.map((item) => (
                   <Link key={item.href} href={item.href} className={`${navBaseClass} block text-sm`}>
                     {item.label}
                   </Link>
@@ -107,15 +87,9 @@ export const Header = () => {
               onMouseLeave={() => setOpenDropdown((prev) => (prev === "electric" ? null : prev))}
               onBlur={handleDropdownBlur}
             >
-              <button
-                type="button"
-                className={navBaseClass}
-                aria-expanded={openDropdown === "electric"}
-                aria-controls="electric-menu"
-                onKeyDown={(event) => handleDropdownKeyDown(event, "electric")}
-              >
+              <Link href="/products?category=electric" className={navBaseClass}>
                 전기/유공압
-              </button>
+              </Link>
               <div
                 id="electric-menu"
                 className={`glass-card absolute left-0 top-full z-20 -mt-px min-w-44 rounded-md border border-border bg-background p-1 pt-2 shadow-sm dark:bg-[#1c1c1e] dark:border-white/10 ${
@@ -124,7 +98,7 @@ export const Header = () => {
                     : "invisible pointer-events-none opacity-0"
                 }`}
               >
-                {electricItems.map((item) => (
+                {electricMenuLinks.map((item) => (
                   <Link key={item.href} href={item.href} className={`${navBaseClass} block text-sm`}>
                     {item.label}
                   </Link>
@@ -163,8 +137,14 @@ export const Header = () => {
                 >
                   회사소개
                 </Link>
-                <p className={mobileDepthOneClass}>필터</p>
-                {filterItems.map((item) => (
+                <Link
+                  href="/products?category=filter"
+                  className={mobileDepthOneClass}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  필터
+                </Link>
+                {filterMenuLinks.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
@@ -174,8 +154,14 @@ export const Header = () => {
                     {item.label}
                   </Link>
                 ))}
-                <p className={mobileDepthOneClass}>전기/유공압</p>
-                {electricItems.map((item) => (
+                <Link
+                  href="/products?category=electric"
+                  className={mobileDepthOneClass}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  전기/유공압
+                </Link>
+                {electricMenuLinks.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}

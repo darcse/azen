@@ -14,6 +14,7 @@ const config: Config = {
         background: "var(--background)",
         foreground: "var(--foreground)",
         primary: "var(--primary)",
+        "primary-foreground": "var(--primary-foreground)",
         surface: "var(--surface, #0e0e10)",
         elevated: "var(--elevated, #1c1c1e)",
         secondary: "var(--secondary, #7fafff)",

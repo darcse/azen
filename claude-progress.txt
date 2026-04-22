@@ -157,3 +157,82 @@
 - 슬롯 비움 처리: `product_id is null` 슬롯은 홈 캐러셀에서 자동 제외
 - 캐러셀 클라이언트 분리: `components/features/HomeProductsCarousel.tsx`로 인터랙션(autoplay/스와이프/화살표) 이전
 - ADMIN-006 완료 처리: `feature_list/admin.json`의 ADMIN-006 passes=true 반영
+- PRODUCT-001 구현: 공개 제품 목록 페이지 `/products` (히어로 + 좌측 카테고리 사이드바 + 카드 그리드)
+- 데이터: `azen_categories` 계층(메인/서브) 사이드바 링크, `azen_products`에서 `is_published=true`만 조회, `?category=slug`로 서브 또는 메인(하위 전체) 필터
+- UI: Unsplash 산업 배경 히어로 + 다크 오버레이, glass-card, 제품 카드는 캐러셀과 동일한 hover(scale/translate/shadow), 썸네일 없을 시 `/hero-factory.png`, 설명 `line-clamp-2`, 클릭 시 `/products/[id]`
+- 빈 상태: 필터 결과 없음 / 잘못된 slug / 전체 없음 각각 안내 문구
+- GNB: `Header.tsx` 드롭다운에 `전체 제품`, `필터 전체`(`?category=filter`), `전기/유공압 전체`(`?category=electric`) 및 기존 서브 `?category=slug` 링크 정리
+- 신규 컴포넌트: `components/features/ProductCard.tsx`, `components/features/ProductsCategorySidebar.tsx`
+- PRODUCT-001 완료 처리: `feature_list/product.json`의 PRODUCT-001 passes=true 반영
+- 검증: npm run build 통과
+- next.config.ts `images.remotePatterns` 확장: `imageRemotePatterns` 배열로 정리하고 외부 이미지 URL 입력 대비 호스트 추가
+- 추가 호스트: `postfiles.pstatic.net`(http/https), `i.imgur.com`/`imgur.com`/`m.imgur.com`, `res.cloudinary.com` 및 `**.cloudinary.com`, `lh3~lh6.googleusercontent.com` 및 `**.googleusercontent.com`, `imagedelivery.net`(Cloudflare Images), `picsum.photos`/`placehold.co`/`via.placeholder.com`, `raw.githubusercontent.com`/`user-images.githubusercontent.com`/`avatars.githubusercontent.com`
+- 기존 유지: `images.unsplash.com`, `www.capfil.co.kr`, `www.ecsfilter.com`(/upload), `www.daewonvalvetech.com`(/wp-content)
+- 검증: npm run build 통과
+- PRODUCT-001 UI 개편: `/products` 좌측 사이드바 제거, 히어로 직후 상단 필터 바(`ProductsFilterBar`)로 교체
+- 필터 바: 좌측 GET 폼 `?search=`(제품명) + 선택 카테고리 유지용 hidden, 우측 `전체` 및 필터·전기 하위 서브칩(`?category=slug`), 활성은 `bg-primary`+`text-white`, 모바일 카테고리 가로 스크롤
+- 서버: `name`에 `ilike` 검색, `search`·`category` 쿼리 조합, 검색 결과 없을 때 안내 문구 분기
+- 그리드: `md:grid-cols-3` `lg:grid-cols-4` 전폭
+- `ProductsCategorySidebar.tsx` 삭제, `ProductsFilterBar.tsx` 추가
+- 검증: npm run build 통과
+- `/products` 필터 칩 그룹 분리: `resolveFilterBarGroup`으로 URL `category`가 `electric`·`electric_parts`·`hydraulic`이면 전기/유공압 줄만(전체=`electric` + 서브 2개), 그 외(필터 서브·`filter`·없음·`service` 등)는 필터 줄만(전체=`filter` + 서브 4개)
+- `ProductsFilterBar`: `filterSubcategories`/`electricSubcategories`/`activeBarGroup` props, 그룹별 `전체`는 각각 `?category=filter` / `?category=electric`
+- 제품 그리드: `lg:grid-cols-4` → `lg:grid-cols-3`, `gap-6` 유지
+- 검증: npm run build 통과
+- `/products` 전면 재작성: 필터·전기/유공압 제품군 완전 분리(GNB `?category=`로만 진입, 없거나 잘못된 값은 `?category=filter`로 redirect)
+- 서버: `lib/products-catalog.ts`로 그룹·slug 정의, 해당 그룹 `category_id`만 `azen_products` 조회(`category:azen_categories(name, slug)`), `ProductsCatalogClient`에 전달
+- 클라이언트 `ProductsCatalogClient`: 제품명 검색 onChange 실시간 필터, 칩은 그룹 내 `전체`+서브만(`useState`), 활성 `bg-primary`
+- 레이아웃: 히어로 `min-h-[200px]`·Unsplash `background-image`+`bg-black/60`, 본문 `max-w-7xl` `px-8`, 그리드 `md:grid-cols-2` `lg:grid-cols-3` `gap-6`
+- `ProductCard`: 이미지 `aspect-[3/2]`, hover scale·translate 전 구간 적용
+- `ProductsFilterBar.tsx` 삭제, `Header`/홈 CTA 제품 링크에 `?category=filter`·`electric` 정리
+- 검증: npm run build 통과
+- `ProductCard` 이미지 영역 개선: `aspect-[4/3]` 고정, `object-contain`+`object-center`, 배경 `bg-elevated`/`dark:bg-[#1c1c1e]`, `inset-4`로 패딩, 썸네일 없을 때 동일 배경 + 중앙 `lucide-react` `Image` 아이콘( `/hero-factory.png` 폴백 제거)
+- 검증: npm run build 통과
+- `ProductCard` 이미지 영역 재조정: 썸네일 있을 때 `aspect-[4/3]`+`object-cover`로 영역 꽉 채움, 패딩·배경색 없음; 썸네일 없을 때만 `bg-elevated`/`dark:bg-[#1c1c1e]`+중앙 `Image` 아이콘
+- 검증: npm run build 통과
+- `ProductCard`를 홈 `HomeProductsCarousel` 카드와 스타일 통일: `glass-card`+동일 border/bg/hover(`md:hover:-translate-y-1`, 오버레이, 이미지 `md:group-hover:scale-105`), 이미지 `aspect-[4/3]`+`overflow-hidden`+`object-cover`, 텍스트 `p-4`·`dark:bg-[#111114]`, 설명 `min-h-[2.75rem]`·`leading-[1.375rem]`, 카테고리 `lowercase`+`text-primary`
+- 검증: npm run build 통과
+- `ProductCard` 캐러셀 카드와 완전 통일: 이미지 `h-[22rem]`(고정 높이), 콘텐츠 `p-5 lg:p-6`, 카드 wrapper에서 `flex h-full flex-col` 제거
+- `/products` 타이틀 영역 전면 개편: full-width CSS `background-image`(필터/전기 그룹별 Unsplash 산업 이미지)+`bg-black/60` 오버레이, `min-h-[220px]` 세로 중앙 정렬, 흰색 제목·설명
+- `/products` 검색+필터 바 개편: `max-w-7xl mx-auto px-8 py-6`, 검색 input `flex-1`+`bg-elevated px-4 py-2 rounded-lg`, 카테고리 칩 `rounded-full px-4 py-1.5 text-sm`
+- `/products` 카드 그리드 섹션: `max-w-7xl mx-auto px-8 py-8`, `md:grid-cols-2 lg:grid-cols-3 gap-6` 유지
+- 검증: npm run build 통과
+- `/products` 타이틀 영역 세부 조정: `min-h-[220px]` → `min-h-[300px]`, 내부 패딩 `py-12` → `py-16`
+- 검색+필터 바 레이아웃 개편: 두 컬럼 `justify-between` 구조 → `flex-wrap gap-3` 단일 행, 검색창 `w-64` 고정폭, 칩 그룹 인접 배치
+- 검색창 배경 명시: `bg-elevated dark:bg-[#1c1c1e]`로 토큰 통일
+- 카드 그리드 오버플로 수정: `page.tsx`의 불필요한 `pt-8` 래퍼 div 제거, `ProductsCatalogClient` 직접 렌더링
+- 검증: npm run build 통과
+- `/products` 컨테이너 너비 통일: `max-w-7xl px-8` → `max-w-6xl px-4` (Header.tsx와 동일한 컨테이너)
+- `/products` 검색창 색상 hex 직접 적용: background `#1c1c1e`, color `#fefbfe`, border `rgba(255,255,255,0.05)`, placeholder `#636366`
+- 검증: npm run build 통과
+- `ProductCard` 이미지 영역: `aspect-[4/3]`+`overflow-hidden` 유지, 썸네일·플레이스홀더 모두 하단 `h-16` `bg-gradient-to-t from-black/30 to-transparent` 오버레이(`pointer-events-none`)
+- 검증: npm run build 통과
+- `tailwind.config.ts` `primary-foreground: var(--primary-foreground)` 추가 (기존 토큰은 이미 연결되어 있었음)
+- `ProductCard.tsx` / `ProductsCatalogClient.tsx` hex 잔존 여부 재확인 → 이미 모두 Tailwind 토큰으로 교체 완료 상태, 변경 없음
+- `globals.css` `:root`에 `--elevated: #f1f5f9`, `--surface: #f8fafc`, `--success: #16a34a`, `--secondary: #3b82f6`, `--primary-foreground: #ffffff` 추가
+- `globals.css` `.dark`에 `--primary-foreground: #ffffff` 추가
+- `ProductCard.tsx` 이미지 비율 `aspect-[4/3]` → `aspect-[3/2]`, 텍스트 패딩 `p-4` → `p-5`
+- `ProductCard.tsx` 이미지 영역 `aspect-[3/2]` → `h-64` 고정 높이로 변경 (카드 크기 확대)
+- `ProductCard.tsx` 이미지 영역 `h-64` → `h-[22rem]` (홈 캐러셀 `HomeProductsCarousel.tsx`와 동일하게 통일)
+- `ProductCard.tsx` 인터랙션 캐러셀 카드와 통일: `glass-card`, `md:hover:shadow`, 내부 오버레이 div(`opacity-0→group-hover:opacity-100`), 이미지 `md:group-hover:scale-105`, 텍스트 영역 `z-[2]`
+- `Header.tsx` GNB 수정: '필터 전체'/'전기유공압 전체' 드롭다운 항목 제거, '필터' 클릭 → `/products?category=air_handling`, '전기/유공압' 클릭 → `/products?category=electric_parts` (데스크탑 button→Link, 모바일 p→Link)
+- `Header.tsx` GNB 링크 수정: '필터' → `?category=filter`, '전기/유공압' → `?category=electric` (데스크탑+모바일 동일)
+- `ProductsCatalogClient.tsx` 그룹 판단 로직 명시화: `initialSelectedSub`를 FILTER_SUB_SLUGS/ELECTRIC_SUB_SLUGS 기준으로 단순화, "전체" 시 useMemo에서 해당 그룹 서브슬러그 Set으로 명시적 필터링
+- `app/layout.tsx` 래퍼 div `min-h-full` → `min-h-screen` (제품 적을 때도 푸터 하단 고정)
+- `ProductsCatalogClient.tsx` 검색/필터 바 `pt-8` 추가 (타이틀 영역과 간격)
+- `ProductsCatalogClient.tsx` 모바일 필터 select 추가: `md:hidden` select(전체+카테고리 옵션, ChevronDown 아이콘), 검색창과 한 줄 배치; 데스크탑 칩 `hidden md:flex`로 분리
+- `ProductCard` + `ProductsCatalogClient` 라이트/다크 대응: hex 하드코딩 → Tailwind 토큰(bg-elevated, text-foreground, text-muted-foreground, text-primary, border-border, bg-primary) 전환, 검색 input inline style 제거
+- 검증: npm run build 통과
+- `/products` 전면 재구성: 서버 컴포넌트(page.tsx) + 클라이언트 컴포넌트(ProductsCatalogClient) 분리
+- 타이틀 영역: `min-h-[300px]` CSS background-image + `bg-black/60` 오버레이, `items-end px-4 py-12`, 그룹별 제목·설명
+- 검색+필터 바: `max-w-6xl px-4 py-6`, 검색 input `w-64` inline style(bg `#1c1c1e`, color `#fefbfe`, border `rgba(255,255,255,0.05)`), 카테고리 칩 `rounded-full px-4 py-1.5`(선택 `bg-[#0A84FF]`, 미선택 `bg-[#1c1c1e] text-[#acaaad]`)
+- 카드 그리드: `max-w-6xl px-4 py-8`, `grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6`
+- `ProductCard` 전면 개편: `rounded-2xl border border-white/5 bg-[#1c1c1e]`, 이미지 `aspect-[4/3]`+img 태그, 카테고리 `text-[#0A84FF]`, 제품명 `font-bold text-[#fefbfe]`, 설명 `text-[#acaaad]`, hover `transition-transform -translate-y-1`
+- 검증: npm run build 통과
+- `globals.css` `@layer base`에 `.dark input` / `.dark input::placeholder` 스타일 추가 (Tailwind base가 덮어쓰던 다크모드 input 색상 수정)
+- `ProductsCatalogClient.tsx` 검색 input 인라인 style 제거, className 토큰(`border-border bg-background text-foreground placeholder:text-muted-foreground`)만으로 정리
+- 검증: npm run build 통과
+- `ProductCard` 이미지 영역: 하단 그라디언트 오버레이 유지, 높이를 홈 캐러셀과 동일하게 `h-[22rem]`으로 복구(`aspect-[4/3]` 제거)
+- 검증: npm run build 통과
+- `/products` 제품 목록 정렬: `created_at` 오름차순(먼저 등록한 순), 보조 `sort_order` 오름차순
+- 검증: npm run build 통과

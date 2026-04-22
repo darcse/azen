@@ -90,7 +90,7 @@ export default async function Home() {
             </p>
             <div className="flex flex-wrap gap-3">
               <Link
-                href="/products"
+                href="/products?category=filter"
                 className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white transition-transform duration-200 active:scale-95 dark:bg-[#0A84FF]"
               >
                 현장 진단 신청

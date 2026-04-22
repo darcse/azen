@@ -12,6 +12,6 @@
           "제품 카드 클릭 시 /products/[id]로 이동 확인",
           "등록된 제품 없을 때 빈 상태 메시지 노출 확인"
         ],
-        "passes": false
+        "passes": true
       }
 ]

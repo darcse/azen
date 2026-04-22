@@ -30,3 +30,4 @@
 - 항목별 승인 후 진행 (scope creep 금지)
 - 커밋 전 반드시 확인
 - 세션 종료 시 claude-progress.txt에 작업 내용 기록
+- lint/typecheck는 직접 실행하지 말고 빌드 결과로만 확인

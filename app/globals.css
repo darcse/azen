@@ -10,6 +10,11 @@
   --muted: #f1f5f9;
   --muted-foreground: #64748b;
   --border: #e2e8f0;
+  --elevated: #f1f5f9;
+  --surface: #f8fafc;
+  --success: #16a34a;
+  --secondary: #3b82f6;
+  --primary-foreground: #ffffff;
   --radius: 0.75rem;
 }
 
@@ -24,6 +29,7 @@
   --muted-foreground: #acaaad;
   --muted: #1c1c1e;
   --border: rgba(255, 255, 255, 0.05);
+  --primary-foreground: #ffffff;
 }
 
 body {

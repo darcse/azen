@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang="ko" className="h-full antialiased" suppressHydrationWarning>
       <body className="min-h-full bg-background text-foreground">
         <ThemeClassBridge />
-        <div className="flex min-h-full flex-col">
+        <div className="flex min-h-screen flex-col">
           <ConditionalHeader />
           <main className="flex-1">{children}</main>
           <ConditionalFooter />

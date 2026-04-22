@@ -1,25 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { applyThemeClass, readStoredTheme, THEME_STORAGE_KEY, type ThemeMode } from "@/lib/theme";
 
-export type ThemeMode = "light" | "dark" | "auto";
-
-const THEME_STORAGE_KEY = "theme";
-
-const getSystemPrefersDark = () =>
-  typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-const applyThemeClass = (mode: ThemeMode) => {
-  const shouldUseDark = mode === "dark" || (mode === "auto" && getSystemPrefersDark());
-  document.documentElement.classList.toggle("dark", shouldUseDark);
-};
+export type { ThemeMode } from "@/lib/theme";
 
 export const useTheme = () => {
   const [theme, setTheme] = useState<ThemeMode>("auto");
 
-  useEffect(() => {
-    applyThemeClass(theme);
-  }, [theme]);
+  useLayoutEffect(() => {
+    setTheme(readStoredTheme());
+  }, []);
 
   useEffect(() => {
     if (theme === "auto") {

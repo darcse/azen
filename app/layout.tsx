@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { ConditionalFooter } from "@/components/layout/ConditionalFooter";
 import { ConditionalHeader } from "@/components/layout/ConditionalHeader";
+import { ThemeClassBridge } from "@/components/layout/ThemeClassBridge";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,25 +14,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const themeInitScript = `
-    (() => {
-      try {
-        const mode = localStorage.getItem("theme") || "auto";
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const isDark = mode === "dark" || (mode === "auto" && prefersDark);
-        document.documentElement.classList.toggle("dark", isDark);
-      } catch {}
-    })();
-  `;
-
   return (
     <html lang="ko" className="h-full antialiased" suppressHydrationWarning>
-      <head>
-        <Script id="theme-init" strategy="beforeInteractive">
-          {themeInitScript}
-        </Script>
-      </head>
       <body className="min-h-full bg-background text-foreground">
+        <ThemeClassBridge />
         <div className="flex min-h-full flex-col">
           <ConditionalHeader />
           <main className="flex-1">{children}</main>

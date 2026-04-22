@@ -15,6 +15,11 @@ const nextConfig: NextConfig = {
         protocol: "http",
         hostname: "www.capfil.co.kr",
       },
+      {
+        protocol: "https",
+        hostname: "www.ecsfilter.com",
+        pathname: "/upload/**",
+      },
     ],
   },
 };

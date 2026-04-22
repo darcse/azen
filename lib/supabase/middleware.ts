@@ -38,14 +38,27 @@ export const updateSession = async (request: NextRequest) => {
     });
   };
 
+  const isStaleRefreshError = (message: string) =>
+    message.includes("Invalid Refresh Token") ||
+    message.includes("Refresh Token Not Found");
+
   let user = null;
   try {
     const {
       data: { user: authUser },
+      error,
     } = await supabase.auth.getUser();
-    user = authUser;
+
+    if (error?.message && isStaleRefreshError(error.message)) {
+      clearSupabaseAuthCookies();
+      user = null;
+    } else if (error) {
+      user = authUser ?? null;
+    } else {
+      user = authUser;
+    }
   } catch (error) {
-    if (error instanceof Error && error.message.includes("Invalid Refresh Token")) {
+    if (error instanceof Error && isStaleRefreshError(error.message)) {
       clearSupabaseAuthCookies();
     } else {
       throw error;

@@ -15,6 +15,22 @@ interface ProductListRow {
   } | null;
 }
 
+/** PostgREST/Supabase 타입은 FK 임베드를 배열로 두는 경우가 있어 단일 객체로 맞춘다. */
+const normalizeCategory = (category: unknown): ProductListRow["category"] => {
+  if (category == null) return null;
+  if (Array.isArray(category)) {
+    const first = category[0];
+    if (first && typeof first === "object" && first !== null && "name" in first) {
+      return { name: String((first as { name: unknown }).name) };
+    }
+    return null;
+  }
+  if (typeof category === "object" && category !== null && "name" in category) {
+    return { name: String((category as { name: unknown }).name) };
+  }
+  return null;
+};
+
 interface CategoryOption {
   id: string;
   name: string;
@@ -100,7 +116,14 @@ export default async function AdminListPage({ searchParams }: AdminListPageProps
     }
     return a.name.localeCompare(b.name, "ko");
   });
-  const productRows: ProductListRow[] = (productResult.data ?? []) as ProductListRow[];
+  const productRows: ProductListRow[] = (productResult.data ?? []).map((row) => ({
+    id: row.id,
+    name: row.name,
+    is_published: row.is_published,
+    sort_order: row.sort_order,
+    created_at: row.created_at,
+    category: normalizeCategory(row.category),
+  }));
   const error = productResult.error;
 
   return (

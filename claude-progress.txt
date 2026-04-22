@@ -260,3 +260,29 @@
 - 레이아웃: 타이틀 바(`pt-8 pb-2` ArrowLeft+제품명), 브레드크럼(`pb-8 ml-10`), 좌우 그리드(`grid lg:grid-cols-2 gap-12 pb-16`), 하단 상세(`pt-12 pb-16`)
 - 갤러리: `w-full aspect-[4/3] object-contain` 메인 이미지, `w-20 h-20` 썸네일 strip(선택 `border-primary`), 이미지 없을 때 `aspect-[4/3]` 점선 플레이스홀더
 - `<style>` 태그 + CSS radio 패턴 완전 제거, `next/script` `history.back()` 유지
+- EDITOR-001 구현: `@tiptap/react`, `@tiptap/pm`, `@tiptap/starter-kit`, `@tiptap/extension-placeholder` 설치
+- 신규 컴포넌트: `components/ui/RichTextEditor.tsx` 생성 (`"use client"`, props: `value`, `onChange`, `placeholder?`)
+- 기능: Bold/Italic/H2/H3/BulletList/OrderedList/HorizontalRule 툴바, 활성 버튼 `bg-primary text-white`, HTML 출력(`onUpdate -> editor.getHTML()`)
+- 스타일: `glass-card` 기반 래퍼, 툴바/에디터 `border-b`로 구분, 에디터 최소 높이 `min-h-[200px]`
+- 검증: npm run build 통과
+- EDITOR-002 구현: 제품 등록 폼에서 `content/spec` textarea를 `RichTextEditor`로 교체 (`components/features/AdminProductCreateForm.tsx`)
+- 상태 연동: `contentHtml`, `specHtml` useState + `RichTextEditor onChange`로 업데이트, `<input type="hidden" name="content|spec" value={...}>`로 server action FormData 전달 유지
+- `app/admin/products/new/page.tsx`에서 textarea placeholder 보정용 `next/script` 제거 (에디터 placeholder props로 대체)
+- 검증: npm run build 통과
+- EDITOR-003 구현: 제품 수정 폼(`components/features/AdminProductEditForm.tsx`)에서 `content/spec` textarea를 `RichTextEditor`로 교체
+- 초기값 로드: `useState(product.content ?? "")`, `useState(product.spec ?? "")`로 기존 DB HTML을 에디터 value에 전달하여 진입 시 즉시 렌더
+- 저장 구조 유지: hidden input(`name="content"`, `name="spec"`) + `RichTextEditor onChange`로 HTML 상태 반영, 기존 `updateAction` `FormData` 처리 유지
+- `app/admin/products/[id]/edit/page.tsx`의 spec placeholder 보정 스크립트 제거(에디터 placeholder props로 대체)
+- 검증: npm run build 통과
+- Typography 플러그인 설치: `npm install @tailwindcss/typography`
+- `tailwind.config.ts`에 `plugins: [require("@tailwindcss/typography")]` 추가
+- 제품 상세 HTML 렌더 보강: `components/features/ProductDetailHtmlContent.tsx`는 이미 `"use client"` 유지, `dangerouslySetInnerHTML` 컨테이너 className에 `prose prose-slate dark:prose-invert max-w-none`를 기본 병합하여 누락 시에도 prose 스타일이 항상 적용되도록 정리
+- 제품 상세 heading 스타일 미적용 버그 수정: Tailwind v4 환경에서 `tailwind.config.ts`의 `plugins` 배열은 플러그인 로딩에 무효 → `globals.css`에 `@plugin "@tailwindcss/typography"` 추가하여 prose 클래스 정상 생성 보장
+- `app/globals.css`에서 `@plugin "@tailwindcss/typography";` 한 줄 제거 요청 반영
+- `components/features/ProductDetailHtmlContent.tsx` 클래스명 조정: `prose ...` 기본 병합 제거하고 `prose-content max-w-none`로 변경
+- `app/globals.css` prose 스타일 정의 방식 변경: `@layer components` 블록 제거 후 동일 규칙을 일반 CSS 셀렉터로 재작성(`@apply` 제거, 실제 속성값 사용, `.prose hr` 포함)
+- `app/globals.css` 타이포 우선순위 보강: `.prose h1/h2/h3/h4`의 `font-size`/`font-weight`에 `!important` 적용
+- `app/globals.css` 정리: `.prose` 스타일 블록 전체를 파일 하단에서 `@import "tailwindcss";` 바로 아래로 이동
+- `tailwind.config.ts`에 `safelist` 추가: `["prose", "max-w-none"]`
+- prose 스타일 파일 분리: `app/prose.css` 신설(heading/list/link/hr 규칙), `app/layout.tsx`에 `import "./prose.css";` 추가
+- `app/globals.css`에서 `.prose` 관련 스타일 블록 전체 제거

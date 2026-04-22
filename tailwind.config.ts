@@ -8,6 +8,7 @@ const config: Config = {
     "./hooks/**/*.{js,ts,jsx,tsx}",
     "./lib/**/*.{js,ts,jsx,tsx}",
   ],
+  safelist: ["prose", "max-w-none"],
   theme: {
     extend: {
       colors: {
@@ -48,6 +49,7 @@ const config: Config = {
       },
     },
   },
+  plugins: [require("@tailwindcss/typography")],
 };
 
 export default config;

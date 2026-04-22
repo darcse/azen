@@ -1,0 +1,40 @@
+[
+    {
+        "id": "EDITOR-001",
+        "category": "editor",
+        "title": "Tiptap 에디터 — 패키지 설치 및 기본 컴포넌트 생성",
+        "description": "Tiptap 패키지를 설치하고 재사용 가능한 RichTextEditor 컴포넌트를 생성한다.",
+        "steps": [
+          "npm ls @tiptap/react 로 패키지 설치 확인",
+          "components/ui/RichTextEditor.tsx 파일 존재 확인",
+          "RichTextEditor 컴포넌트가 value, onChange props를 받는지 확인",
+          "Bold, Italic, BulletList, OrderedList, Heading 툴바 버튼 노출 확인"
+        ],
+        "passes": true
+      },
+      {
+        "id": "EDITOR-002",
+        "category": "editor",
+        "title": "Tiptap 에디터 — 관리자 제품 등록 폼 적용",
+        "description": "제품 등록(/admin/products/new) 폼의 상세설명(content)과 스펙(spec) textarea를 RichTextEditor로 교체한다.",
+        "steps": [
+          "제품 등록 폼에서 상세설명 영역이 Tiptap 에디터로 노출 확인",
+          "제품 등록 폼에서 스펙 영역이 Tiptap 에디터로 노출 확인",
+          "내용 입력 후 저장 시 HTML 형태로 DB에 저장 확인",
+          "툴바 버튼 (Bold, Italic, 목록 등) 정상 동작 확인"
+        ],
+        "passes": true
+      },
+      {
+        "id": "EDITOR-003",
+        "category": "editor",
+        "title": "Tiptap 에디터 — 관리자 제품 수정 폼 적용",
+        "description": "제품 수정(/admin/products/[id]/edit) 폼의 상세설명과 스펙 textarea를 RichTextEditor로 교체하고 기존 데이터를 에디터에 로드한다.",
+        "steps": [
+          "수정 폼 진입 시 기존 content, spec 데이터가 에디터에 로드 확인",
+          "내용 수정 후 저장 시 DB 반영 확인",
+          "기존 HTML 데이터가 에디터에서 정상 렌더링 확인"
+        ],
+        "passes": true
+      }
+]

@@ -31,3 +31,7 @@
 - 커밋 전 반드시 확인
 - 세션 종료 시 claude-progress.txt에 작업 내용 기록
 - lint/typecheck는 직접 실행하지 말고 빌드 결과로만 확인
+
+Tailwind v4 주의사항:
+- 조합 선택자(.prose h3 등)는 globals.css에 넣으면 purge됨
+- 별도 CSS 파일로 분리 후 layout.tsx에서 import해야 함

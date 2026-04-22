@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, ImagePlus, Link as LinkIcon, Save, Upload } from "lucide-react";
 import { AdminDeleteButton } from "@/components/features/AdminDeleteButton";
 import { AdminImageDeleteButton } from "@/components/features/AdminImageDeleteButton";
+import { RichTextEditor } from "@/components/ui/RichTextEditor";
 
 interface CategoryOption {
   id: string;
@@ -17,6 +18,7 @@ interface ProductDetail {
   category_id: string;
   description: string | null;
   content: string | null;
+  spec: string | null;
   thumbnail_url: string | null;
   is_published: boolean;
   sort_order: number;
@@ -52,6 +54,8 @@ export const AdminProductEditForm = ({
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(updateAction, { error: null });
   const [isDirty, setIsDirty] = useState(false);
+  const [contentHtml, setContentHtml] = useState(product.content ?? "");
+  const [specHtml, setSpecHtml] = useState(product.spec ?? "");
   const [thumbnailMode, setThumbnailMode] = useState<"file" | "url">("file");
   const [additionalMode, setAdditionalMode] = useState<"file" | "url">("file");
   const [additionalUrlInputs, setAdditionalUrlInputs] = useState([""]);
@@ -132,6 +136,19 @@ export const AdminProductEditForm = ({
           defaultValue={product.description ?? ""}
           className="rounded-md border border-border bg-background px-3 py-2"
           placeholder="간단한 소개 문구를 입력하세요"
+        />
+      </label>
+
+      <label className="flex flex-col gap-1 text-sm">
+        스펙
+        <input type="hidden" name="spec" value={specHtml} />
+        <RichTextEditor
+          value={specHtml}
+          onChange={(html) => {
+            setSpecHtml(html);
+            setIsDirty(true);
+          }}
+          placeholder="HTML 입력 가능. 예: <ul><li>규격: 500x500</li></ul>"
         />
       </label>
 
@@ -287,11 +304,13 @@ export const AdminProductEditForm = ({
 
       <label className="flex flex-col gap-1 text-sm">
         상세설명 (HTML)
-        <textarea
-          name="content"
-          rows={24}
-          defaultValue={product.content ?? ""}
-          className="min-h-60 resize-y rounded-md border border-border bg-background px-3 py-2 font-mono text-xs"
+        <input type="hidden" name="content" value={contentHtml} />
+        <RichTextEditor
+          value={contentHtml}
+          onChange={(html) => {
+            setContentHtml(html);
+            setIsDirty(true);
+          }}
           placeholder="<p>상세 HTML 설명</p>"
         />
       </label>

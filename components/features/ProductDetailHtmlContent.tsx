@@ -14,18 +14,19 @@ interface ProductDetailHtmlContentProps {
  */
 export function ProductDetailHtmlContent({ html, className }: ProductDetailHtmlContentProps) {
   const [mounted, setMounted] = useState(false);
+  const proseClassName = `prose max-w-none ${className}`.trim();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   if (!mounted) {
-    return <div className={className} suppressHydrationWarning />;
+    return <div className={proseClassName} suppressHydrationWarning />;
   }
 
   return (
     <div
-      className={className}
+      className={proseClassName}
       dangerouslySetInnerHTML={{ __html: applyLineBreaksAsHtmlBr(html) }}
     />
   );

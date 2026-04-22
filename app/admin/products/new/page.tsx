@@ -60,6 +60,7 @@ export default async function AdminProductNewPage() {
     const categoryId = String(formData.get("category_id") ?? "").trim();
     const description = String(formData.get("description") ?? "").trim();
     const content = String(formData.get("content") ?? "").trim();
+    const spec = String(formData.get("spec") ?? "").trim();
     const isPublished = formData.get("is_published") === "on";
     const sortOrder = Number(String(formData.get("sort_order") ?? "0")) || 0;
     const thumbnailMode = String(formData.get("thumbnail_mode") ?? "file");
@@ -108,6 +109,7 @@ export default async function AdminProductNewPage() {
         name,
         description: description || null,
         content: content || null,
+        spec: spec || null,
         thumbnail_url: thumbnailUrl,
         is_published: isPublished,
         sort_order: sortOrder,

@@ -2,6 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { ImagePlus, Link as LinkIcon, Save, Trash2, Upload } from "lucide-react";
+import { RichTextEditor } from "@/components/ui/RichTextEditor";
 
 interface CategoryOption {
   id: string;
@@ -19,6 +20,8 @@ interface AdminProductCreateFormProps {
 
 export const AdminProductCreateForm = ({ categories, action }: AdminProductCreateFormProps) => {
   const [state, formAction, isPending] = useActionState(action, { error: null });
+  const [contentHtml, setContentHtml] = useState("");
+  const [specHtml, setSpecHtml] = useState("");
   const [thumbnailMode, setThumbnailMode] = useState<"file" | "url">("file");
   const [additionalMode, setAdditionalMode] = useState<"file" | "url">("file");
   const [additionalUrlInputs, setAdditionalUrlInputs] = useState([""]);
@@ -74,6 +77,16 @@ export const AdminProductCreateForm = ({ categories, action }: AdminProductCreat
           rows={3}
           className="rounded-md border border-border bg-background px-3 py-2"
           placeholder="간단한 소개 문구를 입력하세요"
+        />
+      </label>
+
+      <label className="flex flex-col gap-1 text-sm">
+        스펙
+        <input type="hidden" name="spec" value={specHtml} />
+        <RichTextEditor
+          value={specHtml}
+          onChange={setSpecHtml}
+          placeholder="HTML 입력 가능. 예: <ul><li>규격: 500x500</li></ul>"
         />
       </label>
 
@@ -201,10 +214,10 @@ export const AdminProductCreateForm = ({ categories, action }: AdminProductCreat
 
       <label className="flex flex-col gap-1 text-sm">
         상세설명 (HTML)
-        <textarea
-          name="content"
-          rows={24}
-          className="min-h-60 resize-y rounded-md border border-border bg-background px-3 py-2 font-mono text-xs"
+        <input type="hidden" name="content" value={contentHtml} />
+        <RichTextEditor
+          value={contentHtml}
+          onChange={setContentHtml}
           placeholder="<p>상세 HTML 설명</p>"
         />
       </label>

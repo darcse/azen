@@ -3,6 +3,7 @@ import { ConditionalFooter } from "@/components/layout/ConditionalFooter";
 import { ConditionalHeader } from "@/components/layout/ConditionalHeader";
 import { ThemeClassBridge } from "@/components/layout/ThemeClassBridge";
 import "./globals.css";
+import "./prose.css";
 
 export const metadata: Metadata = {
   title: "azen",

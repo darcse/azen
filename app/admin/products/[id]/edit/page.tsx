@@ -63,7 +63,7 @@ export default async function AdminProductEditPage({ params }: AdminProductEditP
   const [{ data: product }, { data: categories }, { data: images }] = await Promise.all([
     supabase
       .from("azen_products")
-      .select("id, name, category_id, description, content, thumbnail_url, is_published, sort_order")
+      .select("id, name, category_id, description, content, spec, thumbnail_url, is_published, sort_order")
       .eq("id", id)
       .maybeSingle(),
     supabase.from("azen_categories").select("id, name").not("parent_id", "is", null),
@@ -98,6 +98,7 @@ export default async function AdminProductEditPage({ params }: AdminProductEditP
     const categoryId = String(formData.get("category_id") ?? "").trim();
     const description = String(formData.get("description") ?? "").trim();
     const content = String(formData.get("content") ?? "").trim();
+    const spec = String(formData.get("spec") ?? "").trim();
     const isPublished = formData.get("is_published") === "on";
     const sortOrder = Number(String(formData.get("sort_order") ?? "0")) || 0;
     const thumbnailMode = String(formData.get("thumbnail_mode") ?? "file");
@@ -146,6 +147,7 @@ export default async function AdminProductEditPage({ params }: AdminProductEditP
         category_id: categoryId,
         description: description || null,
         content: content || null,
+        spec: spec || null,
         thumbnail_url: nextThumbnailUrl,
         is_published: isPublished,
         sort_order: sortOrder,

@@ -62,7 +62,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   const { data, error } = await supabase
     .from("azen_products")
     .select(
-      `id, name, description, content, thumbnail_url,
+      `id, name, description, content, spec, thumbnail_url,
        category:azen_categories(name, slug, parent_id),
        images:azen_product_images(id, url, sort_order)`,
     )
@@ -94,6 +94,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   const name = data.name as string;
   const description = (data.description ?? null) as string | null;
   const contentHtml = (data.content ?? null) as string | null;
+  const spec = (data.spec ?? null) as string | null;
 
   return (
     <main className="w-full min-w-0 overflow-x-hidden">
@@ -161,8 +162,16 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             {description ? (
               <p className="mt-2 text-muted-foreground">{description}</p>
             ) : null}
-            <hr className="my-6 border-border" />
-            <p className="text-sm text-muted-foreground">스펙 정보 준비 중</p>
+            {spec ? (
+              <>
+                <hr className="my-4 border-border" />
+                <p className="text-sm font-semibold text-muted-foreground">스펙</p>
+                <ProductDetailHtmlContent
+                  html={spec}
+                  className="prose prose-slate dark:prose-invert mt-2 min-w-0 max-w-none overflow-x-auto break-words text-sm leading-relaxed text-foreground [&_a]:text-primary [&_h3]:mb-2 [&_h3]:mt-4 [&_h3]:text-lg [&_h3]:font-semibold [&_img]:h-auto [&_img]:max-w-full [&_li]:mb-1 [&_ol]:mb-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:mb-2 [&_ul]:mb-2 [&_ul]:list-disc [&_ul]:pl-5"
+                />
+              </>
+            ) : null}
           </div>
         </div>
       </div>
@@ -174,7 +183,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           <h2 className="mb-4 text-lg font-bold text-foreground">제품 상세</h2>
           <ProductDetailHtmlContent
             html={contentHtml}
-            className="min-w-0 max-w-full overflow-x-auto break-words text-sm leading-relaxed text-foreground md:text-base [&_a]:text-primary [&_img]:h-auto [&_img]:max-w-full [&_p]:mb-3 [&_ul]:mb-3 [&_ul]:list-disc [&_ul]:pl-5"
+            className="prose prose-slate dark:prose-invert min-w-0 max-w-none overflow-x-auto break-words text-sm leading-relaxed text-foreground md:text-base [&_a]:text-primary [&_h3]:mb-2 [&_h3]:mt-4 [&_h3]:text-xl [&_h3]:font-semibold [&_img]:h-auto [&_img]:max-w-full [&_li]:mb-1 [&_ol]:mb-3 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:mb-3 [&_ul]:mb-3 [&_ul]:list-disc [&_ul]:pl-5"
           />
         </div>
       ) : null}

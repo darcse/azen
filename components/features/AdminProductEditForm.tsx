@@ -154,9 +154,13 @@ export const AdminProductEditForm = ({
       <section className="space-y-3 rounded-xl border border-border p-4">
         <p className="text-sm font-medium">대표 이미지</p>
         {product.thumbnail_url && (
-          <div className="overflow-hidden rounded-md border border-border">
+          <div className="flex aspect-square w-64 max-w-full shrink-0 items-center justify-center overflow-hidden rounded-md border border-border bg-elevated">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={product.thumbnail_url} alt="기존 대표 이미지" className="h-44 w-full object-cover" />
+            <img
+              src={product.thumbnail_url}
+              alt="기존 대표 이미지"
+              className="max-h-full max-w-full object-contain object-center"
+            />
           </div>
         )}
         <div className="flex gap-2">

@@ -13,7 +13,7 @@ export const ProductGallery = ({ urls, productName }: ProductGalleryProps) => {
 
   if (urls.length === 0) {
     return (
-      <div className="flex w-full aspect-[4/3] items-center justify-center rounded-lg border border-dashed border-border">
+      <div className="flex aspect-[4/3] w-full min-w-0 max-w-full items-center justify-center rounded-lg border border-dashed border-border bg-elevated">
         <ImageIcon className="h-16 w-16 text-muted-foreground" strokeWidth={1.25} aria-hidden />
         <span className="sr-only">이미지 없음</span>
       </div>
@@ -21,21 +21,22 @@ export const ProductGallery = ({ urls, productName }: ProductGalleryProps) => {
   }
 
   return (
-    <div className="min-w-0">
-      <div className="w-full overflow-hidden rounded-lg border border-border bg-muted">
+    <div className="min-w-0 w-full max-w-full">
+      {/* aspect는 래퍼에만 두고, img는 절대배치로 min-content 폭이 튀지 않게 함 (그리드 가로 오버플로 방지) */}
+      <div className="flex aspect-[4/3] w-full min-h-0 min-w-0 max-w-full items-center justify-center overflow-hidden rounded-lg border border-border bg-elevated">
         <img
           src={urls[selected]}
           alt={`${productName} 이미지`}
-          className="w-full aspect-[4/3] object-contain"
+          className="h-full w-full min-h-0 min-w-0 object-contain object-center"
         />
       </div>
-      <div className="flex gap-2 mt-4 overflow-x-auto pb-1">
+      <div className="mt-4 flex min-w-0 max-w-full gap-2 overflow-x-auto pb-1">
         {urls.map((url, i) => (
           <button
             key={`${url}-${i}`}
             type="button"
             onClick={() => setSelected(i)}
-            className={`shrink-0 w-20 h-20 overflow-hidden rounded-lg border-2 cursor-pointer transition-colors ${
+            className={`shrink-0 w-20 h-20 overflow-hidden rounded-lg border-2 bg-elevated cursor-pointer transition-colors ${
               i === selected ? "border-primary" : "border-border"
             }`}
           >

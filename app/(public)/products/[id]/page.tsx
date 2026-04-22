@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import Script from "next/script";
-import { ArrowLeft } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { ProductDetailBackButton } from "@/components/features/ProductDetailBackButton";
+import { ProductDetailHtmlContent } from "@/components/features/ProductDetailHtmlContent";
 import { ProductGallery } from "@/components/features/ProductGallery";
 
 interface ProductDetailPageProps {
@@ -52,6 +52,9 @@ const buildGalleryUrls = (
 const crumbLinkClass =
   "text-muted-foreground underline-offset-2 transition hover:text-foreground hover:underline";
 
+/** Header.tsx와 동일: `max-w-6xl` + `px-4` */
+const pageContainer = "mx-auto w-full min-w-0 max-w-6xl px-4";
+
 export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
   const { id } = await params;
   const supabase = await createClient();
@@ -93,69 +96,66 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   const contentHtml = (data.content ?? null) as string | null;
 
   return (
-    <main className="w-full overflow-x-hidden">
-      {/* 1. 타이틀 바 */}
-      <div className="mx-auto w-full max-w-7xl px-8 pt-8 pb-2">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            data-product-history-back
-            aria-label="이전 페이지로"
-            className="inline-flex shrink-0 items-center justify-center rounded-lg border border-border bg-background p-2 text-foreground transition hover:bg-muted"
+    <main className="w-full min-w-0 overflow-x-hidden">
+      {/* 1–2. 타이틀 + 브레드크럼 (GNB와 동일 너비·뒤로 버튼 열 제외하고 제품명·브레드크럼 시작선 정렬) */}
+      <div className={`${pageContainer} pb-10 pt-12`}>
+        <div className="flex flex-col gap-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <ProductDetailBackButton />
+            <h1 className="min-w-0 flex-1 truncate text-2xl font-bold text-foreground">{name}</h1>
+          </div>
+          <nav
+            aria-label="breadcrumb"
+            className="min-w-0 pl-[calc(2.5rem+0.75rem)] pt-1 text-sm text-muted-foreground"
           >
-            <ArrowLeft className="h-5 w-5" aria-hidden />
-          </button>
-          <h1 className="min-w-0 flex-1 truncate text-2xl font-bold text-foreground">{name}</h1>
+            {category ? (
+              <span className="flex flex-wrap items-center gap-x-1 gap-y-1">
+                {parentCategory ? (
+                  <>
+                    <Link
+                      href={`/products?category=${encodeURIComponent(parentCategory.slug)}`}
+                      className={crumbLinkClass}
+                    >
+                      {parentCategory.name}
+                    </Link>
+                    <span className="px-0.5 text-muted-foreground/60" aria-hidden>&gt;</span>
+                    <Link
+                      href={`/products?category=${encodeURIComponent(category.slug)}`}
+                      className={crumbLinkClass}
+                    >
+                      {category.name}
+                    </Link>
+                    <span className="px-0.5 text-muted-foreground/60" aria-hidden>&gt;</span>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href={`/products?category=${encodeURIComponent(category.slug)}`}
+                      className={crumbLinkClass}
+                    >
+                      {category.name}
+                    </Link>
+                    <span className="px-0.5 text-muted-foreground/60" aria-hidden>&gt;</span>
+                  </>
+                )}
+                <span className="font-medium text-foreground">{name}</span>
+              </span>
+            ) : (
+              <span className="font-medium text-foreground">{name}</span>
+            )}
+          </nav>
+          <hr className="mt-6 border-border" aria-hidden />
         </div>
       </div>
 
-      {/* 2. 브레드크럼 */}
-      <div className="mx-auto w-full max-w-7xl px-8 pb-8">
-        <nav aria-label="breadcrumb" className="ml-10 text-sm text-muted-foreground">
-          {category ? (
-            <span className="flex flex-wrap items-center gap-x-1 gap-y-1">
-              {parentCategory ? (
-                <>
-                  <Link
-                    href={`/products?category=${encodeURIComponent(parentCategory.slug)}`}
-                    className={crumbLinkClass}
-                  >
-                    {parentCategory.name}
-                  </Link>
-                  <span className="px-0.5 text-muted-foreground/60" aria-hidden>&gt;</span>
-                  <Link
-                    href={`/products?category=${encodeURIComponent(category.slug)}`}
-                    className={crumbLinkClass}
-                  >
-                    {category.name}
-                  </Link>
-                  <span className="px-0.5 text-muted-foreground/60" aria-hidden>&gt;</span>
-                </>
-              ) : (
-                <>
-                  <Link
-                    href={`/products?category=${encodeURIComponent(category.slug)}`}
-                    className={crumbLinkClass}
-                  >
-                    {category.name}
-                  </Link>
-                  <span className="px-0.5 text-muted-foreground/60" aria-hidden>&gt;</span>
-                </>
-              )}
-              <span className="font-medium text-foreground">{name}</span>
-            </span>
-          ) : (
-            <span className="font-medium text-foreground">{name}</span>
-          )}
-        </nav>
-      </div>
-
       {/* 3. 좌우 분할 */}
-      <div className="mx-auto w-full max-w-7xl px-8 pb-16">
-        <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-2">
-          <ProductGallery urls={galleryUrls} productName={name} />
+      <div className={`${pageContainer} pb-16 pt-8`}>
+        <div className="grid min-w-0 grid-cols-1 items-start gap-12 lg:grid-cols-2 lg:gap-12">
+          <div className="min-w-0 max-w-full">
+            <ProductGallery urls={galleryUrls} productName={name} />
+          </div>
 
-          <div className="flex min-w-0 flex-col">
+          <div className="flex min-w-0 max-w-full flex-col break-words">
             {category ? <p className="text-sm text-primary">{category.name}</p> : null}
             <h2 className="mt-1 text-2xl font-bold text-foreground">{name}</h2>
             {description ? (
@@ -169,19 +169,16 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
       {/* 4. 하단 상세설명 */}
       {contentHtml ? (
-        <div className="mx-auto w-full max-w-7xl px-8 pt-12 pb-16">
+        <div className={`${pageContainer} pb-16 pt-12`}>
           <hr className="mb-8 border-border" />
           <h2 className="mb-4 text-lg font-bold text-foreground">제품 상세</h2>
-          <div
-            className="max-w-full text-sm leading-relaxed text-foreground md:text-base [&_a]:text-primary [&_img]:h-auto [&_img]:max-w-full [&_p]:mb-3 [&_ul]:mb-3 [&_ul]:list-disc [&_ul]:pl-5"
-            dangerouslySetInnerHTML={{ __html: contentHtml }}
+          <ProductDetailHtmlContent
+            html={contentHtml}
+            className="min-w-0 max-w-full overflow-x-auto break-words text-sm leading-relaxed text-foreground md:text-base [&_a]:text-primary [&_img]:h-auto [&_img]:max-w-full [&_p]:mb-3 [&_ul]:mb-3 [&_ul]:list-disc [&_ul]:pl-5"
           />
         </div>
       ) : null}
 
-      <Script id="product-detail-history-back" strategy="afterInteractive">
-        {`(function(){document.querySelectorAll("[data-product-history-back]").forEach(function(b){if(b.dataset.bound)return;b.dataset.bound="1";b.addEventListener("click",function(){history.back();});});})();`}
-      </Script>
     </main>
   );
 }

@@ -232,7 +232,7 @@ export default async function AdminProductEditPage({ params }: AdminProductEditP
   };
 
   return (
-    <main className="mx-auto w-full max-w-4xl space-y-4 p-6">
+    <main className="mx-auto w-full max-w-6xl space-y-4 p-6">
       <p className="text-sm text-muted-foreground">기존 정보를 수정하고 이미지를 관리할 수 있습니다.</p>
       <AdminProductEditForm
         categories={categoryOptions}

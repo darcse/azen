@@ -168,15 +168,17 @@ export default async function AdminProductNewPage() {
   };
 
   return (
-    <main className="mx-auto w-full max-w-4xl space-y-4 p-6">
-      <Link
-        href="/admin/list"
-        className="inline-flex items-center gap-1 rounded-md border border-border px-3 py-2 text-sm hover:bg-muted"
-      >
-        <ArrowLeft size={16} />
-        목록으로
-      </Link>
-      <h1 className="text-xl font-semibold">제품 등록</h1>
+    <main className="mx-auto w-full max-w-6xl space-y-4 p-6">
+      <div className="flex items-center gap-2">
+        <Link
+          href="/admin/list"
+          aria-label="목록으로 이동"
+          className="inline-flex items-center justify-center rounded-md border border-border p-2 hover:bg-muted"
+        >
+          <ArrowLeft size={16} aria-hidden />
+        </Link>
+        <h1 className="text-xl font-semibold">제품 등록</h1>
+      </div>
       <p className="text-sm text-muted-foreground">
         제품 기본 정보와 대표/추가 이미지를 입력하면 관리자 대시보드에 바로 반영됩니다.
       </p>

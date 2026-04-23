@@ -1,3 +1,192 @@
+import Image from "next/image";
+import { Droplets, Factory, LayoutDashboard, ShieldCheck, Wind, Wrench } from "lucide-react";
+
+const businessAreas = [
+  {
+    title: "공조기 필터",
+    description: "실내 공기질 향상과 공조 시스템 보호를 위한 고성능 에어 필터 솔루션입니다.",
+    icon: Wind,
+    accent: "border-[#3b82f6]",
+    iconColor: "text-[#3b82f6]",
+  },
+  {
+    title: "집진기 필터",
+    description: "산업 현장의 분진과 유해 물질을 효과적으로 제거하여 작업 환경을 개선합니다.",
+    icon: Factory,
+    accent: "border-[#64748b]",
+    iconColor: "text-[#64748b]",
+  },
+  {
+    title: "수처리 필터",
+    description: "공업용수 및 폐수 처리를 위한 정밀 여과 시스템으로 수자원을 보호합니다.",
+    icon: Droplets,
+    accent: "border-[#06b6d4]",
+    iconColor: "text-[#06b6d4]",
+  },
+  {
+    title: "전문 시공 및 유지보수",
+    description: "필터 시스템의 설계, 설치부터 주기적인 점검과 교체까지 종합 서비스를 제공합니다.",
+    icon: Wrench,
+    accent: "border-[#f97316]",
+    iconColor: "text-[#f97316]",
+  },
+] as const;
+
+const newsItems = [
+  {
+    label: "Trust",
+    icon: ShieldCheck,
+    title: "글로벌 스탠다드 품질 검증",
+    description:
+      "고성능 여재만을 사용하여 출고 전 전수 검사를 원칙으로 합니다. 까다로운 산업 기준을 통과한 제품으로 완벽한 청정도를 약속합니다.",
+    image:
+      "https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&w=1200&q=80",
+    alt: "Industrial quality inspection and verification process",
+  },
+  {
+    label: "Professional",
+    icon: Wrench,
+    title: "숙련된 전문가의 정밀 진단",
+    description:
+      "설비의 풍량, 정압, 오염 물질 특성 등을 정밀 분석하여 현장에 최적화된 맞춤형 필터 설계 및 완벽한 시공을 제공합니다.",
+    image:
+      "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80",
+    alt: "Industrial engineer performing on-site diagnosis",
+  },
+  {
+    label: "Total Solution",
+    icon: LayoutDashboard,
+    title: "진단부터 사후 관리까지 원스톱 케어",
+    description:
+      "전문 시공팀이 직접 교체 및 점검을 진행하며, 정기적인 성능 리포트를 통해 설비의 최적 상태를 지속적으로 관리해 드립니다.",
+    image:
+      "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1200&q=80",
+    alt: "Industrial monitoring and management dashboard concept",
+  },
+] as const;
+
 export default function AboutPage() {
-  return <main className="p-6">회사소개 페이지 준비중</main>;
+  return (
+    <main className="bg-[#f8f9ff] text-[#0b1c30]">
+      <section className="relative flex h-[819px] min-h-[600px] items-center justify-center overflow-hidden text-center">
+        <div className="absolute inset-0">
+          <Image
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCprSK8ytLKXs6fe0nfVQHTbCYvTYA-ym8GYb7MWVAf7PWKw_6DOPz8SAheY7Lnj9yxDSncP8_CR8cP2_ennJNj6kS3MEzwGmNPmWJq2kRqu6vx43XB-mjjQUv4xIyTbMm_l0RNxlH8b6DNT9Wu-Zg99PQMGNzOG2-OWSHxvVkFJviQRIKDK1K96KiMhkBJXvFpkjj2b4kyJyrFt_boaZyXkxVDceFBVm_p6W5fB62j6PR5SwImBfh8kFTiPHjjtimBwpkAXGvkYl_2"
+            alt="Industrial filtration systems in a modern manufacturing facility, clean aesthetic, cool blue lighting"
+            fill
+            priority
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-[#213145]/60" />
+        </div>
+        <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center gap-12 px-8">
+          <h1 className="max-w-4xl text-balance text-4xl font-bold leading-[1.1] tracking-[-0.02em] text-white md:text-[64px]">
+            보이지 않는 곳에서 시작되는 완벽한 환경,
+            <br className="hidden md:block" />
+            AZEN이 만듭니다
+          </h1>
+          <p className="max-w-2xl text-balance text-lg leading-[1.6] text-white/90 md:text-[20px]">
+            공조기 필터부터 수처리 솔루션까지,
+            <br className="hidden md:block" />
+            최고 수준의 여과 기술로 산업 현장의 효율성과 안전을 보장합니다.
+          </p>
+          <button
+            type="button"
+            className="rounded-lg bg-[#1d4ed8] px-8 py-4 text-lg font-bold text-white transition-shadow hover:shadow-[0_18px_45px_rgba(29,78,216,0.28)]"
+          >
+            솔루션 상담하기
+          </button>
+        </div>
+      </section>
+
+      <section className="bg-[#f8f9ff] px-8 py-[120px]">
+        <div className="mx-auto max-w-[1280px]">
+          <div className="mx-auto max-w-3xl space-y-6 text-center">
+            <span className="inline-flex rounded-full bg-[#d3e4fe] px-4 py-1 text-sm font-semibold tracking-[0.05em] text-[#434655]">
+              ABOUT AZEN
+            </span>
+            <h2 className="text-5xl font-semibold leading-[1.2] tracking-[-0.01em] text-[#0b1c30]">
+              전문성과 신뢰의 파트너
+            </h2>
+            <p className="text-xl leading-[1.6] text-[#434655]">
+              AZEN은 첨단 필터 기술력을 바탕으로 다양한 산업 분야에 최적화된 맞춤형 여과
+              솔루션을 제공합니다. 우리는 단순한 제품 공급을 넘어, 고객의 환경을 분석하고 가장
+              효율적인 운영 방안을 제시하는 신뢰할 수 있는 파트너입니다. 엄격한 품질 관리와
+              지속적인 연구 개발을 통해 언제나 최고의 성능을 약속합니다.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#eff4ff] px-8 py-[120px]">
+        <div className="mx-auto max-w-[1280px]">
+          <h2 className="mb-12 text-center text-5xl font-semibold leading-[1.2] tracking-[-0.01em] text-[#0b1c30]">
+            Business Areas
+          </h2>
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+            {businessAreas.map((area) => {
+              const Icon = area.icon;
+
+              return (
+                <article
+                  key={area.title}
+                  className={`rounded-xl border border-[#d7e2f2] border-t-4 ${area.accent} bg-white p-8 shadow-[0px_10px_30px_rgba(15,23,42,0.05)] transition-transform duration-300 hover:-translate-y-1`}
+                >
+                  <Icon className={`mb-3 h-10 w-10 ${area.iconColor}`} strokeWidth={1.75} aria-hidden />
+                  <h3 className="mb-3 text-[32px] font-semibold leading-[1.3] text-[#0b1c30]">
+                    {area.title}
+                  </h3>
+                  <p className="text-base leading-[1.6] text-[#5a6780]">{area.description}</p>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#f8f9ff] px-8 py-[120px]">
+        <div className="mx-auto max-w-[1280px]">
+          <h2 className="mb-4 text-center text-5xl font-semibold leading-[1.2] tracking-[-0.01em] text-[#0b1c30]">
+            Why AZEN?
+          </h2>
+          <p className="mx-auto mb-12 max-w-3xl text-center text-xl leading-[1.6] text-[#434655]">
+            AZEN은 최적의 여과 기술로 고객사의 산업 환경적 가치를 극대화합니다.
+          </p>
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            {newsItems.map((item) => {
+              const Icon = item.icon;
+
+              return (
+                <article
+                  key={item.title}
+                  className="group overflow-hidden rounded-xl border border-[#d7e2f2] bg-white shadow-[0px_10px_30px_rgba(15,23,42,0.05)] transition-transform duration-300 hover:-translate-y-1"
+                >
+                  <div className="relative h-56 overflow-hidden">
+                    <Image
+                      src={item.image}
+                      alt={item.alt}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <p className="mb-2 inline-flex items-center gap-2 text-sm font-semibold leading-none tracking-[0.05em] text-[#1d4ed8]">
+                      <Icon className="h-4 w-4" aria-hidden />
+                      <span>{item.label}</span>
+                    </p>
+                    <h3 className="mb-3 line-clamp-2 text-[24px] font-semibold leading-[1.3] text-[#0b1c30]">
+                      {item.title}
+                    </h3>
+                    <p className="line-clamp-3 text-base leading-[1.6] text-[#5a6780]">
+                      {item.description}
+                    </p>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+    </main>
+  );
 }

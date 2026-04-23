@@ -302,3 +302,9 @@
 - `app/admin/products/[id]/edit/page.tsx` 제품 삭제 시 현재 제품의 썸네일/추가 이미지 Storage 경로를 수집해 `product-images` 버킷 파일까지 함께 삭제하도록 보강
 - `components/features/ProductGallery.tsx` 확인: 이미 `next/image`가 아닌 일반 `<img>` 태그를 사용 중이라 추가 코드 변경 없이 유지, 요청 사항 충족 여부만 점검
 - `components/features/ProductGallery.tsx` 메인 이미지/썸네일을 일반 `<img>`에서 `next/image` `Image` 컴포넌트로 전환하고, 각 컨테이너를 `relative` + `fill` 기준으로 조정
+- `app/(public)/about/page.tsx` 구현: Stitch 샘플 구조를 기준으로 히어로/회사소개/비즈니스 4카드/뉴스 3카드 정적 페이지를 Next.js로 변환하고, 아이콘은 `lucide-react`, 색상은 기존 CSS 변수 토큰 체계로 맞춤
+- `app/(public)/about/page.tsx` 레이아웃 재정렬: 최초 제공된 HTML 샘플의 고정 높이 히어로, 120px 섹션 패딩, 1280px 컨테이너, Business/News 카드 밀도와 타이포 스케일에 더 가깝게 다시 맞춤
+- `app/(public)/about/page.tsx` 색상 토큰만 조정: 레이아웃/패딩/그리드는 유지하고 About/News 배경은 `--background`, Business 배경은 `--muted`, 카드 배경은 `--elevated`, 제목/본문/배지는 CSS 변수 기반 텍스트 색으로 교체
+- `app/(public)/about/page.tsx` Why AZEN 섹션 반영: 기존 News 그리드/카드 구조는 유지한 채 제목/부제/이미지/아이콘 라벨/카드 카피를 신뢰·전문성·토탈솔루션 메시지로 교체
+- `app/(public)/about/page.tsx` Why AZEN 카드 커서 조정: 링크 없는 카드에서 `cursor-pointer`를 제거하고 hover 인터랙션만 유지
+- `app/(public)/about/page.tsx` 빌드 오류 대응: arbitrary CSS 변수 표기 사용을 제거하고 기존 토큰 유틸(`bg-background`, `bg-muted`, `bg-elevated`, `text-foreground`, `text-muted-foreground`)로 정리

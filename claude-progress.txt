@@ -228,6 +228,9 @@
 - 시공사례 관리자 폼 추가: 대표이미지 파일/URL 탭 전환, 대표 캡션, 추가이미지 파일/URL 복수 등록, 이미지별 캡션 입력, 공개여부/정렬순서 입력 지원
 - 시공사례 수정 화면: 기존 데이터 로드, 기존 추가이미지 목록/캡션 표시, 개별 삭제 및 새 이미지 추가 지원
 - 관리자 GNB 확장: `AdminHeaderNav.tsx`에 `시공사례 관리` 메뉴(`/admin/service`) 추가
+- PAGE-005 구현: 공개 `/service` 페이지를 서버 데이터 fetch + 클라이언트 탭/모달 구조로 재구성하고, `시공사례` 탭에서 `azen_service_cases` / `azen_service_case_images` 공개 데이터 카드 그리드 표시
+- 시공사례 모달 갤러리 추가: 대표이미지+추가이미지를 슬라이드로 묶고, 좌우 화살표, ESC 닫기, 배경 클릭 닫기, X 버튼 닫기, 이미지 번호, 캡션 노출을 `useState`와 `useEffect`만으로 구현
+- `feature_list/page.json`에 PAGE-005 명세 및 검증 항목 추가, 완료 처리(`passes: true`)
 - `app/layout.tsx` 래퍼 div `min-h-full` → `min-h-screen` (제품 적을 때도 푸터 하단 고정)
 - `ProductsCatalogClient.tsx` 검색/필터 바 `pt-8` 추가 (타이틀 영역과 간격)
 - `ProductsCatalogClient.tsx` 모바일 필터 select 추가: `md:hidden` select(전체+카테고리 옵션, ChevronDown 아이콘), 검색창과 한 줄 배치; 데스크탑 칩 `hidden md:flex`로 분리

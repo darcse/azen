@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { Image as ImageIcon } from "lucide-react";
 
@@ -23,10 +24,11 @@ export const ProductGallery = ({ urls, productName }: ProductGalleryProps) => {
   return (
     <div className="min-w-0 w-full max-w-full">
       {/* aspect는 래퍼에만 두고, img는 절대배치로 min-content 폭이 튀지 않게 함 (그리드 가로 오버플로 방지) */}
-      <div className="flex aspect-[4/3] w-full min-h-0 min-w-0 max-w-full items-center justify-center overflow-hidden rounded-lg border border-border bg-elevated">
-        <img
+      <div className="relative flex aspect-[4/3] w-full min-h-0 min-w-0 max-w-full items-center justify-center overflow-hidden rounded-lg border border-border bg-elevated">
+        <Image
           src={urls[selected]}
           alt={`${productName} 이미지`}
+          fill
           className="h-full w-full min-h-0 min-w-0 object-contain object-center"
         />
       </div>
@@ -40,11 +42,14 @@ export const ProductGallery = ({ urls, productName }: ProductGalleryProps) => {
               i === selected ? "border-primary" : "border-border"
             }`}
           >
-            <img
+            <div className="relative h-full w-full">
+              <Image
               src={url}
               alt={`${productName} 썸네일 ${i + 1}`}
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
             />
+            </div>
           </button>
         ))}
       </div>

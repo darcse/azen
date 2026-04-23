@@ -300,3 +300,5 @@
 - `app/admin/main/page.tsx` 캐러셀 저장 로직 변경: `update` → `upsert(onConflict: "slot")`로 수정해 슬롯 행이 없어도 생성되도록 보완
 - `dompurify` 설치 후 `components/features/ProductDetailHtmlContent.tsx`에서 `content/spec` HTML을 sanitize한 뒤 렌더링하도록 수정해 저장형 XSS 대응
 - `app/admin/products/[id]/edit/page.tsx` 제품 삭제 시 현재 제품의 썸네일/추가 이미지 Storage 경로를 수집해 `product-images` 버킷 파일까지 함께 삭제하도록 보강
+- `components/features/ProductGallery.tsx` 확인: 이미 `next/image`가 아닌 일반 `<img>` 태그를 사용 중이라 추가 코드 변경 없이 유지, 요청 사항 충족 여부만 점검
+- `components/features/ProductGallery.tsx` 메인 이미지/썸네일을 일반 `<img>`에서 `next/image` `Image` 컴포넌트로 전환하고, 각 컨테이너를 `relative` + `fill` 기준으로 조정

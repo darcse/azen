@@ -24,7 +24,7 @@ const businessAreas = [
     iconColor: "text-[#06b6d4]",
   },
   {
-    title: "전문 시공 및 유지보수",
+    title: "전문 시공",
     description: "필터 시스템의 설계, 설치부터 주기적인 점검과 교체까지 종합 서비스를 제공합니다.",
     icon: Wrench,
     accent: "border-[#f97316]",
@@ -79,8 +79,8 @@ export default function AboutPage() {
           />
           <div className="absolute inset-0 bg-[#213145]/60 dark:bg-black/65" />
         </div>
-        <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center gap-12 px-8">
-          <h1 className="max-w-4xl text-balance text-4xl font-bold leading-[1.1] tracking-[-0.02em] text-white md:text-[64px]">
+        <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center gap-12 px-8 md:max-w-[72rem]">
+          <h1 className="max-w-4xl text-4xl font-bold leading-[1.1] tracking-[-0.02em] text-white md:max-w-[72rem] md:text-[64px]">
             보이지 않는 곳에서 시작되는 완벽한 환경,
             <br className="hidden md:block" />
             AZEN이 만듭니다
@@ -101,7 +101,7 @@ export default function AboutPage() {
 
       <section className="bg-[#f8f9ff] px-8 py-[120px] dark:bg-black">
         <div className="mx-auto max-w-[1280px]">
-          <div className="mx-auto max-w-3xl space-y-6 text-center">
+          <div className="mx-auto -mt-2 max-w-3xl space-y-6 text-center md:max-w-4xl">
             <span className="inline-flex rounded-full bg-[#d3e4fe] px-4 py-1 text-sm font-semibold tracking-[0.05em] text-[#434655] dark:bg-[#1c1c1e] dark:text-[#acaaad]">
               ABOUT AZEN
             </span>
@@ -109,8 +109,9 @@ export default function AboutPage() {
               전문성과 신뢰의 파트너
             </h2>
             <p className="text-xl leading-[1.6] text-[#434655] dark:text-[#acaaad]">
-              AZEN은 첨단 필터 기술력을 바탕으로 다양한 산업 분야에 최적화된 맞춤형 여과
-              솔루션을 제공합니다. 우리는 단순한 제품 공급을 넘어, 고객의 환경을 분석하고 가장
+              AZEN은 첨단 필터 기술력을 바탕으로 다양한 산업 분야에 최적화된 맞춤형 여과 솔루션을 제공합니다.
+              <br className="hidden md:block" />
+              우리는 단순한 제품 공급을 넘어, 고객의 환경을 분석하고 가장
               효율적인 운영 방안을 제시하는 신뢰할 수 있는 파트너입니다. 엄격한 품질 관리와
               지속적인 연구 개발을 통해 언제나 최고의 성능을 약속합니다.
             </p>

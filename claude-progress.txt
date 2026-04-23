@@ -309,3 +309,7 @@
 - `app/(public)/about/page.tsx` Why AZEN 카드 커서 조정: 링크 없는 카드에서 `cursor-pointer`를 제거하고 hover 인터랙션만 유지
 - `app/(public)/about/page.tsx` 빌드 오류 대응: arbitrary CSS 변수 표기 사용을 제거하고 기존 토큰 유틸(`bg-background`, `bg-muted`, `bg-elevated`, `text-foreground`, `text-muted-foreground`)로 정리
 - `app/(public)/about/page.tsx` 다크 모드 색상 보정: 라이트 모드 레이아웃과 색감은 유지하면서 섹션/카드/텍스트에 `dark:` 오버라이드를 추가해 다크 모드에서 검정/짙은 회색 톤으로 자연스럽게 전환되도록 조정
+- `app/(public)/about/page.tsx` 히어로 슬로건 폭 조정: 모바일은 유지하고 데스크톱(`md` 이상)에서만 히어로 컨테이너와 제목 최대 너비를 `5xl`로 넓혀 자동 줄바꿈이 덜 답답하게 걸리도록 보완
+- `app/(public)/about/page.tsx` About 본문 위치/카드 타이틀 조정: ABOUT AZEN 본문 박스를 살짝 위로 올리고, Business Areas 4번째 카드 제목을 `전문 시공`으로 변경
+- `app/(public)/about/page.tsx` ABOUT AZEN 본문 폭 미세 조정: 데스크톱에서 서브 텍스트 박스 최대 너비를 `4xl`로 넓혀 첫 문장이 한 줄에 더 안정적으로 들어가도록 보완
+- `app/(public)/about/page.tsx` ABOUT AZEN 본문 줄바꿈 조정: 데스크톱(`md` 이상)에서만 첫 문장 뒤에 줄바꿈을 넣어 요청한 지점에서 텍스트가 끊기도록 보완

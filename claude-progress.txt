@@ -296,3 +296,7 @@
 - 다크 모드 구분선 가시성 개선: `app/(public)/products/[id]/page.tsx`의 주요 `hr`에 `dark:border-white/20` 적용, `app/prose.css`에 `.dark .prose hr { border-color: rgba(255, 255, 255, 0.2); }` 추가
 - Vercel 빌드 실패(`tailwind.config.ts` 타입체크) 수정: `Config` 확장 타입(`ConfigWithSafelist`)으로 `safelist` 타입 오류 해소, `npm run build` 재검증 통과
 - 제품 목록 정렬 변경: `app/(public)/products/page.tsx`에서 공개 제품 조회를 `created_at` 오름차순(등록 빠른 순)으로 고정
+- `supabase/init-002.sql` 누락 보완: `azen_products.spec` 컬럼 반영, `azen_main_carousel` 테이블/시드/RLS 정책 정의 추가
+- `app/admin/main/page.tsx` 캐러셀 저장 로직 변경: `update` → `upsert(onConflict: "slot")`로 수정해 슬롯 행이 없어도 생성되도록 보완
+- `dompurify` 설치 후 `components/features/ProductDetailHtmlContent.tsx`에서 `content/spec` HTML을 sanitize한 뒤 렌더링하도록 수정해 저장형 XSS 대응
+- `app/admin/products/[id]/edit/page.tsx` 제품 삭제 시 현재 제품의 썸네일/추가 이미지 Storage 경로를 수집해 `product-images` 버킷 파일까지 함께 삭제하도록 보강

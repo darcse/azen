@@ -47,8 +47,7 @@ export default async function AdminMainPage() {
       rows.map((row) =>
         actionClient
           .from("azen_main_carousel")
-          .update({ product_id: row.product_id })
-          .eq("slot", row.slot),
+          .upsert({ slot: row.slot, product_id: row.product_id }, { onConflict: "slot" }),
       ),
     );
 

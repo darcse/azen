@@ -18,6 +18,7 @@ create table if not exists public.azen_products (
   name text not null,
   description text,
   content text,
+  spec text,
   thumbnail_url text,
   is_published boolean not null default true,
   sort_order integer not null default 0,
@@ -31,6 +32,11 @@ create table if not exists public.azen_product_images (
   url text not null,
   sort_order integer not null default 0,
   created_at timestamptz not null default now()
+);
+
+create table if not exists public.azen_main_carousel (
+  slot integer primary key,
+  product_id uuid references public.azen_products(id) on delete set null
 );
 
 create index if not exists idx_azen_categories_parent_id on public.azen_categories(parent_id);
@@ -60,6 +66,7 @@ execute function public.set_azen_products_updated_at();
 alter table public.azen_categories enable row level security;
 alter table public.azen_products enable row level security;
 alter table public.azen_product_images enable row level security;
+alter table public.azen_main_carousel enable row level security;
 
 drop policy if exists "public_read_azen_categories" on public.azen_categories;
 create policy "public_read_azen_categories"
@@ -81,6 +88,18 @@ on public.azen_product_images
 for select
 to anon, authenticated
 using (true);
+
+drop policy if exists "azen 캐러셀 공개 조회" on public.azen_main_carousel;
+create policy "azen 캐러셀 공개 조회"
+on public.azen_main_carousel
+for select
+using (true);
+
+drop policy if exists "azen 관리자 캐러셀 수정" on public.azen_main_carousel;
+create policy "azen 관리자 캐러셀 수정"
+on public.azen_main_carousel
+for update
+using (auth.uid() is not null);
 
 drop policy if exists "admin_write_azen_categories" on public.azen_categories;
 create policy "admin_write_azen_categories"
@@ -134,3 +153,7 @@ set
   name = excluded.name,
   parent_id = excluded.parent_id,
   sort_order = excluded.sort_order;
+
+insert into public.azen_main_carousel (slot)
+values (1), (2), (3), (4), (5), (6)
+on conflict (slot) do nothing;

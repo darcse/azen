@@ -56,6 +56,21 @@ const getStoragePathFromPublicUrl = (url: string) => {
   return decodeURIComponent(encodedPath);
 };
 
+const collectStoragePathsFromUrls = (urls: Array<string | null | undefined>) => {
+  const uniquePaths = new Set<string>();
+
+  for (const url of urls) {
+    if (!url) continue;
+
+    const storagePath = getStoragePathFromPublicUrl(url);
+    if (storagePath) {
+      uniquePaths.add(storagePath);
+    }
+  }
+
+  return [...uniquePaths];
+};
+
 export default async function AdminProductEditPage({ params }: AdminProductEditPageProps) {
   const { id } = await params;
   const supabase = await createClient();
@@ -229,6 +244,20 @@ export default async function AdminProductEditPage({ params }: AdminProductEditP
 
     void formData;
     const actionClient = await createClient();
+    const [{ data: productRow }, { data: imageRows }] = await Promise.all([
+      actionClient.from("azen_products").select("thumbnail_url").eq("id", id).maybeSingle(),
+      actionClient.from("azen_product_images").select("url").eq("product_id", id),
+    ]);
+
+    const storagePaths = collectStoragePathsFromUrls([
+      productRow?.thumbnail_url ?? null,
+      ...(imageRows ?? []).map((image) => image.url),
+    ]);
+
+    if (storagePaths.length > 0) {
+      await actionClient.storage.from("product-images").remove(storagePaths);
+    }
+
     await actionClient.from("azen_products").delete().eq("id", id);
     redirect("/admin/list?toast=deleted");
   };

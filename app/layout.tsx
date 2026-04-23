@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { ConditionalFooter } from "@/components/layout/ConditionalFooter";
 import { ConditionalHeader } from "@/components/layout/ConditionalHeader";
@@ -20,7 +21,9 @@ export default function RootLayout({
       <body className="min-h-full bg-background text-foreground">
         <ThemeClassBridge />
         <div className="flex min-h-screen flex-col">
-          <ConditionalHeader />
+          <Suspense fallback={null}>
+            <ConditionalHeader />
+          </Suspense>
           <main className="flex-1">{children}</main>
           <ConditionalFooter />
         </div>

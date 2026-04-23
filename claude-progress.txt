@@ -316,3 +316,4 @@
 - `components/layout/Header.tsx` 활성 메뉴 상태 추가: `usePathname`/검색 파라미터 기반으로 현재 경로와 카테고리 그룹을 판별해 회사소개, 필터, 전기/유공압, 교체시공 메뉴에 active 스타일(`text-primary font-semibold`) 적용
 - `components/layout/Header.tsx` 활성 메뉴 스타일 충돌 보정: 기본(inactive) 스타일과 active 스타일을 분리해 `/about`, `/products`, `/service`에서 현재 메뉴의 파란색/굵기/밑줄 강조가 실제 화면에 드러나도록 정리
 - `components/layout/Header.tsx` 제품 메뉴 active 범위 보완: `/products?category=filter`와 `/products?category=electric` 같은 상위 그룹 slug도 활성 상태로 인식하도록 보완해 필터/전기·유공압 메뉴 강조가 빠지지 않게 수정
+- `app/layout.tsx` 배포 빌드 대응: `Header`가 내부에서 `useSearchParams()`를 사용해 정적 프리렌더(`/_not-found` 포함)에서 실패하던 문제를 막기 위해 `ConditionalHeader`를 `Suspense` 경계로 감싸도록 조정

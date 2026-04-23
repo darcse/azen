@@ -49,8 +49,9 @@ export const Header = () => {
 
   const isAboutActive = pathname === "/about";
   const isServiceActive = pathname === "/service";
-  const isFilterActive = pathname === "/products" && isFilterCategory;
-  const isElectricActive = pathname === "/products" && isElectricCategory;
+  const isProductsPath = pathname === "/products" || pathname.startsWith("/products/");
+  const isFilterActive = isProductsPath && isFilterCategory;
+  const isElectricActive = isProductsPath && isElectricCategory;
   const getNavClassName = (isActive: boolean) =>
     `${navBaseClass} ${isActive ? navActiveClass : navInactiveClass}`;
   const getMobileDepthOneClassName = (isActive: boolean) =>

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Image as ImageIcon } from "lucide-react";
+import { resolveCatalogGroup } from "@/lib/products-catalog";
 
 export interface ProductCardDisplay {
   id: string;
@@ -8,14 +9,16 @@ export interface ProductCardDisplay {
   description: string | null;
   thumbnailUrl: string | null;
   categoryName: string | null;
+  categorySlug: string;
 }
 
 export const ProductCard = ({ product }: { product: ProductCardDisplay }) => {
   const hasThumb = Boolean(product.thumbnailUrl?.trim());
+  const groupSlug = resolveCatalogGroup(product.categorySlug);
 
   return (
     <Link
-      href={`/products/${product.id}`}
+      href={`/products/${product.id}?category=${groupSlug}`}
       className="glass-card group relative block overflow-hidden rounded-2xl border border-border bg-elevated md:transition-all md:duration-300 md:hover:-translate-y-1 md:hover:shadow-[0_20px_50px_rgba(255,255,255,0.08)]"
     >
       <div className="pointer-events-none absolute inset-0 z-[1] bg-black/10 opacity-0 md:transition-opacity md:duration-300 md:group-hover:opacity-100" />

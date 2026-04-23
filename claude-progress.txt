@@ -321,3 +321,4 @@
 - `components/features/ProductCard.tsx`, `next.config.ts` 카드 썸네일 보정: 카드 높이를 기존 `h-[22rem]`로 복구하고, `next/image` 런타임 오류가 나던 `gi.esmplus.com` 호스트를 원격 이미지 허용 목록에 추가
 - `components/features/ProductDetailHtmlContent.tsx` DOMPurify 런타임 오류 대응: 브라우저 마운트 후 `createDOMPurify(window)`로 인스턴스를 만들어 sanitize 하도록 바꿔 `default.sanitize is not a function` 오류를 해소
 - `next.config.ts` 전기/유공압 이미지 호스트 보완: `ko.dagaotech.com` 썸네일도 `next/image` 허용 목록에 추가해 제품 카드 런타임 오류가 나지 않도록 수정
+- `components/features/ProductCard.tsx`, `components/layout/Header.tsx` 상세 진입 시 GNB active 유지 보완: 제품 카드가 상세 링크에 현재 그룹 쿼리(`category=filter|electric`)를 함께 넘기고, 헤더는 `/products/[id]` 경로도 active 대상으로 포함해 상세 화면에서도 필터/전기·유공압 메뉴가 강조되도록 수정

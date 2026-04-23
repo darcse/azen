@@ -224,6 +224,10 @@
 - 스타일 정리: `bg-background`, `bg-elevated`, `bg-muted`, `text-foreground`, `text-muted-foreground`, `text-primary`, `border-border` 등 기존 Tailwind 토큰 위주로 적용하고 커스텀 font/tailwind 클래스 미사용
 - `feature_list/page.json`에 PAGE-004 명세 및 검증 체크리스트 추가, 완료 처리(`passes: true`)
 - Safari 호환 보정: `/service` Core Strengths 카드를 `min-height` 기반에서 명시적 `height`+하단 고정 텍스트 오버레이 구조로 변경하고, Service Process 카드는 `min-h-[220px]`와 고정 패딩을 부여해 카드 크기/내부 여백 계산 차이를 완화
+- ADMIN-007 구현: `/admin/service` 목록, `/admin/service/new` 등록, `/admin/service/[id]/edit` 수정 페이지 추가 및 `azen_service_cases` / `azen_service_case_images` CRUD 서버 액션 연결
+- 시공사례 관리자 폼 추가: 대표이미지 파일/URL 탭 전환, 대표 캡션, 추가이미지 파일/URL 복수 등록, 이미지별 캡션 입력, 공개여부/정렬순서 입력 지원
+- 시공사례 수정 화면: 기존 데이터 로드, 기존 추가이미지 목록/캡션 표시, 개별 삭제 및 새 이미지 추가 지원
+- 관리자 GNB 확장: `AdminHeaderNav.tsx`에 `시공사례 관리` 메뉴(`/admin/service`) 추가
 - `app/layout.tsx` 래퍼 div `min-h-full` → `min-h-screen` (제품 적을 때도 푸터 하단 고정)
 - `ProductsCatalogClient.tsx` 검색/필터 바 `pt-8` 추가 (타이틀 영역과 간격)
 - `ProductsCatalogClient.tsx` 모바일 필터 select 추가: `md:hidden` select(전체+카테고리 옵션, ChevronDown 아이콘), 검색창과 한 줄 배치; 데스크탑 칩 `hidden md:flex`로 분리

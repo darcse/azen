@@ -101,7 +101,7 @@
       "삭제 버튼 클릭 시 confirm 후 삭제 확인",
       "공개여부 토글 동작 확인"
     ],
-    "passes": false
+    "passes": true
   }
 
 ]

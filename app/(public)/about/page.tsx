@@ -67,7 +67,7 @@ const newsItems = [
 
 export default function AboutPage() {
   return (
-    <main className="bg-[#f8f9ff] text-[#0b1c30]">
+    <main className="bg-[#f8f9ff] text-[#0b1c30] dark:bg-black dark:text-[#fefbfe]">
       <section className="relative flex h-[819px] min-h-[600px] items-center justify-center overflow-hidden text-center">
         <div className="absolute inset-0">
           <Image
@@ -77,7 +77,7 @@ export default function AboutPage() {
             priority
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-[#213145]/60" />
+          <div className="absolute inset-0 bg-[#213145]/60 dark:bg-black/65" />
         </div>
         <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center gap-12 px-8">
           <h1 className="max-w-4xl text-balance text-4xl font-bold leading-[1.1] tracking-[-0.02em] text-white md:text-[64px]">
@@ -92,23 +92,23 @@ export default function AboutPage() {
           </p>
           <button
             type="button"
-            className="rounded-lg bg-[#1d4ed8] px-8 py-4 text-lg font-bold text-white transition-shadow hover:shadow-[0_18px_45px_rgba(29,78,216,0.28)]"
+            className="rounded-lg bg-[#1d4ed8] px-8 py-4 text-lg font-bold text-white transition-shadow hover:shadow-[0_18px_45px_rgba(29,78,216,0.28)] dark:bg-[#0a84ff] dark:hover:shadow-[0_18px_45px_rgba(10,132,255,0.3)]"
           >
             솔루션 상담하기
           </button>
         </div>
       </section>
 
-      <section className="bg-[#f8f9ff] px-8 py-[120px]">
+      <section className="bg-[#f8f9ff] px-8 py-[120px] dark:bg-black">
         <div className="mx-auto max-w-[1280px]">
           <div className="mx-auto max-w-3xl space-y-6 text-center">
-            <span className="inline-flex rounded-full bg-[#d3e4fe] px-4 py-1 text-sm font-semibold tracking-[0.05em] text-[#434655]">
+            <span className="inline-flex rounded-full bg-[#d3e4fe] px-4 py-1 text-sm font-semibold tracking-[0.05em] text-[#434655] dark:bg-[#1c1c1e] dark:text-[#acaaad]">
               ABOUT AZEN
             </span>
-            <h2 className="text-5xl font-semibold leading-[1.2] tracking-[-0.01em] text-[#0b1c30]">
+            <h2 className="text-5xl font-semibold leading-[1.2] tracking-[-0.01em] text-[#0b1c30] dark:text-[#fefbfe]">
               전문성과 신뢰의 파트너
             </h2>
-            <p className="text-xl leading-[1.6] text-[#434655]">
+            <p className="text-xl leading-[1.6] text-[#434655] dark:text-[#acaaad]">
               AZEN은 첨단 필터 기술력을 바탕으로 다양한 산업 분야에 최적화된 맞춤형 여과
               솔루션을 제공합니다. 우리는 단순한 제품 공급을 넘어, 고객의 환경을 분석하고 가장
               효율적인 운영 방안을 제시하는 신뢰할 수 있는 파트너입니다. 엄격한 품질 관리와
@@ -118,9 +118,9 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-[#eff4ff] px-8 py-[120px]">
+      <section className="bg-[#eff4ff] px-8 py-[120px] dark:bg-[#0e0e10]">
         <div className="mx-auto max-w-[1280px]">
-          <h2 className="mb-12 text-center text-5xl font-semibold leading-[1.2] tracking-[-0.01em] text-[#0b1c30]">
+          <h2 className="mb-12 text-center text-5xl font-semibold leading-[1.2] tracking-[-0.01em] text-[#0b1c30] dark:text-[#fefbfe]">
             Business Areas
           </h2>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
@@ -130,13 +130,13 @@ export default function AboutPage() {
               return (
                 <article
                   key={area.title}
-                  className={`rounded-xl border border-[#d7e2f2] border-t-4 ${area.accent} bg-white p-8 shadow-[0px_10px_30px_rgba(15,23,42,0.05)] transition-transform duration-300 hover:-translate-y-1`}
+                  className={`rounded-xl border border-[#d7e2f2] border-t-4 ${area.accent} bg-white p-8 shadow-[0px_10px_30px_rgba(15,23,42,0.05)] transition-transform duration-300 hover:-translate-y-1 dark:border-white/5 dark:bg-[#1c1c1e]`}
                 >
                   <Icon className={`mb-3 h-10 w-10 ${area.iconColor}`} strokeWidth={1.75} aria-hidden />
-                  <h3 className="mb-3 text-[32px] font-semibold leading-[1.3] text-[#0b1c30]">
+                  <h3 className="mb-3 text-[32px] font-semibold leading-[1.3] text-[#0b1c30] dark:text-[#fefbfe]">
                     {area.title}
                   </h3>
-                  <p className="text-base leading-[1.6] text-[#5a6780]">{area.description}</p>
+                  <p className="text-base leading-[1.6] text-[#5a6780] dark:text-[#acaaad]">{area.description}</p>
                 </article>
               );
             })}
@@ -144,12 +144,12 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-[#f8f9ff] px-8 py-[120px]">
+      <section className="bg-[#f8f9ff] px-8 py-[120px] dark:bg-black">
         <div className="mx-auto max-w-[1280px]">
-          <h2 className="mb-4 text-center text-5xl font-semibold leading-[1.2] tracking-[-0.01em] text-[#0b1c30]">
+          <h2 className="mb-4 text-center text-5xl font-semibold leading-[1.2] tracking-[-0.01em] text-[#0b1c30] dark:text-[#fefbfe]">
             Why AZEN?
           </h2>
-          <p className="mx-auto mb-12 max-w-3xl text-center text-xl leading-[1.6] text-[#434655]">
+          <p className="mx-auto mb-12 max-w-3xl text-center text-xl leading-[1.6] text-[#434655] dark:text-[#acaaad]">
             AZEN은 최적의 여과 기술로 고객사의 산업 환경적 가치를 극대화합니다.
           </p>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
@@ -159,7 +159,7 @@ export default function AboutPage() {
               return (
                 <article
                   key={item.title}
-                  className="group overflow-hidden rounded-xl border border-[#d7e2f2] bg-white shadow-[0px_10px_30px_rgba(15,23,42,0.05)] transition-transform duration-300 hover:-translate-y-1"
+                  className="group overflow-hidden rounded-xl border border-[#d7e2f2] bg-white shadow-[0px_10px_30px_rgba(15,23,42,0.05)] transition-transform duration-300 hover:-translate-y-1 dark:border-white/5 dark:bg-[#1c1c1e]"
                 >
                   <div className="relative h-56 overflow-hidden">
                     <Image
@@ -170,14 +170,14 @@ export default function AboutPage() {
                     />
                   </div>
                   <div className="p-6">
-                    <p className="mb-2 inline-flex items-center gap-2 text-sm font-semibold leading-none tracking-[0.05em] text-[#1d4ed8]">
+                    <p className="mb-2 inline-flex items-center gap-2 text-sm font-semibold leading-none tracking-[0.05em] text-[#1d4ed8] dark:text-[#7fafff]">
                       <Icon className="h-4 w-4" aria-hidden />
                       <span>{item.label}</span>
                     </p>
-                    <h3 className="mb-3 line-clamp-2 text-[24px] font-semibold leading-[1.3] text-[#0b1c30]">
+                    <h3 className="mb-3 line-clamp-2 text-[24px] font-semibold leading-[1.3] text-[#0b1c30] dark:text-[#fefbfe]">
                       {item.title}
                     </h3>
-                    <p className="line-clamp-3 text-base leading-[1.6] text-[#5a6780]">
+                    <p className="line-clamp-3 text-base leading-[1.6] text-[#5a6780] dark:text-[#acaaad]">
                       {item.description}
                     </p>
                   </div>

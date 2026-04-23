@@ -308,3 +308,4 @@
 - `app/(public)/about/page.tsx` Why AZEN 섹션 반영: 기존 News 그리드/카드 구조는 유지한 채 제목/부제/이미지/아이콘 라벨/카드 카피를 신뢰·전문성·토탈솔루션 메시지로 교체
 - `app/(public)/about/page.tsx` Why AZEN 카드 커서 조정: 링크 없는 카드에서 `cursor-pointer`를 제거하고 hover 인터랙션만 유지
 - `app/(public)/about/page.tsx` 빌드 오류 대응: arbitrary CSS 변수 표기 사용을 제거하고 기존 토큰 유틸(`bg-background`, `bg-muted`, `bg-elevated`, `text-foreground`, `text-muted-foreground`)로 정리
+- `app/(public)/about/page.tsx` 다크 모드 색상 보정: 라이트 모드 레이아웃과 색감은 유지하면서 섹션/카드/텍스트에 `dark:` 오버라이드를 추가해 다크 모드에서 검정/짙은 회색 톤으로 자연스럽게 전환되도록 조정

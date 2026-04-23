@@ -218,6 +218,12 @@
 - `Header.tsx` GNB 수정: '필터 전체'/'전기유공압 전체' 드롭다운 항목 제거, '필터' 클릭 → `/products?category=air_handling`, '전기/유공압' 클릭 → `/products?category=electric_parts` (데스크탑 button→Link, 모바일 p→Link)
 - `Header.tsx` GNB 링크 수정: '필터' → `?category=filter`, '전기/유공압' → `?category=electric` (데스크탑+모바일 동일)
 - `ProductsCatalogClient.tsx` 그룹 판단 로직 명시화: `initialSelectedSub`를 FILTER_SUB_SLUGS/ELECTRIC_SUB_SLUGS 기준으로 단순화, "전체" 시 useMemo에서 해당 그룹 서브슬러그 Set으로 명시적 필터링
+- 작업 전 현재 상태 스냅샷 커밋 생성: `chore: snapshot before service page work`
+- PAGE-004 구현: `/service`를 `use client` 기반 탭 페이지로 전면 교체하고 히어로, 교체시공/시공사례 탭, Core Strengths, 5단계 Service Process, Why Choose AZEN 비교표, CTA 섹션 구성
+- 교체시공 페이지 구현 시 Stitch 샘플 이미지 URL 유지, Material Symbols 아이콘을 `lucide-react` 아이콘(`Search`, `ShieldCheck`, `Sparkles`, `Wrench`, `BarChart3`, `MoveRight`)로 대체
+- 스타일 정리: `bg-background`, `bg-elevated`, `bg-muted`, `text-foreground`, `text-muted-foreground`, `text-primary`, `border-border` 등 기존 Tailwind 토큰 위주로 적용하고 커스텀 font/tailwind 클래스 미사용
+- `feature_list/page.json`에 PAGE-004 명세 및 검증 체크리스트 추가, 완료 처리(`passes: true`)
+- Safari 호환 보정: `/service` Core Strengths 카드를 `min-height` 기반에서 명시적 `height`+하단 고정 텍스트 오버레이 구조로 변경하고, Service Process 카드는 `min-h-[220px]`와 고정 패딩을 부여해 카드 크기/내부 여백 계산 차이를 완화
 - `app/layout.tsx` 래퍼 div `min-h-full` → `min-h-screen` (제품 적을 때도 푸터 하단 고정)
 - `ProductsCatalogClient.tsx` 검색/필터 바 `pt-8` 추가 (타이틀 영역과 간격)
 - `ProductsCatalogClient.tsx` 모바일 필터 select 추가: `md:hidden` select(전체+카테고리 옵션, ChevronDown 아이콘), 검색창과 한 줄 배치; 데스크탑 칩 `hidden md:flex`로 분리

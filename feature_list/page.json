@@ -41,5 +41,20 @@
       "모바일 반응형 레이아웃 확인"
     ],
     "passes": false
+  },
+  {
+    "id": "PAGE-004",
+    "category": "page",
+    "title": "교체시공 페이지 — Stitch 샘플 기반 구현",
+    "description": "/service 페이지를 Stitch 샘플 본문 구조 기반으로 구현한다. 히어로, 탭 메뉴, 교체시공 소개 콘텐츠와 시공사례 placeholder로 구성된 클라이언트 페이지다.",
+    "steps": [
+      "/service 접속 시 히어로 섹션 배경 이미지 + 오버레이 + 텍스트 정상 노출 확인",
+      "히어로 바로 아래 탭 메뉴(교체시공/시공사례) 정상 노출 및 탭 전환 확인",
+      "교체시공 탭에서 Core Strengths 3열 카드, Service Process 5단계, Why Choose AZEN 비교표, CTA 섹션 정상 노출 확인",
+      "시공사례 탭 선택 시 '시공사례 준비중' placeholder 노출 확인",
+      "라이트/다크 모드에서 토큰 기반 스타일 정상 적용 확인",
+      "모바일/태블릿/데스크탑 반응형 레이아웃 확인"
+    ],
+    "passes": true
   }
 ]

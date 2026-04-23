@@ -3,7 +3,14 @@
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import {
+  ELECTRIC_SUB_SLUGS,
+  FILTER_SUB_SLUGS,
+  PARENT_SLUG_ELECTRIC,
+  PARENT_SLUG_FILTER,
+} from "@/lib/products-catalog";
 
 const filterMenuLinks = [
   { label: "공조기 필터", href: "/products?category=air_handling" },
@@ -18,16 +25,38 @@ const electricMenuLinks = [
 ];
 
 const navBaseClass =
-  "px-2 py-2 text-base font-normal text-foreground/90 underline-offset-[6px] decoration-2 decoration-transparent transition-all hover:font-semibold hover:underline hover:decoration-primary dark:text-[#fefbfe]/90 dark:hover:text-[#fefbfe] dark:hover:decoration-[#0A84FF]";
+  "px-2 py-2 text-base underline-offset-[6px] decoration-2 transition-all hover:underline";
+const navInactiveClass =
+  "font-normal text-foreground/90 decoration-transparent hover:font-semibold hover:decoration-primary dark:text-[#fefbfe]/90 dark:hover:text-[#fefbfe] dark:hover:decoration-[#0A84FF]";
+const navActiveClass =
+  "font-semibold text-primary decoration-primary dark:text-[#0A84FF] dark:decoration-[#0A84FF]";
 
 export const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<"filter" | "electric" | null>(null);
-  const mobileDepthOneClass =
-    "px-2 py-2 text-base font-semibold text-foreground dark:text-[#fefbfe]";
-  const mobileDepthTwoClass = `${navBaseClass} pl-4 text-sm`;
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const category = searchParams.get("category");
+  const mobileDepthOneClass = "px-2 py-2 text-base";
+  const mobileDepthOneInactiveClass = "font-semibold text-foreground dark:text-[#fefbfe]";
+  const mobileDepthTwoClass = `${navBaseClass} ${navInactiveClass} pl-4 text-sm`;
+  const isFilterCategory =
+    category === PARENT_SLUG_FILTER ||
+    (!!category && FILTER_SUB_SLUGS.includes(category as (typeof FILTER_SUB_SLUGS)[number]));
+  const isElectricCategory =
+    category === PARENT_SLUG_ELECTRIC ||
+    (!!category && ELECTRIC_SUB_SLUGS.includes(category as (typeof ELECTRIC_SUB_SLUGS)[number]));
 
-const handleDropdownBlur = (event: React.FocusEvent<HTMLDivElement>) => {
+  const isAboutActive = pathname === "/about";
+  const isServiceActive = pathname === "/service";
+  const isFilterActive = pathname === "/products" && isFilterCategory;
+  const isElectricActive = pathname === "/products" && isElectricCategory;
+  const getNavClassName = (isActive: boolean) =>
+    `${navBaseClass} ${isActive ? navActiveClass : navInactiveClass}`;
+  const getMobileDepthOneClassName = (isActive: boolean) =>
+    `${mobileDepthOneClass} ${isActive ? navActiveClass : mobileDepthOneInactiveClass}`;
+
+  const handleDropdownBlur = (event: React.FocusEvent<HTMLDivElement>) => {
     if (!event.currentTarget.contains(event.relatedTarget)) {
       setOpenDropdown(null);
     }
@@ -52,7 +81,7 @@ const handleDropdownBlur = (event: React.FocusEvent<HTMLDivElement>) => {
           </Link>
 
           <nav className="hidden items-center gap-5 md:flex">
-            <Link href="/about" className={navBaseClass}>
+            <Link href="/about" className={getNavClassName(isAboutActive)}>
               회사소개
             </Link>
 
@@ -62,7 +91,7 @@ const handleDropdownBlur = (event: React.FocusEvent<HTMLDivElement>) => {
               onMouseLeave={() => setOpenDropdown((prev) => (prev === "filter" ? null : prev))}
               onBlur={handleDropdownBlur}
             >
-              <Link href="/products?category=filter" className={navBaseClass}>
+              <Link href="/products?category=filter" className={getNavClassName(isFilterActive)}>
                 필터
               </Link>
               <div
@@ -87,7 +116,7 @@ const handleDropdownBlur = (event: React.FocusEvent<HTMLDivElement>) => {
               onMouseLeave={() => setOpenDropdown((prev) => (prev === "electric" ? null : prev))}
               onBlur={handleDropdownBlur}
             >
-              <Link href="/products?category=electric" className={navBaseClass}>
+              <Link href="/products?category=electric" className={getNavClassName(isElectricActive)}>
                 전기/유공압
               </Link>
               <div
@@ -106,7 +135,7 @@ const handleDropdownBlur = (event: React.FocusEvent<HTMLDivElement>) => {
               </div>
             </div>
 
-            <Link href="/service" className={navBaseClass}>
+            <Link href="/service" className={getNavClassName(isServiceActive)}>
               교체시공
             </Link>
           </nav>
@@ -132,14 +161,14 @@ const handleDropdownBlur = (event: React.FocusEvent<HTMLDivElement>) => {
               <div className="flex flex-col gap-2 pb-2">
                 <Link
                   href="/about"
-                  className={mobileDepthOneClass}
+                  className={getMobileDepthOneClassName(isAboutActive)}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   회사소개
                 </Link>
                 <Link
                   href="/products?category=filter"
-                  className={mobileDepthOneClass}
+                  className={getMobileDepthOneClassName(isFilterActive)}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   필터
@@ -156,7 +185,7 @@ const handleDropdownBlur = (event: React.FocusEvent<HTMLDivElement>) => {
                 ))}
                 <Link
                   href="/products?category=electric"
-                  className={mobileDepthOneClass}
+                  className={getMobileDepthOneClassName(isElectricActive)}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   전기/유공압
@@ -173,7 +202,7 @@ const handleDropdownBlur = (event: React.FocusEvent<HTMLDivElement>) => {
                 ))}
                 <Link
                   href="/service"
-                  className={mobileDepthOneClass}
+                  className={getMobileDepthOneClassName(isServiceActive)}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   교체시공

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Image as ImageIcon } from "lucide-react";
 
@@ -20,12 +21,12 @@ export const ProductCard = ({ product }: { product: ProductCardDisplay }) => {
       <div className="pointer-events-none absolute inset-0 z-[1] bg-black/10 opacity-0 md:transition-opacity md:duration-300 md:group-hover:opacity-100" />
       <div className="relative h-[22rem] w-full overflow-hidden">
         {hasThumb ? (
-          // next/image는 remotePatterns 미등록 외부 URL에서 런타임 오류가 나므로 img 사용
-          <img
+          <Image
             src={product.thumbnailUrl as string}
             alt={product.name}
-            className="absolute inset-0 h-full w-full object-cover md:transition-transform md:duration-500 md:group-hover:scale-105"
-            loading="lazy"
+            fill
+            sizes="(min-width: 768px) 33vw, 100vw"
+            className="object-cover md:transition-transform md:duration-500 md:group-hover:scale-105"
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-muted">

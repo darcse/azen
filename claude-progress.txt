@@ -317,3 +317,7 @@
 - `components/layout/Header.tsx` 활성 메뉴 스타일 충돌 보정: 기본(inactive) 스타일과 active 스타일을 분리해 `/about`, `/products`, `/service`에서 현재 메뉴의 파란색/굵기/밑줄 강조가 실제 화면에 드러나도록 정리
 - `components/layout/Header.tsx` 제품 메뉴 active 범위 보완: `/products?category=filter`와 `/products?category=electric` 같은 상위 그룹 slug도 활성 상태로 인식하도록 보완해 필터/전기·유공압 메뉴 강조가 빠지지 않게 수정
 - `app/layout.tsx` 배포 빌드 대응: `Header`가 내부에서 `useSearchParams()`를 사용해 정적 프리렌더(`/_not-found` 포함)에서 실패하던 문제를 막기 위해 `ConditionalHeader`를 `Suspense` 경계로 감싸도록 조정
+- `components/features/ProductCard.tsx` 썸네일 렌더링 복원: 카드 썸네일을 일반 `<img>`에서 `next/image` `Image` 컴포넌트(`fill`)로 되돌리고, 컨테이너는 `relative + aspect-[4/3]` 기준으로 유지해 기존 오버레이/hover 스타일을 보존
+- `components/features/ProductCard.tsx`, `next.config.ts` 카드 썸네일 보정: 카드 높이를 기존 `h-[22rem]`로 복구하고, `next/image` 런타임 오류가 나던 `gi.esmplus.com` 호스트를 원격 이미지 허용 목록에 추가
+- `components/features/ProductDetailHtmlContent.tsx` DOMPurify 런타임 오류 대응: 브라우저 마운트 후 `createDOMPurify(window)`로 인스턴스를 만들어 sanitize 하도록 바꿔 `default.sanitize is not a function` 오류를 해소
+- `next.config.ts` 전기/유공압 이미지 호스트 보완: `ko.dagaotech.com` 썸네일도 `next/image` 허용 목록에 추가해 제품 카드 런타임 오류가 나지 않도록 수정

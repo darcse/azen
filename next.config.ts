@@ -34,6 +34,10 @@ const imageRemotePatterns: NonNullable<NextConfig["images"]>["remotePatterns"] =
 
   { protocol: "https", hostname: "www.capfil.co.kr" },
   { protocol: "http", hostname: "www.capfil.co.kr" },
+  { protocol: "https", hostname: "gi.esmplus.com" },
+  { protocol: "http", hostname: "gi.esmplus.com" },
+  { protocol: "https", hostname: "ko.dagaotech.com" },
+  { protocol: "http", hostname: "ko.dagaotech.com" },
   {
     protocol: "https",
     hostname: "www.ecsfilter.com",

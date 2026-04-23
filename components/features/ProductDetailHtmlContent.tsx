@@ -1,7 +1,7 @@
 "use client";
 
-import DOMPurify from "dompurify";
-import { useEffect, useState } from "react";
+import createDOMPurify from "dompurify";
+import { useEffect, useMemo, useState } from "react";
 import { applyLineBreaksAsHtmlBr } from "@/lib/html-content-newlines-to-br";
 
 interface ProductDetailHtmlContentProps {
@@ -16,7 +16,10 @@ interface ProductDetailHtmlContentProps {
 export function ProductDetailHtmlContent({ html, className }: ProductDetailHtmlContentProps) {
   const [mounted, setMounted] = useState(false);
   const proseClassName = `prose max-w-none ${className}`.trim();
-  const sanitizedHtml = DOMPurify.sanitize(applyLineBreaksAsHtmlBr(html));
+  const sanitizedHtml = useMemo(() => {
+    if (!mounted) return "";
+    return createDOMPurify(window).sanitize(applyLineBreaksAsHtmlBr(html));
+  }, [html, mounted]);
 
   useEffect(() => {
     setMounted(true);

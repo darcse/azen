@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Cpu, Factory, FileText, ListChecks } from "lucide-react";
+import { ClipboardList, ListChecks } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { ProductDetailBackButton } from "@/components/features/ProductDetailBackButton";
 import { ProductDetailHtmlContent } from "@/components/features/ProductDetailHtmlContent";
@@ -124,7 +124,6 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
   const name = data.name as string;
   const description = (data.description ?? null) as string | null;
-  const contentHtml = (data.content ?? null) as string | null;
   const contentOverview = (data.content_overview ?? null) as string | null;
   const contentTechnology = (data.content_technology ?? null) as string | null;
   const contentApplication = (data.content_application ?? null) as string | null;
@@ -208,8 +207,17 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                 {specItems.length > 0 ? (
                   <div className="mt-3 grid gap-3 sm:grid-cols-2">
                     {specItems.map((item, index) => (
-                      <div key={`${item.title}-${index}`} className="glass-card rounded-2xl border border-border p-4">
-                        <p className="text-sm font-semibold text-foreground">{item.title || "스펙"}</p>
+                      <div
+                        key={`${item.title}-${index}`}
+                        className={
+                          index % 4 === 0 || index % 4 === 3
+                            ? "rounded-xl border border-border bg-blue-50 p-4 transition-all duration-200 dark:bg-blue-950/30 md:hover:-translate-y-1 md:hover:border-primary md:hover:shadow-md"
+                            : "rounded-xl border border-border bg-slate-50 p-4 transition-all duration-200 dark:bg-slate-800/30 md:hover:-translate-y-1 md:hover:border-primary md:hover:shadow-md"
+                        }
+                      >
+                        <p className="border-l-2 border-primary pl-3 text-sm font-semibold text-foreground">
+                          {item.title || "스펙"}
+                        </p>
                         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.content || "-"}</p>
                       </div>
                     ))}
@@ -229,17 +237,10 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       {/* 4. 하단 상세설명 */}
       {hasContentSections ? (
         <div className={`${pageContainer} pb-16 pt-12`}>
-          <hr className="mb-8 border-border dark:border-white/20" />
-          <h2 className="mb-8 inline-flex w-fit items-center gap-2 text-2xl font-bold text-foreground">
-            <FileText className="h-5 w-5 text-foreground" aria-hidden />
-            제품 상세
-          </h2>
-          <hr className="mb-8 border-border dark:border-white/20" />
           <div className="space-y-8">
             {contentOverview ? (
-              <section className="space-y-4">
-                <h3 className="inline-flex items-center gap-2 text-xl font-semibold text-foreground">
-                  <FileText className="h-5 w-5 text-foreground" aria-hidden />
+              <section className="space-y-4 pt-8 first:pt-0">
+                <h3 className="mb-4 border-b-2 border-foreground pb-2 text-xl font-bold text-foreground">
                   제품 개요
                 </h3>
                 <ProductDetailHtmlContent
@@ -249,9 +250,8 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               </section>
             ) : null}
             {contentTechnology ? (
-              <section className="space-y-4">
-                <h3 className="inline-flex items-center gap-2 text-xl font-semibold text-foreground">
-                  <Cpu className="h-5 w-5 text-foreground" aria-hidden />
+              <section className="space-y-4 pt-8 first:pt-0">
+                <h3 className="mb-4 border-b-2 border-foreground pb-2 text-xl font-bold text-foreground">
                   핵심 기술 및 특장점
                 </h3>
                 <ProductDetailHtmlContent
@@ -261,9 +261,8 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               </section>
             ) : null}
             {contentApplication ? (
-              <section className="space-y-4">
-                <h3 className="inline-flex items-center gap-2 text-xl font-semibold text-foreground">
-                  <Factory className="h-5 w-5 text-foreground" aria-hidden />
+              <section className="space-y-4 pt-8 first:pt-0">
+                <h3 className="mb-4 border-b-2 border-foreground pb-2 text-xl font-bold text-foreground">
                   주요 적용 공정
                 </h3>
                 <ProductDetailHtmlContent
@@ -274,20 +273,15 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             ) : null}
           </div>
         </div>
-      ) : contentHtml ? (
+      ) : (
         <div className={`${pageContainer} pb-16 pt-12`}>
-          <hr className="mb-8 border-border dark:border-white/20" />
-          <h2 className="mb-8 inline-flex w-fit items-center gap-2 text-2xl font-bold text-foreground">
-            <FileText className="h-5 w-5 text-foreground" aria-hidden />
-            제품 상세
-          </h2>
-          <hr className="mb-8 border-border dark:border-white/20" />
-          <ProductDetailHtmlContent
-            html={contentHtml ?? ""}
-            className="prose prose-slate dark:prose-invert min-w-0 max-w-none overflow-x-auto break-words text-sm leading-relaxed text-foreground md:text-base [&_a]:text-primary [&_h3]:mb-2 [&_h3]:mt-4 [&_h3]:text-xl [&_h3]:font-semibold [&_img]:h-auto [&_img]:max-w-full [&_li]:mb-1 [&_ol]:mb-3 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:mb-3 [&_ul]:mb-3 [&_ul]:list-disc [&_ul]:pl-5"
-          />
+          <div className="flex flex-col items-center gap-3 rounded-xl bg-muted py-24 text-center">
+            <ClipboardList className="h-16 w-16 text-muted-foreground" aria-hidden />
+            <p className="text-muted-foreground">상세 정보가 준비 중입니다.</p>
+            <p className="text-sm text-muted-foreground">제품 정보는 순차적으로 업데이트됩니다.</p>
+          </div>
         </div>
-      ) : null}
+      )}
 
     </main>
   );

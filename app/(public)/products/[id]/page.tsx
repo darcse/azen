@@ -6,8 +6,6 @@ import { ProductDetailBackButton } from "@/components/features/ProductDetailBack
 import { ProductDetailHtmlContent } from "@/components/features/ProductDetailHtmlContent";
 import { ProductGallery } from "@/components/features/ProductGallery";
 
-export const revalidate = 3600;
-
 interface ProductDetailPageProps {
   params: Promise<{ id: string }>;
 }
@@ -16,11 +14,6 @@ interface CategoryRow {
   name: string;
   slug: string;
   parent_id: string | null;
-}
-
-interface ParentCategoryRow {
-  name: string;
-  slug: string;
 }
 
 interface ProductSpecItem {
@@ -36,20 +29,6 @@ const normalizeCategory = (cat: unknown): CategoryRow | null => {
       name: String((o as { name: unknown }).name),
       slug: String((o as { slug: unknown }).slug),
       parent_id: pid == null ? null : String(pid),
-    };
-  };
-  if (cat == null) return null;
-  if (Array.isArray(cat)) return cat[0] && typeof cat[0] === "object" ? parse(cat[0] as object) : null;
-  if (typeof cat === "object") return parse(cat as object);
-  return null;
-};
-
-const normalizeParentCategory = (cat: unknown): ParentCategoryRow | null => {
-  const parse = (o: object): ParentCategoryRow | null => {
-    if (!("name" in o) || !("slug" in o)) return null;
-    return {
-      name: String((o as { name: unknown }).name),
-      slug: String((o as { slug: unknown }).slug),
     };
   };
   if (cat == null) return null;
@@ -115,7 +94,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     .from("azen_products")
     .select(
       `id, name, description, content, content_overview, content_technology, content_application, spec, spec_items, thumbnail_url,
-       category:azen_categories(name, slug, parent_id, parent:azen_categories!azen_categories_parent_id_fkey(name, slug)),
+       category:azen_categories(name, slug, parent_id),
        images:azen_product_images(id, url, sort_order)`,
     )
     .eq("id", id)
@@ -125,11 +104,18 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   if (error || !data) notFound();
 
   const category = normalizeCategory(data.category);
-  const parentCategory = normalizeParentCategory(
-    data.category && typeof data.category === "object" && "parent" in data.category
-      ? (data.category as { parent?: unknown }).parent
-      : null,
-  );
+
+  let parentCategory: { name: string; slug: string } | null = null;
+  if (category?.parent_id) {
+    const { data: parentRow } = await supabase
+      .from("azen_categories")
+      .select("name, slug")
+      .eq("id", category.parent_id)
+      .maybeSingle();
+    if (parentRow && typeof parentRow.name === "string" && typeof parentRow.slug === "string") {
+      parentCategory = { name: parentRow.name, slug: parentRow.slug };
+    }
+  }
 
   const galleryUrls = buildGalleryUrls(
     (data.thumbnail_url ?? null) as string | null,

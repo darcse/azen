@@ -6,6 +6,8 @@ import { ProductDetailBackButton } from "@/components/features/ProductDetailBack
 import { ProductDetailHtmlContent } from "@/components/features/ProductDetailHtmlContent";
 import { ProductGallery } from "@/components/features/ProductGallery";
 
+export const revalidate = 3600;
+
 interface ProductDetailPageProps {
   params: Promise<{ id: string }>;
 }

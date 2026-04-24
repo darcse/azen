@@ -218,6 +218,9 @@
 - `Header.tsx` GNB 수정: '필터 전체'/'전기유공압 전체' 드롭다운 항목 제거, '필터' 클릭 → `/products?category=air_handling`, '전기/유공압' 클릭 → `/products?category=electric_parts` (데스크탑 button→Link, 모바일 p→Link)
 - `Header.tsx` GNB 링크 수정: '필터' → `?category=filter`, '전기/유공압' → `?category=electric` (데스크탑+모바일 동일)
 - `ProductsCatalogClient.tsx` 그룹 판단 로직 명시화: `initialSelectedSub`를 FILTER_SUB_SLUGS/ELECTRIC_SUB_SLUGS 기준으로 단순화, "전체" 시 useMemo에서 해당 그룹 서브슬러그 Set으로 명시적 필터링
+- ADMIN-008 구현: `AdminProductCreateForm.tsx`, `AdminProductEditForm.tsx`에서 기존 `spec`/`content` Tiptap 단일 입력을 제거하고 스펙 최대 6개 동적 행 + 본문 3섹션(`content_overview`, `content_technology`, `content_application`) RichTextEditor 구조로 개편
+- 제품 등록/수정 서버 액션 반영: `spec_items(jsonb)` 파싱/저장 추가, 신규 본문 3개 컬럼 저장 추가, 기존 `spec`/`content`는 하위 호환용 HTML로 함께 유지
+- 제품 상세 페이지 반영: 신규 `spec_items`를 카드형 스펙 UI로 우선 렌더링하고, 본문 3섹션을 개별 섹션으로 노출하며 기존 `spec`/`content`는 fallback으로 유지
 - 작업 전 현재 상태 스냅샷 커밋 생성: `chore: snapshot before service page work`
 - PAGE-004 구현: `/service`를 `use client` 기반 탭 페이지로 전면 교체하고 히어로, 교체시공/시공사례 탭, Core Strengths, 5단계 Service Process, Why Choose AZEN 비교표, CTA 섹션 구성
 - 교체시공 페이지 구현 시 Stitch 샘플 이미지 URL 유지, Material Symbols 아이콘을 `lucide-react` 아이콘(`Search`, `ShieldCheck`, `Sparkles`, `Wrench`, `BarChart3`, `MoveRight`)로 대체

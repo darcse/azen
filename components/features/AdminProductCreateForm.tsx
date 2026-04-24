@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { ImagePlus, Link as LinkIcon, Save, Trash2, Upload } from "lucide-react";
+import { FileText, ImagePlus, Link as LinkIcon, Plus, Save, Trash2, Upload, Wrench } from "lucide-react";
 import { RichTextEditor } from "@/components/ui/RichTextEditor";
 
 interface CategoryOption {
@@ -13,18 +13,75 @@ interface CreateProductFormState {
   error: string | null;
 }
 
+interface SpecItemInput {
+  title: string;
+  content: string;
+}
+
 interface AdminProductCreateFormProps {
   categories: CategoryOption[];
   action: (state: CreateProductFormState, formData: FormData) => Promise<CreateProductFormState>;
 }
 
+const MAX_SPEC_ITEMS = 6;
+
+const createEmptySpecItem = (): SpecItemInput => ({
+  title: "",
+  content: "",
+});
+
+const sanitizeSpecItems = (items: SpecItemInput[]) =>
+  items
+    .map((item) => ({
+      title: item.title.trim(),
+      content: item.content.trim(),
+    }))
+    .filter((item) => item.title || item.content)
+    .slice(0, MAX_SPEC_ITEMS);
+
+const buildLegacySpecHtml = (items: SpecItemInput[]) =>
+  sanitizeSpecItems(items)
+    .map(
+      (item) =>
+        `<p><strong>${item.title || "스펙"}</strong>${item.content ? `: ${item.content}` : ""}</p>`,
+    )
+    .join("");
+
+const buildLegacyContentHtml = (sections: Array<{ title: string; html: string }>) =>
+  sections
+    .filter(({ html }) => html.trim())
+    .map(({ title, html }) => `<h3>${title}</h3>${html}`)
+    .join("");
+
 export const AdminProductCreateForm = ({ categories, action }: AdminProductCreateFormProps) => {
   const [state, formAction, isPending] = useActionState(action, { error: null });
-  const [contentHtml, setContentHtml] = useState("");
-  const [specHtml, setSpecHtml] = useState("");
+  const [specItems, setSpecItems] = useState<SpecItemInput[]>([]);
+  const [overviewHtml, setOverviewHtml] = useState("");
+  const [technologyHtml, setTechnologyHtml] = useState("");
+  const [applicationHtml, setApplicationHtml] = useState("");
   const [thumbnailMode, setThumbnailMode] = useState<"file" | "url">("file");
   const [additionalMode, setAdditionalMode] = useState<"file" | "url">("file");
   const [additionalUrlInputs, setAdditionalUrlInputs] = useState([""]);
+
+  const addSpecItem = () => {
+    setSpecItems((prev) => (prev.length >= MAX_SPEC_ITEMS ? prev : [...prev, createEmptySpecItem()]));
+  };
+
+  const updateSpecItem = (index: number, field: keyof SpecItemInput, value: string) => {
+    setSpecItems((prev) => prev.map((item, idx) => (idx === index ? { ...item, [field]: value } : item)));
+  };
+
+  const removeSpecItem = (index: number) => {
+    setSpecItems((prev) => prev.filter((_, idx) => idx !== index));
+  };
+
+  const serializedSpecItems = JSON.stringify(sanitizeSpecItems(specItems));
+  const legacySpecHtml = buildLegacySpecHtml(specItems);
+  const legacyContentHtml = buildLegacyContentHtml([
+    { title: "제품 개요", html: overviewHtml },
+    { title: "핵심 기술 및 특장점", html: technologyHtml },
+    { title: "주요 적용 공정", html: applicationHtml },
+  ]);
 
   const addAdditionalUrlInput = () => {
     setAdditionalUrlInputs((prev) => [...prev, ""]);
@@ -80,15 +137,60 @@ export const AdminProductCreateForm = ({ categories, action }: AdminProductCreat
         />
       </label>
 
-      <label className="flex flex-col gap-1 text-sm">
-        스펙
-        <input type="hidden" name="spec" value={specHtml} />
-        <RichTextEditor
-          value={specHtml}
-          onChange={setSpecHtml}
-          placeholder="HTML 입력 가능. 예: <ul><li>규격: 500x500</li></ul>"
-        />
-      </label>
+      <section className="glass-card space-y-4 rounded-2xl border border-border p-4">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="inline-flex items-center gap-2 text-sm font-medium text-foreground">
+              <Wrench size={16} />
+              스펙
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground">제목과 내용을 최대 6개까지 입력할 수 있습니다.</p>
+          </div>
+          <button
+            type="button"
+            onClick={addSpecItem}
+            disabled={specItems.length >= MAX_SPEC_ITEMS}
+            className="inline-flex items-center gap-2 rounded-md border border-border px-3 py-2 text-xs font-medium transition hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <Plus size={14} />
+            스펙 추가
+          </button>
+        </div>
+        <input type="hidden" name="spec_items" value={serializedSpecItems} />
+        <input type="hidden" name="spec" value={legacySpecHtml} />
+        {specItems.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-border px-4 py-5 text-sm text-muted-foreground">
+            아직 추가된 스펙이 없습니다.
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {specItems.map((item, index) => (
+              <div key={`spec-item-${index}`} className="grid gap-3 rounded-xl border border-border bg-background/70 p-3 md:grid-cols-[1fr_1fr_auto]">
+                <input
+                  value={item.title}
+                  onChange={(event) => updateSpecItem(index, "title", event.target.value)}
+                  placeholder="예: 처리 풍량"
+                  className="h-10 rounded-md border border-border bg-background px-3 py-2 text-sm"
+                />
+                <input
+                  value={item.content}
+                  onChange={(event) => updateSpecItem(index, "content", event.target.value)}
+                  placeholder="예: 1,200 CMH"
+                  className="h-10 rounded-md border border-border bg-background px-3 py-2 text-sm"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeSpecItem(index)}
+                  className="inline-flex h-10 items-center justify-center rounded-md border border-border px-3 py-2 text-xs font-medium transition hover:bg-muted"
+                  aria-label={`스펙 ${index + 1} 삭제`}
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
 
       <section className="grid gap-4 md:grid-cols-2">
         <label className="flex items-center gap-2 text-sm">
@@ -212,15 +314,48 @@ export const AdminProductCreateForm = ({ categories, action }: AdminProductCreat
         )}
       </section>
 
-      <label className="flex flex-col gap-1 text-sm">
-        상세설명 (HTML)
-        <input type="hidden" name="content" value={contentHtml} />
-        <RichTextEditor
-          value={contentHtml}
-          onChange={setContentHtml}
-          placeholder="<p>상세 HTML 설명</p>"
-        />
-      </label>
+      <section className="space-y-5">
+        <input type="hidden" name="content" value={legacyContentHtml} />
+        <input type="hidden" name="content_overview" value={overviewHtml} />
+        <input type="hidden" name="content_technology" value={technologyHtml} />
+        <input type="hidden" name="content_application" value={applicationHtml} />
+
+        <label className="flex flex-col gap-2 text-sm">
+          <span className="inline-flex items-center gap-2 font-medium text-foreground">
+            <FileText size={16} />
+            제품 개요
+          </span>
+          <RichTextEditor
+            value={overviewHtml}
+            onChange={setOverviewHtml}
+            placeholder="<p>제품 개요를 입력하세요.</p>"
+          />
+        </label>
+
+        <label className="flex flex-col gap-2 text-sm">
+          <span className="inline-flex items-center gap-2 font-medium text-foreground">
+            <Wrench size={16} />
+            핵심 기술 및 특장점
+          </span>
+          <RichTextEditor
+            value={technologyHtml}
+            onChange={setTechnologyHtml}
+            placeholder="<p>핵심 기술과 특장점을 입력하세요.</p>"
+          />
+        </label>
+
+        <label className="flex flex-col gap-2 text-sm">
+          <span className="inline-flex items-center gap-2 font-medium text-foreground">
+            <FileText size={16} />
+            주요 적용 공정
+          </span>
+          <RichTextEditor
+            value={applicationHtml}
+            onChange={setApplicationHtml}
+            placeholder="<p>주요 적용 공정을 입력하세요.</p>"
+          />
+        </label>
+      </section>
 
       {state.error && <p className="text-sm text-red-500">{state.error}</p>}
 

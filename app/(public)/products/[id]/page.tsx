@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { FileText, ListChecks } from "lucide-react";
+import { Cpu, Factory, FileText, ListChecks } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { ProductDetailBackButton } from "@/components/features/ProductDetailBackButton";
 import { ProductDetailHtmlContent } from "@/components/features/ProductDetailHtmlContent";
@@ -14,6 +14,11 @@ interface CategoryRow {
   name: string;
   slug: string;
   parent_id: string | null;
+}
+
+interface ProductSpecItem {
+  title: string;
+  content: string;
 }
 
 const normalizeCategory = (cat: unknown): CategoryRow | null => {
@@ -50,6 +55,31 @@ const buildGalleryUrls = (
   return urls;
 };
 
+const parseSpecItems = (value: unknown): ProductSpecItem[] => {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value
+    .map((item) => {
+      if (!item || typeof item !== "object") {
+        return null;
+      }
+
+      const record = item as { title?: unknown; content?: unknown };
+      const title = typeof record.title === "string" ? record.title.trim() : "";
+      const content = typeof record.content === "string" ? record.content.trim() : "";
+
+      if (!title && !content) {
+        return null;
+      }
+
+      return { title, content };
+    })
+    .filter((item): item is ProductSpecItem => item !== null)
+    .slice(0, 6);
+};
+
 const crumbLinkClass =
   "text-muted-foreground underline-offset-2 transition hover:text-foreground hover:underline";
 
@@ -63,7 +93,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   const { data, error } = await supabase
     .from("azen_products")
     .select(
-      `id, name, description, content, spec, thumbnail_url,
+      `id, name, description, content, content_overview, content_technology, content_application, spec, spec_items, thumbnail_url,
        category:azen_categories(name, slug, parent_id),
        images:azen_product_images(id, url, sort_order)`,
     )
@@ -95,7 +125,12 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   const name = data.name as string;
   const description = (data.description ?? null) as string | null;
   const contentHtml = (data.content ?? null) as string | null;
+  const contentOverview = (data.content_overview ?? null) as string | null;
+  const contentTechnology = (data.content_technology ?? null) as string | null;
+  const contentApplication = (data.content_application ?? null) as string | null;
   const spec = (data.spec ?? null) as string | null;
+  const specItems = parseSpecItems(data.spec_items);
+  const hasContentSections = Boolean(contentOverview || contentTechnology || contentApplication);
 
   return (
     <main className="w-full min-w-0 overflow-x-hidden">
@@ -163,17 +198,28 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             {description ? (
               <p className="mt-2 text-muted-foreground">{description}</p>
             ) : null}
-            {spec ? (
+            {specItems.length > 0 || spec ? (
               <>
                 <hr className="my-4 border-border dark:border-white/20" />
                 <p className="inline-flex items-center gap-2 text-lg font-bold text-foreground">
                   <ListChecks className="h-5 w-5 text-foreground" aria-hidden />
                   스펙
                 </p>
-                <ProductDetailHtmlContent
-                  html={spec}
-                  className="prose prose-slate dark:prose-invert mt-2 min-w-0 max-w-none overflow-x-auto break-words text-sm leading-relaxed text-foreground [&_a]:text-primary [&_h3]:mb-2 [&_h3]:mt-4 [&_h3]:text-lg [&_h3]:font-semibold [&_img]:h-auto [&_img]:max-w-full [&_li]:mb-1 [&_ol]:mb-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:mb-2 [&_ul]:mb-2 [&_ul]:list-disc [&_ul]:pl-5"
-                />
+                {specItems.length > 0 ? (
+                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                    {specItems.map((item, index) => (
+                      <div key={`${item.title}-${index}`} className="glass-card rounded-2xl border border-border p-4">
+                        <p className="text-sm font-semibold text-foreground">{item.title || "스펙"}</p>
+                        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.content || "-"}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <ProductDetailHtmlContent
+                    html={spec ?? ""}
+                    className="prose prose-slate dark:prose-invert mt-2 min-w-0 max-w-none overflow-x-auto break-words text-sm leading-relaxed text-foreground [&_a]:text-primary [&_h3]:mb-2 [&_h3]:mt-4 [&_h3]:text-lg [&_h3]:font-semibold [&_img]:h-auto [&_img]:max-w-full [&_li]:mb-1 [&_ol]:mb-2 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:mb-2 [&_ul]:mb-2 [&_ul]:list-disc [&_ul]:pl-5"
+                  />
+                )}
               </>
             ) : null}
           </div>
@@ -181,7 +227,54 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       </div>
 
       {/* 4. 하단 상세설명 */}
-      {contentHtml ? (
+      {hasContentSections ? (
+        <div className={`${pageContainer} pb-16 pt-12`}>
+          <hr className="mb-8 border-border dark:border-white/20" />
+          <h2 className="mb-8 inline-flex w-fit items-center gap-2 text-2xl font-bold text-foreground">
+            <FileText className="h-5 w-5 text-foreground" aria-hidden />
+            제품 상세
+          </h2>
+          <hr className="mb-8 border-border dark:border-white/20" />
+          <div className="space-y-8">
+            {contentOverview ? (
+              <section className="space-y-4">
+                <h3 className="inline-flex items-center gap-2 text-xl font-semibold text-foreground">
+                  <FileText className="h-5 w-5 text-foreground" aria-hidden />
+                  제품 개요
+                </h3>
+                <ProductDetailHtmlContent
+                  html={contentOverview}
+                  className="prose prose-slate dark:prose-invert min-w-0 max-w-none overflow-x-auto break-words text-sm leading-relaxed text-foreground md:text-base [&_a]:text-primary [&_h3]:mb-2 [&_h3]:mt-4 [&_h3]:text-xl [&_h3]:font-semibold [&_img]:h-auto [&_img]:max-w-full [&_li]:mb-1 [&_ol]:mb-3 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:mb-3 [&_ul]:mb-3 [&_ul]:list-disc [&_ul]:pl-5"
+                />
+              </section>
+            ) : null}
+            {contentTechnology ? (
+              <section className="space-y-4">
+                <h3 className="inline-flex items-center gap-2 text-xl font-semibold text-foreground">
+                  <Cpu className="h-5 w-5 text-foreground" aria-hidden />
+                  핵심 기술 및 특장점
+                </h3>
+                <ProductDetailHtmlContent
+                  html={contentTechnology}
+                  className="prose prose-slate dark:prose-invert min-w-0 max-w-none overflow-x-auto break-words text-sm leading-relaxed text-foreground md:text-base [&_a]:text-primary [&_h3]:mb-2 [&_h3]:mt-4 [&_h3]:text-xl [&_h3]:font-semibold [&_img]:h-auto [&_img]:max-w-full [&_li]:mb-1 [&_ol]:mb-3 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:mb-3 [&_ul]:mb-3 [&_ul]:list-disc [&_ul]:pl-5"
+                />
+              </section>
+            ) : null}
+            {contentApplication ? (
+              <section className="space-y-4">
+                <h3 className="inline-flex items-center gap-2 text-xl font-semibold text-foreground">
+                  <Factory className="h-5 w-5 text-foreground" aria-hidden />
+                  주요 적용 공정
+                </h3>
+                <ProductDetailHtmlContent
+                  html={contentApplication}
+                  className="prose prose-slate dark:prose-invert min-w-0 max-w-none overflow-x-auto break-words text-sm leading-relaxed text-foreground md:text-base [&_a]:text-primary [&_h3]:mb-2 [&_h3]:mt-4 [&_h3]:text-xl [&_h3]:font-semibold [&_img]:h-auto [&_img]:max-w-full [&_li]:mb-1 [&_ol]:mb-3 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:mb-3 [&_ul]:mb-3 [&_ul]:list-disc [&_ul]:pl-5"
+                />
+              </section>
+            ) : null}
+          </div>
+        </div>
+      ) : contentHtml ? (
         <div className={`${pageContainer} pb-16 pt-12`}>
           <hr className="mb-8 border-border dark:border-white/20" />
           <h2 className="mb-8 inline-flex w-fit items-center gap-2 text-2xl font-bold text-foreground">
@@ -190,7 +283,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           </h2>
           <hr className="mb-8 border-border dark:border-white/20" />
           <ProductDetailHtmlContent
-            html={contentHtml}
+            html={contentHtml ?? ""}
             className="prose prose-slate dark:prose-invert min-w-0 max-w-none overflow-x-auto break-words text-sm leading-relaxed text-foreground md:text-base [&_a]:text-primary [&_h3]:mb-2 [&_h3]:mt-4 [&_h3]:text-xl [&_h3]:font-semibold [&_img]:h-auto [&_img]:max-w-full [&_li]:mb-1 [&_ol]:mb-3 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:mb-3 [&_ul]:mb-3 [&_ul]:list-disc [&_ul]:pl-5"
           />
         </div>

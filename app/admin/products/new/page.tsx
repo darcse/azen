@@ -13,6 +13,11 @@ interface CreateProductFormState {
   error: string | null;
 }
 
+interface ProductSpecItem {
+  title: string;
+  content: string;
+}
+
 const categoryOrderKeywords = ["공조기", "수처리", "집진기", "기타 품목", "전기", "유압공", "유공압"] as const;
 
 const getCategoryOrderIndex = (name: string) => {
@@ -32,6 +37,40 @@ const isValidUrl = (value: string) => {
 const createStoragePath = (folder: string, filename: string, order = 0) => {
   const ext = filename.split(".").pop()?.toLowerCase() ?? "jpg";
   return `${folder}/${Date.now()}-${order}.${ext}`;
+};
+
+const parseSpecItems = (value: FormDataEntryValue | null): ProductSpecItem[] => {
+  if (typeof value !== "string" || !value.trim()) {
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(value) as unknown;
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
+
+    return parsed
+      .map((item) => {
+        if (!item || typeof item !== "object") {
+          return null;
+        }
+
+        const record = item as { title?: unknown; content?: unknown };
+        const title = typeof record.title === "string" ? record.title.trim() : "";
+        const content = typeof record.content === "string" ? record.content.trim() : "";
+
+        if (!title && !content) {
+          return null;
+        }
+
+        return { title, content };
+      })
+      .filter((item): item is ProductSpecItem => item !== null)
+      .slice(0, 6);
+  } catch {
+    return [];
+  }
 };
 
 export default async function AdminProductNewPage() {
@@ -60,7 +99,11 @@ export default async function AdminProductNewPage() {
     const categoryId = String(formData.get("category_id") ?? "").trim();
     const description = String(formData.get("description") ?? "").trim();
     const content = String(formData.get("content") ?? "").trim();
+    const contentOverview = String(formData.get("content_overview") ?? "").trim();
+    const contentTechnology = String(formData.get("content_technology") ?? "").trim();
+    const contentApplication = String(formData.get("content_application") ?? "").trim();
     const spec = String(formData.get("spec") ?? "").trim();
+    const specItems = parseSpecItems(formData.get("spec_items"));
     const isPublished = formData.get("is_published") === "on";
     const sortOrder = Number(String(formData.get("sort_order") ?? "0")) || 0;
     const thumbnailMode = String(formData.get("thumbnail_mode") ?? "file");
@@ -109,7 +152,11 @@ export default async function AdminProductNewPage() {
         name,
         description: description || null,
         content: content || null,
+        content_overview: contentOverview || null,
+        content_technology: contentTechnology || null,
+        content_application: contentApplication || null,
         spec: spec || null,
+        spec_items: specItems,
         thumbnail_url: thumbnailUrl,
         is_published: isPublished,
         sort_order: sortOrder,

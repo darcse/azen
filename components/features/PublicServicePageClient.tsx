@@ -139,7 +139,7 @@ export const PublicServicePageClient = ({ cases }: PublicServicePageClientProps)
           <div className="absolute inset-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDr3WD_3w5gAsLAcaqJI-i828XPyVBVLHcYASZgK5gbWhmZOEGwd8UblOAZ7xd29g1nVJ93fUXj7r3QyqtGANt1lTe5CzwsCefeo-GwTOFiTFKqGZp3B35CQGsrGdq2-jvYCD0WLSrahStsSmuFcjf-Wb_aJF74Bz-KZbs_lgm3PNB47tzz2MhCv19oLvrrOXk0gAtd_Mxmb926GqeU_9q0AjKnM1dnULOgUPLWj-1dhMwSNkH8FKT_qgGoXSdDFnn9cNygD5anSMiX"
+              src="/filter-bg2.png"
               alt="Modern industrial facility clean room environment with high tech filtration systems"
               className="h-full w-full object-cover"
             />

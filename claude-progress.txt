@@ -198,6 +198,7 @@
 - `/products` 카드 그리드 섹션: `max-w-7xl mx-auto px-8 py-8`, `md:grid-cols-2 lg:grid-cols-3 gap-6` 유지
 - 검증: npm run build 통과
 - `/products` 타이틀 영역 세부 조정: `min-h-[220px]` → `min-h-[300px]`, 내부 패딩 `py-12` → `py-16`
+- `/about` 히어로 배경 이미지 URL 교체: 외부 Unsplash/Google 계열 URL 대신 로컬 정적 경로 `/hero-factory2.png` 적용 (`app/(public)/about/page.tsx`)
 - 검색+필터 바 레이아웃 개편: 두 컬럼 `justify-between` 구조 → `flex-wrap gap-3` 단일 행, 검색창 `w-64` 고정폭, 칩 그룹 인접 배치
 - 검색창 배경 명시: `bg-elevated dark:bg-[#1c1c1e]`로 토큰 통일
 - 카드 그리드 오버플로 수정: `page.tsx`의 불필요한 `pt-8` 래퍼 div 제거, `ProductsCatalogClient` 직접 렌더링
@@ -343,3 +344,7 @@
 - `app/(public)/products/[id]/page.tsx` 스펙 카드 새로고침 유지 보정: 배경/hover 클래스를 index 분기별 완전한 정적 문자열로 고정하고 hover는 데스크톱(`md:hover:*`) 기준으로 유지되도록 정리
 - `app/(public)/products/[id]/page.tsx` 상세 영역 정리: 기존 `제품 상세` 헤더를 제거하고, `content_overview`/`content_technology`/`content_application`가 모두 비어 있을 때만 `FileX` 아이콘과 "상세 정보가 준비 중입니다." empty 상태를 중앙 정렬 카드로 노출하도록 변경
 - `app/(public)/products/[id]/page.tsx` empty 상태 보강: `ClipboardList` 아이콘(`w-16 h-16`)으로 교체하고 래퍼 패딩을 `py-24`로 늘렸으며, "제품 정보는 순차적으로 업데이트됩니다." 서브텍스트를 추가
+- `app/(public)/products/page.tsx` 타이틀 영역 배경 이미지 교체: `filter` 그룹의 기존 Unsplash URL을 로컬 정적 경로 `/filter-bg.png`로 변경
+- 배경 이미지 경로 교체: `app/(public)/products/page.tsx` 전기/유공압 타이틀 배경을 `/elec.png`로, `app/page.tsx` 메인 히어로 배경을 `/hero-main.png`로 변경
+- `app/(public)/service/page.tsx`는 히어로 배경 URL이 파일 내부에 없고 `components/features/PublicServicePageClient.tsx`에 선언되어 있어, "이 파일만 수정" 조건 때문에 미변경
+- `components/features/PublicServicePageClient.tsx` 서비스 히어로 배경 이미지 교체: 기존 외부 URL을 로컬 정적 경로 `/filter-bg2.png`로 변경

@@ -71,7 +71,7 @@ export default function AboutPage() {
       <section className="relative flex h-[819px] min-h-[600px] items-center justify-center overflow-hidden text-center">
         <div className="absolute inset-0">
           <Image
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCprSK8ytLKXs6fe0nfVQHTbCYvTYA-ym8GYb7MWVAf7PWKw_6DOPz8SAheY7Lnj9yxDSncP8_CR8cP2_ennJNj6kS3MEzwGmNPmWJq2kRqu6vx43XB-mjjQUv4xIyTbMm_l0RNxlH8b6DNT9Wu-Zg99PQMGNzOG2-OWSHxvVkFJviQRIKDK1K96KiMhkBJXvFpkjj2b4kyJyrFt_boaZyXkxVDceFBVm_p6W5fB62j6PR5SwImBfh8kFTiPHjjtimBwpkAXGvkYl_2"
+            src="/hero-factory2.png"
             alt="Industrial filtration systems in a modern manufacturing facility, clean aesthetic, cool blue lighting"
             fill
             priority

@@ -70,7 +70,7 @@ export default async function Home() {
       <section
         className="relative w-full overflow-hidden bg-cover bg-center min-h-[520px] md:min-h-[600px]"
         style={{
-          backgroundImage: "url('/hero-factory.png')",
+          backgroundImage: "url('/hero-main.png')",
         }}
       >
         <div className="absolute inset-0 bg-black/60" />

@@ -44,10 +44,8 @@ const normalizeCategoryEmbed = (cat: unknown): { name: string; slug: string } | 
 };
 
 const HERO_IMAGE = {
-  filter:
-    "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=1600&q=80",
-  electric:
-    "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=1600&q=80",
+  filter: "/filter-bg.png",
+  electric: "/elec.png",
 };
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {

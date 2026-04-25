@@ -39,17 +39,17 @@ const strengths = [
   {
     title: "Expert Team",
     description: "외주 인력이 아닌, 필터와 설비를 완벽히 이해하는 AZEN 전담 시공팀 직접 투입.",
-    image: "/core_1.png",
+    image: "/core_1.webp",
   },
   {
     title: "Safety First",
     description: "오염 확산 방지 및 작업자 안전을 최우선으로 하는 표준 시공 매뉴얼 준수.",
-    image: "/core_2.png",
+    image: "/core_2.webp",
   },
   {
     title: "Leak-free Testing",
     description: "시공 직후 정밀 차압 측정 및 기밀성 검증을 통한 완벽한 성능 보장.",
-    image: "/core_3.png",
+    image: "/core_3.webp",
   },
 ] as const;
 
@@ -136,7 +136,7 @@ export const PublicServicePageClient = ({ cases }: PublicServicePageClientProps)
           <div className="absolute inset-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/filter-bg2.png"
+              src="/filter-bg2.webp"
               alt="Modern industrial facility clean room environment with high tech filtration systems"
               className="h-full w-full object-cover"
             />
@@ -285,7 +285,7 @@ export const PublicServicePageClient = ({ cases }: PublicServicePageClientProps)
               <div className="absolute inset-0">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/regist.png"
+                  src="/regist.webp"
                   alt="Professional industrial engineering facility"
                   className="h-full w-full object-cover"
                 />

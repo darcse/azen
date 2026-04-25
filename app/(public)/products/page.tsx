@@ -44,8 +44,8 @@ const normalizeCategoryEmbed = (cat: unknown): { name: string; slug: string } | 
 };
 
 const HERO_IMAGE = {
-  filter: "/filter-bg.png",
-  electric: "/elec.png",
+  filter: "/filter-bg.webp",
+  electric: "/elec.webp",
 };
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {

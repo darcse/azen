@@ -71,7 +71,7 @@ export default function AboutPage() {
       <section className="relative flex h-[819px] min-h-[600px] items-center justify-center overflow-hidden text-center">
         <div className="absolute inset-0">
           <Image
-            src="/hero-factory2.png"
+            src="/hero-factory2.webp"
             alt="Industrial filtration systems in a modern manufacturing facility, clean aesthetic, cool blue lighting"
             fill
             priority

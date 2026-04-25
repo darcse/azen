@@ -348,3 +348,4 @@
 - 배경 이미지 경로 교체: `app/(public)/products/page.tsx` 전기/유공압 타이틀 배경을 `/elec.png`로, `app/page.tsx` 메인 히어로 배경을 `/hero-main.png`로 변경
 - `app/(public)/service/page.tsx`는 히어로 배경 URL이 파일 내부에 없고 `components/features/PublicServicePageClient.tsx`에 선언되어 있어, "이 파일만 수정" 조건 때문에 미변경
 - `components/features/PublicServicePageClient.tsx` 서비스 히어로 배경 이미지 교체: 기존 외부 URL을 로컬 정적 경로 `/filter-bg2.png`로 변경
+- `components/features/PublicServicePageClient.tsx` 이미지 URL 교체: Core Strengths 3개 카드를 `/core_1.png`, `/core_2.png`, `/core_3.png`로, 하단 CTA 배경을 `/regist.png`로 변경

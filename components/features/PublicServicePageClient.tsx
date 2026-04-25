@@ -39,20 +39,17 @@ const strengths = [
   {
     title: "Expert Team",
     description: "외주 인력이 아닌, 필터와 설비를 완벽히 이해하는 AZEN 전담 시공팀 직접 투입.",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCn1MNXyj8ByJSfN4-LFx6b8VNwrRQVypnCue4ZbYR-XBlrZX5wH4sQE2MchVPXcsaWdYH_RI9Qpd6FuWVgdcsRurX7AS6Tqv4Hu11b9N8QBiKgjxig0Y-YSOQXd_JOdVvBL_KKnSFa7FHm3AxnYL7iY6xUVOiGn40vcxkq_llL-5fq8nchUYD4nKfOgaAQ_trTHCf4Vy2kpB7LKRVly2QxY8DWgLDiGILCUBNSVHusFxtoIUFUlpegxuluDqRzrpZdgEi_zGkl1YEg",
+    image: "/core_1.png",
   },
   {
     title: "Safety First",
     description: "오염 확산 방지 및 작업자 안전을 최우선으로 하는 표준 시공 매뉴얼 준수.",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuAapZImXnx_sZVubCKCPfzJwxnV5cgEIZWcdrcg6poynUDBD8yb9FsDyz7F2zEdWBkC_RKbsDvktRw9Ry8A0syrKrpvIse53dfxEZqlb_W11UiwXg7HPlb4l9pqGrps22g-YStCP8BmNXs5V58Z-o7LVELu1mEXpapcG8qDwBdB3kFL1bAQ_7DbTwu6MRt8GVC15964aVZ0yeodyAxSZX1gJ_h-CxKGBo6cL_y23IFePBARESrmRVl0vsep09fKqsoVf4qfq1_6nVwP",
+    image: "/core_2.png",
   },
   {
     title: "Leak-free Testing",
     description: "시공 직후 정밀 차압 측정 및 기밀성 검증을 통한 완벽한 성능 보장.",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCtZhvSRjofKhDAojHikRSB4rF8S3anuoeAZISS9qUcDBB54ObRIhL8tbBml3DRZ7DKVUD2y5F4Bxy2suVKtVpSSolI8dhYme6TOTPVmzjNPvth9xXqD-hBmiiWcwkKdTiaLsf9qa21lN342IH2kE0szqvVLrjdE_B6neWW_Fy2eNmLwh0yVCqmgxANrfPs2BTWG2kQDN1OgZdwTT4Xh7OOxUMkGmjFyzZl-P4kgl1pjYxu7gF02Xtq0aIg2iZack_0UGIkzsCGa8L_",
+    image: "/core_3.png",
   },
 ] as const;
 
@@ -288,7 +285,7 @@ export const PublicServicePageClient = ({ cases }: PublicServicePageClientProps)
               <div className="absolute inset-0">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWBJEDeePT6CxZVtVWFrdOEBKL8UHlsC6A-EjNktCuwsaoS-Dnp4AxIZQcB1ndJLC22tjJV1MRfuNt8ZtBjjmSFZTg0E8dod7R8L-6cZkY06RnFxBadFvYzvT3ziX-NuPS4f0Chao2vCksc-wroV-YyhskheTKCcyVzwfoMvp-Qccy9bgqbamsX1osqczcSXayPgKa0CAuhP9_1GKsveWAcxjPCVatRPHwGqPD2L3tJzzgX1AXClgjhFSeUm978SqhC1s6i6xnDDm6"
+                  src="/regist.png"
                   alt="Professional industrial engineering facility"
                   className="h-full w-full object-cover"
                 />

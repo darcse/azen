@@ -74,7 +74,7 @@ export default async function Home() {
         }}
       >
         <div className="absolute inset-0 bg-black/60" />
-        <div className="relative z-10 mx-auto flex min-h-[520px] w-full max-w-6xl items-start px-4 pt-10 pb-12 md:min-h-[600px] md:items-center md:px-6 md:py-24">
+        <div className="relative z-10 mx-auto flex min-h-[520px] w-full max-w-6xl items-start px-4 pt-20 pb-14 md:min-h-[600px] md:items-center md:px-6 md:py-24">
           <div className="max-w-2xl space-y-4 lg:space-y-6">
             <p className="inline-flex items-center rounded-full border border-[#2b4f86] bg-[#13223a]/90 px-5 py-1.5 text-[11px] font-semibold tracking-[0.14em] text-[#82aef5] shadow-[inset_0_0_0_1px_rgba(59,130,246,0.2)] dark:border-[#2b4f86] dark:bg-[#13223a]/90 dark:text-[#82aef5]">
               AZEN INDUSTRIAL SOLUTIONS

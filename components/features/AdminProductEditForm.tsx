@@ -16,10 +16,12 @@ import {
 import { AdminDeleteButton } from "@/components/features/AdminDeleteButton";
 import { AdminImageDeleteButton } from "@/components/features/AdminImageDeleteButton";
 import { RichTextEditor } from "@/components/ui/RichTextEditor";
+import { CATALOG_SUB_LABEL_FALLBACK, WATER_SUB_SLUGS } from "@/lib/products-catalog";
 
 interface CategoryOption {
   id: string;
   name: string;
+  slug?: string;
 }
 
 interface ProductDetail {
@@ -63,6 +65,30 @@ interface SpecItemInput {
 }
 
 const MAX_SPEC_ITEMS = 6;
+
+const WATER_SUB_LABELS = new Set(
+  WATER_SUB_SLUGS.map((slug) => CATALOG_SUB_LABEL_FALLBACK[slug]),
+);
+
+const getCategorySlug = (category: CategoryOption): string | undefined => {
+  if (category.slug) return category.slug;
+  const match = Object.entries(CATALOG_SUB_LABEL_FALLBACK).find(([, label]) => label === category.name);
+  return match?.[0];
+};
+
+const isWaterTreatmentCategory = (category: CategoryOption) => {
+  const slug = getCategorySlug(category);
+  return slug === "water_treatment" || category.name === "수처리 필터";
+};
+
+const isWaterSubCategory = (category: CategoryOption) => {
+  const slug = getCategorySlug(category);
+  if (slug) return (WATER_SUB_SLUGS as readonly string[]).includes(slug);
+  return WATER_SUB_LABELS.has(category.name);
+};
+
+const filterCategoryOptions = (categories: CategoryOption[]) =>
+  categories.filter((category) => !isWaterTreatmentCategory(category));
 
 const createEmptySpecItem = (): SpecItemInput => ({
   title: "",
@@ -124,6 +150,7 @@ export const AdminProductEditForm = ({
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(updateAction, { error: null });
   const [isDirty, setIsDirty] = useState(false);
+  const [categoryId, setCategoryId] = useState(product.category_id);
   const [specItems, setSpecItems] = useState<SpecItemInput[]>(() => parseSpecItems(product.spec_items));
   const [overviewHtml, setOverviewHtml] = useState(product.content_overview ?? product.content ?? "");
   const [technologyHtml, setTechnologyHtml] = useState(product.content_technology ?? "");
@@ -147,15 +174,29 @@ export const AdminProductEditForm = ({
     setIsDirty(true);
   };
 
-  const serializedSpecItems = JSON.stringify(sanitizeSpecItems(specItems));
-  const legacySpecHtml = serializedSpecItems === "[]" ? product.spec ?? "" : buildLegacySpecHtml(specItems);
-  const legacyContentHtml = buildLegacyContentHtml([
-    { title: "제품 개요", html: overviewHtml },
-    { title: "핵심 기술 및 특장점", html: technologyHtml },
-    { title: "주요 적용 공정", html: applicationHtml },
-  ]);
+  const categoryOptions = filterCategoryOptions(categories);
+  const selectedCategory =
+    categoryOptions.find((category) => category.id === categoryId) ??
+    categories.find((category) => category.id === categoryId);
+  const isWaterSubProduct = selectedCategory ? isWaterSubCategory(selectedCategory) : false;
+
+  const serializedSpecItems = isWaterSubProduct ? "[]" : JSON.stringify(sanitizeSpecItems(specItems));
+  const legacySpecHtml = isWaterSubProduct
+    ? ""
+    : serializedSpecItems === "[]"
+      ? product.spec ?? ""
+      : buildLegacySpecHtml(specItems);
+  const legacyContentHtml = isWaterSubProduct
+    ? ""
+    : buildLegacyContentHtml([
+        { title: "제품 개요", html: overviewHtml },
+        { title: "핵심 기술 및 특장점", html: technologyHtml },
+        { title: "주요 적용 공정", html: applicationHtml },
+      ]);
   const contentFallback =
-    !product.content_overview && !product.content_technology && !product.content_application ? product.content ?? "" : "";
+    isWaterSubProduct || product.content_overview || product.content_technology || product.content_application
+      ? ""
+      : product.content ?? "";
 
   const handleBackClick = () => {
     if (isDirty) {
@@ -213,10 +254,14 @@ export const AdminProductEditForm = ({
           <select
             name="category_id"
             required
-            defaultValue={product.category_id}
+            value={categoryId ?? ""}
+            onChange={(event) => {
+              setCategoryId(event.target.value);
+              setIsDirty(true);
+            }}
             className="h-10 rounded-md border border-border bg-background px-3 py-2"
           >
-            {categories.map((category) => (
+            {categoryOptions.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
               </option>
@@ -236,6 +281,21 @@ export const AdminProductEditForm = ({
         />
       </label>
 
+      {isWaterSubProduct && (
+        <>
+          {product.is_published ? <input type="hidden" name="is_published" value="on" /> : null}
+          <input type="hidden" name="sort_order" value={String(product.sort_order)} />
+        </>
+      )}
+
+      <input type="hidden" name="spec_items" value={serializedSpecItems} />
+      <input type="hidden" name="spec" value={legacySpecHtml} />
+      <input type="hidden" name="content" value={legacyContentHtml || contentFallback} />
+      <input type="hidden" name="content_overview" value={isWaterSubProduct ? "" : overviewHtml} />
+      <input type="hidden" name="content_technology" value={isWaterSubProduct ? "" : technologyHtml} />
+      <input type="hidden" name="content_application" value={isWaterSubProduct ? "" : applicationHtml} />
+
+      {!isWaterSubProduct && (
       <section className="glass-card space-y-4 rounded-2xl border border-border p-4">
         <div className="flex items-center justify-between gap-3">
           <div>
@@ -255,8 +315,6 @@ export const AdminProductEditForm = ({
             스펙 추가
           </button>
         </div>
-        <input type="hidden" name="spec_items" value={serializedSpecItems} />
-        <input type="hidden" name="spec" value={legacySpecHtml} />
         {specItems.length === 0 ? (
           <div className="rounded-xl border border-dashed border-border px-4 py-5 text-sm text-muted-foreground">
             아직 추가된 스펙이 없습니다.
@@ -290,7 +348,9 @@ export const AdminProductEditForm = ({
           </div>
         )}
       </section>
+      )}
 
+      {!isWaterSubProduct && (
       <section className="grid gap-4 md:grid-cols-2">
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" name="is_published" defaultChecked={product.is_published} className="h-4 w-4" />
@@ -306,6 +366,7 @@ export const AdminProductEditForm = ({
           />
         </label>
       </section>
+      )}
 
       <section className="space-y-3 rounded-xl border border-border p-4">
         <p className="text-sm font-medium">대표 이미지</p>
@@ -441,12 +502,8 @@ export const AdminProductEditForm = ({
         )}
       </section>
 
+      {!isWaterSubProduct && (
       <section className="space-y-5">
-        <input type="hidden" name="content" value={legacyContentHtml || contentFallback} />
-        <input type="hidden" name="content_overview" value={overviewHtml} />
-        <input type="hidden" name="content_technology" value={technologyHtml} />
-        <input type="hidden" name="content_application" value={applicationHtml} />
-
         <label className="flex flex-col gap-2 text-sm">
           <span className="inline-flex items-center gap-2 font-medium text-foreground">
             <FileText size={16} />
@@ -492,6 +549,7 @@ export const AdminProductEditForm = ({
           />
         </label>
       </section>
+      )}
 
       {state.error && <p className="text-sm text-red-500">{state.error}</p>}
 

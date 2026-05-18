@@ -25,6 +25,13 @@ export const WATER_SUB_CARDS = [
   },
 ] as const;
 
+export type WaterSubPath = (typeof WATER_SUB_CARDS)[number]["path"];
+
+export const resolveWaterSubSlug = (sub: string): (typeof WATER_SUB_SLUGS)[number] | null => {
+  const card = WATER_SUB_CARDS.find((item) => item.path === sub);
+  return card?.slug ?? null;
+};
+
 /** GNB 전기/유공압 메뉴 제품군 */
 export const ELECTRIC_SUB_SLUGS = ["electric_parts", "hydraulic"] as const;
 

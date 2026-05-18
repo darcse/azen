@@ -3,10 +3,12 @@
 import { useActionState, useState } from "react";
 import { FileText, ImagePlus, Link as LinkIcon, Plus, Save, Trash2, Upload, Wrench } from "lucide-react";
 import { RichTextEditor } from "@/components/ui/RichTextEditor";
+import { CATALOG_SUB_LABEL_FALLBACK, WATER_SUB_SLUGS } from "@/lib/products-catalog";
 
 interface CategoryOption {
   id: string;
   name: string;
+  slug?: string;
 }
 
 interface CreateProductFormState {
@@ -24,6 +26,30 @@ interface AdminProductCreateFormProps {
 }
 
 const MAX_SPEC_ITEMS = 6;
+
+const WATER_SUB_LABELS = new Set(
+  WATER_SUB_SLUGS.map((slug) => CATALOG_SUB_LABEL_FALLBACK[slug]),
+);
+
+const getCategorySlug = (category: CategoryOption): string | undefined => {
+  if (category.slug) return category.slug;
+  const match = Object.entries(CATALOG_SUB_LABEL_FALLBACK).find(([, label]) => label === category.name);
+  return match?.[0];
+};
+
+const isWaterTreatmentCategory = (category: CategoryOption) => {
+  const slug = getCategorySlug(category);
+  return slug === "water_treatment" || category.name === "수처리 필터";
+};
+
+const isWaterSubCategory = (category: CategoryOption) => {
+  const slug = getCategorySlug(category);
+  if (slug) return (WATER_SUB_SLUGS as readonly string[]).includes(slug);
+  return WATER_SUB_LABELS.has(category.name);
+};
+
+const filterCategoryOptions = (categories: CategoryOption[]) =>
+  categories.filter((category) => !isWaterTreatmentCategory(category));
 
 const createEmptySpecItem = (): SpecItemInput => ({
   title: "",
@@ -55,6 +81,7 @@ const buildLegacyContentHtml = (sections: Array<{ title: string; html: string }>
 
 export const AdminProductCreateForm = ({ categories, action }: AdminProductCreateFormProps) => {
   const [state, formAction, isPending] = useActionState(action, { error: null });
+  const [categoryId, setCategoryId] = useState("");
   const [specItems, setSpecItems] = useState<SpecItemInput[]>([]);
   const [overviewHtml, setOverviewHtml] = useState("");
   const [technologyHtml, setTechnologyHtml] = useState("");
@@ -75,13 +102,19 @@ export const AdminProductCreateForm = ({ categories, action }: AdminProductCreat
     setSpecItems((prev) => prev.filter((_, idx) => idx !== index));
   };
 
-  const serializedSpecItems = JSON.stringify(sanitizeSpecItems(specItems));
-  const legacySpecHtml = buildLegacySpecHtml(specItems);
-  const legacyContentHtml = buildLegacyContentHtml([
-    { title: "제품 개요", html: overviewHtml },
-    { title: "핵심 기술 및 특장점", html: technologyHtml },
-    { title: "주요 적용 공정", html: applicationHtml },
-  ]);
+  const categoryOptions = filterCategoryOptions(categories);
+  const selectedCategory = categoryOptions.find((category) => category.id === categoryId);
+  const isWaterSubProduct = selectedCategory ? isWaterSubCategory(selectedCategory) : false;
+
+  const serializedSpecItems = isWaterSubProduct ? "[]" : JSON.stringify(sanitizeSpecItems(specItems));
+  const legacySpecHtml = isWaterSubProduct ? "" : buildLegacySpecHtml(specItems);
+  const legacyContentHtml = isWaterSubProduct
+    ? ""
+    : buildLegacyContentHtml([
+        { title: "제품 개요", html: overviewHtml },
+        { title: "핵심 기술 및 특장점", html: technologyHtml },
+        { title: "주요 적용 공정", html: applicationHtml },
+      ]);
 
   const addAdditionalUrlInput = () => {
     setAdditionalUrlInputs((prev) => [...prev, ""]);
@@ -112,13 +145,14 @@ export const AdminProductCreateForm = ({ categories, action }: AdminProductCreat
           <select
             name="category_id"
             required
-            defaultValue=""
+            value={categoryId}
+            onChange={(event) => setCategoryId(event.target.value)}
             className="h-10 rounded-md border border-border bg-background px-3 py-2"
           >
             <option value="" disabled>
               서브카테고리를 선택하세요
             </option>
-            {categories.map((category) => (
+            {categoryOptions.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name}
               </option>
@@ -137,6 +171,21 @@ export const AdminProductCreateForm = ({ categories, action }: AdminProductCreat
         />
       </label>
 
+      {isWaterSubProduct && (
+        <>
+          <input type="hidden" name="is_published" value="on" />
+          <input type="hidden" name="sort_order" value="0" />
+        </>
+      )}
+
+      <input type="hidden" name="spec_items" value={serializedSpecItems} />
+      <input type="hidden" name="spec" value={legacySpecHtml} />
+      <input type="hidden" name="content" value={legacyContentHtml} />
+      <input type="hidden" name="content_overview" value={isWaterSubProduct ? "" : overviewHtml} />
+      <input type="hidden" name="content_technology" value={isWaterSubProduct ? "" : technologyHtml} />
+      <input type="hidden" name="content_application" value={isWaterSubProduct ? "" : applicationHtml} />
+
+      {!isWaterSubProduct && (
       <section className="glass-card space-y-4 rounded-2xl border border-border p-4">
         <div className="flex items-center justify-between gap-3">
           <div>
@@ -156,8 +205,6 @@ export const AdminProductCreateForm = ({ categories, action }: AdminProductCreat
             스펙 추가
           </button>
         </div>
-        <input type="hidden" name="spec_items" value={serializedSpecItems} />
-        <input type="hidden" name="spec" value={legacySpecHtml} />
         {specItems.length === 0 ? (
           <div className="rounded-xl border border-dashed border-border px-4 py-5 text-sm text-muted-foreground">
             아직 추가된 스펙이 없습니다.
@@ -191,7 +238,9 @@ export const AdminProductCreateForm = ({ categories, action }: AdminProductCreat
           </div>
         )}
       </section>
+      )}
 
+      {!isWaterSubProduct && (
       <section className="grid gap-4 md:grid-cols-2">
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" name="is_published" defaultChecked className="h-4 w-4" />
@@ -207,6 +256,7 @@ export const AdminProductCreateForm = ({ categories, action }: AdminProductCreat
           />
         </label>
       </section>
+      )}
 
       <section className="space-y-3 rounded-xl border border-border p-4">
         <p className="text-sm font-medium">대표 이미지</p>
@@ -314,12 +364,8 @@ export const AdminProductCreateForm = ({ categories, action }: AdminProductCreat
         )}
       </section>
 
+      {!isWaterSubProduct && (
       <section className="space-y-5">
-        <input type="hidden" name="content" value={legacyContentHtml} />
-        <input type="hidden" name="content_overview" value={overviewHtml} />
-        <input type="hidden" name="content_technology" value={technologyHtml} />
-        <input type="hidden" name="content_application" value={applicationHtml} />
-
         <label className="flex flex-col gap-2 text-sm">
           <span className="inline-flex items-center gap-2 font-medium text-foreground">
             <FileText size={16} />
@@ -356,6 +402,7 @@ export const AdminProductCreateForm = ({ categories, action }: AdminProductCreat
           />
         </label>
       </section>
+      )}
 
       {state.error && <p className="text-sm text-red-500">{state.error}</p>}
 

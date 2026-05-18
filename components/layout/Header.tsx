@@ -5,23 +5,13 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
-import {
-  ELECTRIC_SUB_SLUGS,
-  FILTER_SUB_SLUGS,
-  PARENT_SLUG_ELECTRIC,
-  PARENT_SLUG_FILTER,
-} from "@/lib/products-catalog";
+import { FILTER_SUB_SLUGS, PARENT_SLUG_FILTER } from "@/lib/products-catalog";
 
 const filterMenuLinks = [
   { label: "공조기 필터", href: "/products?category=air_handling" },
   { label: "집진기 필터", href: "/products?category=dust_collector" },
   { label: "수처리 필터", href: "/products?category=water_treatment" },
   { label: "기타 품목", href: "/products?category=others" },
-];
-
-const electricMenuLinks = [
-  { label: "전기 부품", href: "/products?category=electric_parts" },
-  { label: "유공압", href: "/products?category=hydraulic" },
 ];
 
 const navBaseClass =
@@ -33,7 +23,7 @@ const navActiveClass =
 
 export const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState<"filter" | "electric" | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<"filter" | null>(null);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
@@ -43,15 +33,11 @@ export const Header = () => {
   const isFilterCategory =
     category === PARENT_SLUG_FILTER ||
     (!!category && FILTER_SUB_SLUGS.includes(category as (typeof FILTER_SUB_SLUGS)[number]));
-  const isElectricCategory =
-    category === PARENT_SLUG_ELECTRIC ||
-    (!!category && ELECTRIC_SUB_SLUGS.includes(category as (typeof ELECTRIC_SUB_SLUGS)[number]));
-
   const isAboutActive = pathname === "/about";
+  const isPurchaseActive = pathname === "/purchase";
   const isServiceActive = pathname === "/service";
   const isProductsPath = pathname === "/products" || pathname.startsWith("/products/");
   const isFilterActive = isProductsPath && isFilterCategory;
-  const isElectricActive = isProductsPath && isElectricCategory;
   const getNavClassName = (isActive: boolean) =>
     `${navBaseClass} ${isActive ? navActiveClass : navInactiveClass}`;
   const getMobileDepthOneClassName = (isActive: boolean) =>
@@ -111,30 +97,9 @@ export const Header = () => {
               </div>
             </div>
 
-            <div
-              className="relative"
-              onMouseEnter={() => setOpenDropdown("electric")}
-              onMouseLeave={() => setOpenDropdown((prev) => (prev === "electric" ? null : prev))}
-              onBlur={handleDropdownBlur}
-            >
-              <Link href="/products?category=electric" className={getNavClassName(isElectricActive)}>
-                전기/유공압
-              </Link>
-              <div
-                id="electric-menu"
-                className={`glass-card absolute left-0 top-full z-20 -mt-px min-w-44 rounded-md border border-border bg-background p-1 pt-2 shadow-sm dark:bg-[#1c1c1e] dark:border-white/10 ${
-                  openDropdown === "electric"
-                    ? "visible opacity-100"
-                    : "invisible pointer-events-none opacity-0"
-                }`}
-              >
-                {electricMenuLinks.map((item) => (
-                  <Link key={item.href} href={item.href} className={`${navBaseClass} block text-sm`}>
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
+            <Link href="/purchase" className={getNavClassName(isPurchaseActive)}>
+              구매대행
+            </Link>
 
             <Link href="/service" className={getNavClassName(isServiceActive)}>
               교체시공
@@ -187,22 +152,12 @@ export const Header = () => {
                   </Link>
                 ))}
                 <Link
-                  href="/products?category=electric"
-                  className={getMobileDepthOneClassName(isElectricActive)}
+                  href="/purchase"
+                  className={getMobileDepthOneClassName(isPurchaseActive)}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  전기/유공압
+                  구매대행
                 </Link>
-                {electricMenuLinks.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={mobileDepthTwoClass}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
                 <Link
                   href="/service"
                   className={getMobileDepthOneClassName(isServiceActive)}

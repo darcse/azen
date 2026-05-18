@@ -372,3 +372,4 @@
 - `AdminProductEditForm.tsx`: 카테고리 select `value={categoryId ?? ""}` null 처리
 - Revert: `feat: 수처리 탭 제품 목록 및 카드 레이아웃 개선` (e7c9c25, push 완료)
 - `Header.tsx`·`Footer.tsx`·`AdminHeader.tsx`: 인라인 SVG 로고 → `<img src="/logo.png" className="h-16 w-auto" />` (로컬 미커밋)
+- `ProductsCatalogClient.tsx` 수처리 탭: DEPTH/CARBON/PLEATED 카드 내부에 서버 `products` prop 기준 제품 세로 목록(썸네일 w-12 h-12 + 제품명, `border-b`, `/products/[id]`, 없으면 미노출)

@@ -7,6 +7,7 @@ import {
   ELECTRIC_SUB_SLUGS,
   FILTER_SUB_SLUGS,
   WATER_SUB_CARDS,
+  WATER_SUB_SLUGS,
   type ProductCatalogGroup,
 } from "@/lib/products-catalog";
 import { ProductCard, type ProductCardDisplay } from "@/components/features/ProductCard";
@@ -20,6 +21,15 @@ interface CategoryChip {
   slug: string;
   name: string;
 }
+
+type WaterSubSlug = (typeof WATER_SUB_SLUGS)[number];
+type WaterProductsBySlug = Record<WaterSubSlug, CatalogProduct[]>;
+
+const EMPTY_WATER_PRODUCTS: WaterProductsBySlug = {
+  water_depth: [],
+  water_carbon: [],
+  water_pleated: [],
+};
 
 interface ProductsCatalogClientProps {
   products: CatalogProduct[];
@@ -57,6 +67,23 @@ export const ProductsCatalogClient = ({
     if (group !== "filter" || urlCategorySlug === "water_treatment") return [];
     return products.filter((p) => p.categorySlug === urlCategorySlug);
   }, [products, group, urlCategorySlug]);
+
+  const waterProductsBySlug = useMemo(() => {
+    const grouped: WaterProductsBySlug = {
+      water_depth: [],
+      water_carbon: [],
+      water_pleated: [],
+    };
+
+    for (const product of products) {
+      const slug = product.categorySlug;
+      if (slug === "water_depth" || slug === "water_carbon" || slug === "water_pleated") {
+        grouped[slug].push(product);
+      }
+    }
+
+    return grouped;
+  }, [products]);
 
   const electricFiltered = useMemo(() => {
     if (group !== "electric") return [];
@@ -105,17 +132,43 @@ export const ProductsCatalogClient = ({
 
         <section className="mx-auto w-full max-w-6xl flex-1 px-4 py-8">
           {isWaterTab ? (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              {WATER_SUB_CARDS.map((card) => (
-                <Link
-                  key={card.slug}
-                  href={`/products/water/${card.path}`}
-                  className="rounded-2xl bg-muted p-8 transition-transform duration-200 hover:-translate-y-1"
-                >
-                  <h3 className="text-xl font-bold tracking-wide text-foreground">{card.label}</h3>
-                  <p className="mt-3 text-base leading-7 text-muted-foreground">{card.description}</p>
-                </Link>
-              ))}
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+              {WATER_SUB_CARDS.map((card) => {
+                const subProducts = waterProductsBySlug[card.slug] ?? EMPTY_WATER_PRODUCTS[card.slug];
+
+                return (
+                  <div key={card.slug} className="rounded-2xl bg-muted p-8">
+                    <h3 className="text-xl font-bold tracking-wide text-foreground">{card.label}</h3>
+                    {subProducts.length > 0 && (
+                      <div className="mt-6 flex flex-col">
+                        {subProducts.map((product, index) => (
+                          <Link
+                            key={product.id}
+                            href={`/products/${product.id}?category=filter`}
+                            className={`flex items-center gap-3 py-3 transition-colors hover:bg-background/50 ${
+                              index < subProducts.length - 1 ? "border-b border-border" : ""
+                            }`}
+                          >
+                            {product.thumbnailUrl ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={product.thumbnailUrl}
+                                alt={product.name}
+                                className="h-12 w-12 shrink-0 rounded-lg object-cover"
+                              />
+                            ) : (
+                              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-background text-[10px] text-muted-foreground">
+                                없음
+                              </div>
+                            )}
+                            <p className="line-clamp-2 text-sm font-semibold text-foreground">{product.name}</p>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           ) : filterTabProducts.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-border bg-elevated px-6 py-16 text-center">

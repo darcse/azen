@@ -361,3 +361,8 @@
 - `app/(public)/about/page.tsx` 오시는 길 구글맵 iframe을 Google Maps 공식 embed URL(`google.com/maps/embed?pb=...`)로 교체, `referrerPolicy="no-referrer-when-downgrade"` 추가
 - `components/features/PublicServicePageClient.tsx` 구조 개편: 교체시공/시공사례 탭·AZEN Core Strengths·CTA 섹션 제거, Service Process/Why Choose AZEN 단일 페이지 노출, Why Choose AZEN 하단에 `Success Cases` 섹션(기존 시공사례 카드+모달) 추가
 - PAGE-006 구현: `app/(public)/purchase/page.tsx` 구매대행 정적 페이지(히어로 `/elec.webp`, 서비스 소개·문의처 카드), `Header.tsx` 전기/유공압 → 구매대행(`/purchase`) 단일 링크·드롭다운 제거, `feature_list/page.json` PAGE-006 passes=true
+- `app/(public)/purchase/page.tsx` 전면 재작성: 서비스 특징 3열 카드(Package/TrendingDown/Truck), 4단계 구매대행 프로세스(가로 플로우·모바일 세로), 심플 문의처(bg-muted)
+- `app/(public)/purchase/page.tsx` 본문 구조 조정: 상단 AZEN 제품 구매대행 소개 텍스트 추가, 구매대행 프로세스 섹션 삭제, 문의처 카드 제거(텍스트만)
+- `app/(public)/purchase/page.tsx` 구매 및 견적 문의: `bg-muted` 3열 그리드(담당자/전화/이메일, User·Phone·Mail 아이콘)로 재구성
+- `app/(public)/purchase/page.tsx` 구매 및 견적 문의: 상단 `hr` + 아이콘·라벨·값 세로 목록(`flex items-center gap-3`, `space-y-3`) 스타일로 변경
+- `app/(public)/purchase/page.tsx` 구매 및 견적 문의: 세로 스택 → `flex flex-wrap gap-8 items-center` 가로 한 줄(아이콘·라벨·값 순)

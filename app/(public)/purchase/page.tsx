@@ -1,3 +1,23 @@
+import { Mail, Package, Phone, TrendingDown, Truck, User } from "lucide-react";
+
+const featureCards = [
+  {
+    icon: Package,
+    title: "폭넓은 대행 품목",
+    description: "국내외 전기부품, 제어기기, 자동화 부품 및 기타 산업 소모품 전반",
+  },
+  {
+    icon: TrendingDown,
+    title: "원가 절감",
+    description: "최적의 공급선 확보를 통한 비용 절감 및 복잡한 수입 절차 일괄 대행",
+  },
+  {
+    icon: Truck,
+    title: "원스톱 서비스",
+    description: "견적 비교부터 통관, 배송까지 한 번에 해결",
+  },
+] as const;
+
 export default function PurchasePage() {
   return (
     <main className="bg-background text-foreground">
@@ -16,63 +36,53 @@ export default function PurchasePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-4xl px-8 py-16">
-        <article className="glass-card rounded-2xl border border-border bg-background p-8 md:p-10">
-          <h2 className="text-2xl font-semibold tracking-[-0.02em] text-foreground md:text-3xl">
-            AZEN 제품 구매대행
-          </h2>
-          <p className="mt-4 text-base leading-7 text-muted-foreground md:text-lg">
+      <section className="mx-auto max-w-6xl px-4 py-16 md:px-6 md:py-20">
+        <div className="mx-auto mb-10 max-w-3xl text-center">
+          <h2 className="text-2xl font-bold text-foreground">AZEN 제품 구매대행</h2>
+          <p className="mt-3 text-base leading-7 text-muted-foreground md:text-lg">
             견적 비교부터 통관, 배송까지 원스톱으로 해결해 드립니다.
           </p>
+        </div>
 
-          <div className="mt-8 space-y-6">
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-primary">대행 품목</h3>
-              <p className="mt-2 text-base leading-7 text-foreground">
-                국내외 전기부품, 제어기기, 자동화 부품 및 기타 산업 소모품 전반
-              </p>
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-primary">이용 장점</h3>
-              <p className="mt-2 text-base leading-7 text-foreground">
-                최적의 공급선 확보를 통한 원가 절감, 복잡한 수입 절차 대행
-              </p>
-            </div>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          {featureCards.map((card) => {
+            const Icon = card.icon;
+
+            return (
+              <article key={card.title} className="rounded-2xl bg-muted p-8">
+                <Icon className="h-10 w-10 text-primary" aria-hidden />
+                <h3 className="mt-4 text-lg font-bold text-foreground">{card.title}</h3>
+                <p className="mt-3 text-base leading-7 text-muted-foreground">{card.description}</p>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pb-20 text-center md:px-6">
+        <hr className="border-border" />
+        <h2 className="mb-4 mt-8 text-lg font-bold text-foreground">구매 및 견적 문의</h2>
+        <div className="flex flex-wrap items-center justify-center gap-8">
+          <div className="flex items-center gap-2">
+            <User className="h-5 w-5 shrink-0 text-primary" aria-hidden />
+            <span className="text-sm text-muted-foreground">담당자</span>
+            <span className="font-semibold text-foreground">이황범 부장</span>
           </div>
-        </article>
-
-        <article className="mt-8 rounded-2xl bg-primary p-8 text-white md:p-10">
-          <h2 className="text-2xl font-semibold tracking-[-0.02em] md:text-3xl">구매 및 견적 문의</h2>
-          <p className="mt-4 text-base leading-7 text-white/90 md:text-lg">
-            다양한 제품의 구매대행이 필요하시다면 아래 연락처로 편하게 문의해 주세요.
-          </p>
-
-          <dl className="mt-8 space-y-4 text-base md:text-lg">
-            <div>
-              <dt className="text-sm font-semibold uppercase tracking-[0.12em] text-white/70">담당자</dt>
-              <dd className="mt-1 font-medium">이황범 부장</dd>
-            </div>
-            <div>
-              <dt className="text-sm font-semibold uppercase tracking-[0.12em] text-white/70">전화</dt>
-              <dd className="mt-1">
-                <a href="tel:010-4803-6730" className="font-medium underline-offset-4 hover:underline">
-                  010-4803-6730
-                </a>
-              </dd>
-            </div>
-            <div>
-              <dt className="text-sm font-semibold uppercase tracking-[0.12em] text-white/70">이메일</dt>
-              <dd className="mt-1">
-                <a
-                  href="mailto:bum2002@kakao.com"
-                  className="font-medium underline-offset-4 hover:underline"
-                >
-                  bum2002@kakao.com
-                </a>
-              </dd>
-            </div>
-          </dl>
-        </article>
+          <div className="flex items-center gap-2">
+            <Phone className="h-5 w-5 shrink-0 text-primary" aria-hidden />
+            <span className="text-sm text-muted-foreground">전화</span>
+            <a href="tel:010-4803-6730" className="font-semibold text-primary hover:underline">
+              010-4803-6730
+            </a>
+          </div>
+          <div className="flex items-center gap-2">
+            <Mail className="h-5 w-5 shrink-0 text-primary" aria-hidden />
+            <span className="text-sm text-muted-foreground">이메일</span>
+            <a href="mailto:bum2002@kakao.com" className="font-semibold text-primary hover:underline">
+              bum2002@kakao.com
+            </a>
+          </div>
+        </div>
       </section>
     </main>
   );

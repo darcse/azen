@@ -12,9 +12,10 @@ export const Footer = () => {
         </div>
 
         <div className="space-y-1 text-sm text-muted-foreground">
-          <p>주소: 경기도 화성시 동탄 000-00</p>
+          <p>주소: 경기도 용인시 기흥구 서천로201번길 14 프리미엄원희캐슬 기흥서천 644호</p>
           <p>대표자: 윤준호</p>
-          <p>사업자등록번호: 123-45-67890</p>
+          <p>TEL: 031-889-0225 &nbsp; FAX: 031-889-0226</p>
+          <p>사업자등록번호: 203-81-68248</p>
           <p className="pt-1">© 2026 AZEN. All rights reserved.</p>
         </div>
       </div>

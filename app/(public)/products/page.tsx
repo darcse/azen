@@ -5,7 +5,6 @@ import {
   ELECTRIC_SUB_SLUGS,
   FILTER_SUB_SLUGS,
   PARENT_SLUG_FILTER,
-  WATER_SUB_SLUGS,
   catalogCategoryIdsForGroup,
   isValidCatalogCategoryParam,
   resolveCatalogGroup,
@@ -116,47 +115,6 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     };
   });
 
-  const waterCategoryIds = WATER_SUB_SLUGS.map((waterSlug) => bySlug.get(waterSlug)?.id).filter(
-    (id): id is string => Boolean(id),
-  );
-
-  const { data: rawWaterProducts, error: waterProdError } =
-    waterCategoryIds.length > 0
-      ? await supabase
-          .from("azen_products")
-          .select("id, name, description, thumbnail_url, category:azen_categories(name, slug)")
-          .eq("is_published", true)
-          .in("category_id", waterCategoryIds)
-          .order("created_at", { ascending: true })
-      : { data: [], error: null };
-
-  if (waterProdError) {
-    return (
-      <div className="flex min-h-[40vh] items-center justify-center text-sm text-red-500">
-        수처리 제품을 불러오지 못했습니다: {waterProdError.message}
-      </div>
-    );
-  }
-
-  const waterProducts: CatalogProduct[] = (rawWaterProducts ?? []).map((row) => {
-    const cat = normalizeCategoryEmbed(row.category);
-    return {
-      id: row.id as string,
-      name: row.name as string,
-      description: (row.description ?? null) as string | null,
-      thumbnailUrl: (row.thumbnail_url ?? null) as string | null,
-      categoryName: cat?.name ?? null,
-      categorySlug: cat?.slug ?? "",
-    };
-  });
-
-  const waterProductsBySlug = Object.fromEntries(
-    WATER_SUB_SLUGS.map((waterSlug) => [
-      waterSlug,
-      waterProducts.filter((product) => product.categorySlug === waterSlug),
-    ]),
-  ) as Record<(typeof WATER_SUB_SLUGS)[number], CatalogProduct[]>;
-
   return (
     <>
       <section
@@ -183,7 +141,6 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         group={group}
         urlCategorySlug={slug}
         categoryChips={categoryChips}
-        waterProductsBySlug={waterProductsBySlug}
       />
     </>
   );

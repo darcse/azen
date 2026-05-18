@@ -370,3 +370,5 @@
 - PRODUCT-005 구현: `app/(public)/products/water/[sub]/page.tsx` 수처리 서브 목록(히어로, `router.back` 뒤로가기, 좌 이미지+우 제품정보 `divide-y`, 빈 상태), `resolveWaterSubSlug`·`WaterSubBackButton` 추가, `feature_list/product.json` PRODUCT-005 passes=true
 - `AdminProductCreateForm.tsx`·`AdminProductEditForm.tsx`: 카테고리에서 `수처리 필터`(water_treatment) 제외, DEPTH/CARBON/PLEATED(water_depth·water_carbon·water_pleated) 선택 시 스펙·본문 에디터 숨김(제품명·간단설명·이미지만)
 - `AdminProductEditForm.tsx`: 카테고리 select `value={categoryId ?? ""}` null 처리
+- Revert: `feat: 수처리 탭 제품 목록 및 카드 레이아웃 개선` (e7c9c25, push 완료)
+- `Header.tsx`·`Footer.tsx`·`AdminHeader.tsx`: 인라인 SVG 로고 → `<img src="/logo.png" className="h-16 w-auto" />` (로컬 미커밋)

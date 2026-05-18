@@ -354,3 +354,8 @@
 - 테마 라이트 모드 고정: `app/layout.tsx` html 기본 클래스 `light` 추가, `hooks/useTheme.ts`에서 dark/auto 비활성화(항상 light 적용), `components/layout/ThemeClassBridge.tsx`에서 마운트 시 light 클래스만 적용
 - 테마 토글 UI 숨김: `components/layout/Header.tsx`의 `ThemeToggle`을 `hidden` 래퍼로 비표시 처리
 - `components/layout/AdminHeader.tsx`: 현재 `ThemeToggle` 미사용(로그아웃만 노출) 상태로 변경 없음
+- `app/(public)/about/page.tsx` 개편: 히어로 `솔루션 상담하기` 버튼 제거, Why AZEN 하단에 `오시는 길` 섹션 추가(네이버 지도 iframe `https://naver.me/5vJcEpnh` + 주소/TEL/FAX, `lg:grid-cols-2 gap-8`)
+- `app/(public)/about/page.tsx` 오시는 길 지도: 네이버 iframe → 구글맵 embed(`maps.google.com`, 주소 쿼리 + `hl=ko`)로 교체
+- `app/(public)/about/page.tsx` 오시는 길 구글맵 iframe src를 좌표 기반(`37.2778,127.1147`, `z=17`)으로 변경
+- `app/(public)/about/page.tsx` 오시는 길 구글맵 iframe src를 장소명+좌표 쿼리(`프리미엄원희캐슬+기흥서천`, `ll=37.2778,127.1147`, `z=17`)로 변경
+- `app/(public)/about/page.tsx` 오시는 길 구글맵 iframe을 Google Maps 공식 embed URL(`google.com/maps/embed?pb=...`)로 교체, `referrerPolicy="no-referrer-when-downgrade"` 추가

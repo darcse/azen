@@ -90,12 +90,6 @@ export default function AboutPage() {
             <br className="hidden md:block" />
             최고 수준의 여과 기술로 산업 현장의 효율성과 안전을 보장합니다.
           </p>
-          <button
-            type="button"
-            className="rounded-lg bg-[#1d4ed8] px-8 py-4 text-lg font-bold text-white transition-shadow hover:shadow-[0_18px_45px_rgba(29,78,216,0.28)] dark:bg-[#0a84ff] dark:hover:shadow-[0_18px_45px_rgba(10,132,255,0.3)]"
-          >
-            솔루션 상담하기
-          </button>
         </div>
       </section>
 
@@ -185,6 +179,55 @@ export default function AboutPage() {
                 </article>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#eff4ff] px-8 py-[120px] dark:bg-[#0e0e10]">
+        <div className="mx-auto max-w-[1280px]">
+          <h2 className="mb-12 text-center text-5xl font-semibold leading-[1.2] tracking-[-0.01em] text-[#0b1c30] dark:text-[#fefbfe]">
+            오시는 길
+          </h2>
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+            <div className="overflow-hidden rounded-xl border border-[#d7e2f2] bg-white shadow-[0px_10px_30px_rgba(15,23,42,0.05)] dark:border-white/5 dark:bg-[#1c1c1e]">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d794.1869601842375!2d127.07047324172939!3d37.22996052942856!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357b459adf24782d%3A0xe7a1373f724abe3a!2z6riw7Z2l7ISc7LKcIOybkO2drOy6kOyKrCDsp4Dsi53sgrDsl4XshLzthLA!5e0!3m2!1sko!2skr!4v1779087636580!5m2!1sko!2skr"
+                title="AZEN 오시는 길 구글 지도"
+                width="100%"
+                height={400}
+                style={{ border: 0 }}
+                className="block w-full"
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+            <div className="flex flex-col justify-center gap-6 rounded-xl border border-[#d7e2f2] bg-white p-8 shadow-[0px_10px_30px_rgba(15,23,42,0.05)] dark:border-white/5 dark:bg-[#1c1c1e]">
+              <div>
+                <h3 className="mb-2 text-sm font-semibold tracking-[0.05em] text-[#1d4ed8] dark:text-[#7fafff]">
+                  주소
+                </h3>
+                <p className="text-lg leading-[1.6] text-[#0b1c30] dark:text-[#fefbfe]">
+                  경기도 용인시 기흥구 서천로201번길 14 프리미엄원희캐슬 기흥서천 644호
+                </p>
+              </div>
+              <div>
+                <h3 className="mb-2 text-sm font-semibold tracking-[0.05em] text-[#1d4ed8] dark:text-[#7fafff]">
+                  TEL
+                </h3>
+                <p className="text-lg leading-[1.6] text-[#0b1c30] dark:text-[#fefbfe]">
+                  <a href="tel:031-889-0225" className="hover:underline">
+                    031-889-0225
+                  </a>
+                </p>
+              </div>
+              <div>
+                <h3 className="mb-2 text-sm font-semibold tracking-[0.05em] text-[#1d4ed8] dark:text-[#7fafff]">
+                  FAX
+                </h3>
+                <p className="text-lg leading-[1.6] text-[#0b1c30] dark:text-[#fefbfe]">031-889-0226</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>

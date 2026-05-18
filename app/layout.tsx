@@ -17,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className="h-full antialiased" suppressHydrationWarning>
+    <html lang="ko" className="light h-full antialiased" suppressHydrationWarning>
       <body className="min-h-full bg-background text-foreground">
         <ThemeClassBridge />
         <div className="flex min-h-screen flex-col">

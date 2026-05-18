@@ -350,3 +350,7 @@
 - `components/features/PublicServicePageClient.tsx` 서비스 히어로 배경 이미지 교체: 기존 외부 URL을 로컬 정적 경로 `/filter-bg2.png`로 변경
 - `components/features/PublicServicePageClient.tsx` 이미지 URL 교체: Core Strengths 3개 카드를 `/core_1.png`, `/core_2.png`, `/core_3.png`로, 하단 CTA 배경을 `/regist.png`로 변경
 - 이미지 확장자 변경: `app/(public)/about/page.tsx`, `app/(public)/products/page.tsx`, `app/page.tsx`, `components/features/PublicServicePageClient.tsx`의 지정된 이미지 경로들을 `.png`에서 `.webp`로 교체
+2026-05-18
+- 테마 라이트 모드 고정: `app/layout.tsx` html 기본 클래스 `light` 추가, `hooks/useTheme.ts`에서 dark/auto 비활성화(항상 light 적용), `components/layout/ThemeClassBridge.tsx`에서 마운트 시 light 클래스만 적용
+- 테마 토글 UI 숨김: `components/layout/Header.tsx`의 `ThemeToggle`을 `hidden` 래퍼로 비표시 처리
+- `components/layout/AdminHeader.tsx`: 현재 `ThemeToggle` 미사용(로그아웃만 노출) 상태로 변경 없음

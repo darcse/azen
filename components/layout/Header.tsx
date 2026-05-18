@@ -143,7 +143,9 @@ export const Header = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          <ThemeToggle />
+          <div className="hidden" aria-hidden>
+            <ThemeToggle />
+          </div>
           <button
             type="button"
             className="glass-card inline-flex h-9 w-9 items-center justify-center rounded-md border border-border md:hidden"

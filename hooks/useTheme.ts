@@ -1,31 +1,23 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useState } from "react";
-import { applyThemeClass, readStoredTheme, THEME_STORAGE_KEY, type ThemeMode } from "@/lib/theme";
+import { useLayoutEffect, useState } from "react";
+import { applyThemeClass, THEME_STORAGE_KEY, type ThemeMode } from "@/lib/theme";
 
 export type { ThemeMode } from "@/lib/theme";
 
 export const useTheme = () => {
-  const [theme, setTheme] = useState<ThemeMode>("auto");
+  const [theme, setTheme] = useState<ThemeMode>("light");
 
   useLayoutEffect(() => {
-    setTheme(readStoredTheme());
+    setTheme("light");
+    localStorage.setItem(THEME_STORAGE_KEY, "light");
+    applyThemeClass("light");
   }, []);
 
-  useEffect(() => {
-    if (theme === "auto") {
-      const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-      const handleSystemThemeChange = () => applyThemeClass("auto");
-
-      mediaQuery.addEventListener("change", handleSystemThemeChange);
-      return () => mediaQuery.removeEventListener("change", handleSystemThemeChange);
-    }
-  }, [theme]);
-
-  const setMode = (mode: ThemeMode) => {
-    setTheme(mode);
-    localStorage.setItem(THEME_STORAGE_KEY, mode);
-    applyThemeClass(mode);
+  const setMode = (_mode: ThemeMode) => {
+    setTheme("light");
+    localStorage.setItem(THEME_STORAGE_KEY, "light");
+    applyThemeClass("light");
   };
 
   return {

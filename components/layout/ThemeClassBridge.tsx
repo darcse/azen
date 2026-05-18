@@ -1,11 +1,11 @@
 "use client";
 
 import { useLayoutEffect } from "react";
-import { applyThemeClass, readStoredTheme } from "@/lib/theme";
+import { applyThemeClass } from "@/lib/theme";
 
 export const ThemeClassBridge = () => {
   useLayoutEffect(() => {
-    applyThemeClass(readStoredTheme());
+    applyThemeClass("light");
   }, []);
 
   return null;

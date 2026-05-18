@@ -4,6 +4,7 @@ import {
   CATALOG_SUB_LABEL_FALLBACK,
   ELECTRIC_SUB_SLUGS,
   FILTER_SUB_SLUGS,
+  PARENT_SLUG_FILTER,
   catalogCategoryIdsForGroup,
   isValidCatalogCategoryParam,
   resolveCatalogGroup,
@@ -53,7 +54,11 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const slug = rawCategory?.trim() ?? "";
 
   if (!slug || !isValidCatalogCategoryParam(slug)) {
-    redirect("/products?category=filter");
+    redirect("/products?category=air_handling");
+  }
+
+  if (slug === PARENT_SLUG_FILTER) {
+    redirect("/products?category=air_handling");
   }
 
   const group = resolveCatalogGroup(slug);

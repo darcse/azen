@@ -1,6 +1,30 @@
 /** GNB 필터 메뉴 제품군 (DB `azen_categories.slug`와 일치) */
 export const FILTER_SUB_SLUGS = ["air_handling", "dust_collector", "water_treatment", "others"] as const;
 
+/** 수처리 필터 하위 서브카테고리 (DB `azen_categories.slug`) */
+export const WATER_SUB_SLUGS = ["water_depth", "water_carbon", "water_pleated"] as const;
+
+export const WATER_SUB_CARDS = [
+  {
+    slug: "water_depth",
+    path: "depth",
+    label: "DEPTH",
+    description: "뎁스 필터 제품 보기",
+  },
+  {
+    slug: "water_carbon",
+    path: "carbon",
+    label: "CARBON",
+    description: "카본 필터 제품 보기",
+  },
+  {
+    slug: "water_pleated",
+    path: "pleated",
+    label: "PLEATED",
+    description: "플리티드 필터 제품 보기",
+  },
+] as const;
+
 /** GNB 전기/유공압 메뉴 제품군 */
 export const ELECTRIC_SUB_SLUGS = ["electric_parts", "hydraulic"] as const;
 
@@ -29,6 +53,9 @@ export const CATALOG_SUB_LABEL_FALLBACK: Record<string, string> = {
   air_handling: "공조기 필터",
   dust_collector: "집진기 필터",
   water_treatment: "수처리 필터",
+  water_depth: "DEPTH",
+  water_carbon: "CARBON",
+  water_pleated: "PLEATED",
   others: "기타 품목",
   electric_parts: "전기 부품",
   hydraulic: "유공압",

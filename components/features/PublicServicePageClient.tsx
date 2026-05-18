@@ -1,12 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
   BarChart3,
   ChevronLeft,
   ChevronRight,
-  MoveRight,
   Search,
   ShieldCheck,
   Sparkles,
@@ -30,29 +28,6 @@ interface PublicServicePageClientProps {
   cases: ServiceCaseItem[];
 }
 
-const tabs = [
-  { id: "service", label: "교체시공" },
-  { id: "cases", label: "시공사례" },
-] as const;
-
-const strengths = [
-  {
-    title: "Expert Team",
-    description: "외주 인력이 아닌, 필터와 설비를 완벽히 이해하는 AZEN 전담 시공팀 직접 투입.",
-    image: "/core_1.webp",
-  },
-  {
-    title: "Safety First",
-    description: "오염 확산 방지 및 작업자 안전을 최우선으로 하는 표준 시공 매뉴얼 준수.",
-    image: "/core_2.webp",
-  },
-  {
-    title: "Leak-free Testing",
-    description: "시공 직후 정밀 차압 측정 및 기밀성 검증을 통한 완벽한 성능 보장.",
-    image: "/core_3.webp",
-  },
-] as const;
-
 const processSteps = [
   { title: "현장 진단", description: "점검", icon: Search },
   { title: "보양 작업", description: "오염 차단", icon: ShieldCheck },
@@ -68,7 +43,6 @@ const comparisonRows = [
 ] as const;
 
 export const PublicServicePageClient = ({ cases }: PublicServicePageClientProps) => {
-  const [activeTab, setActiveTab] = useState<(typeof tabs)[number]["id"]>("service");
   const [selectedCaseId, setSelectedCaseId] = useState<string | null>(null);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
@@ -161,192 +135,111 @@ export const PublicServicePageClient = ({ cases }: PublicServicePageClientProps)
           </div>
         </section>
 
-        <section className="border-b border-border bg-background">
-          <div className="mx-auto flex w-full max-w-6xl items-center justify-center gap-4 px-4 md:px-6">
-            {tabs.map((tab) => {
-              const isActive = activeTab === tab.id;
+        <section className="mx-auto w-full max-w-6xl px-4 py-16 md:px-6 md:py-24">
+          <h2 className="text-center text-3xl font-semibold tracking-[-0.02em] md:text-4xl">Service Process</h2>
+          <div className="relative mt-14">
+            <div className="absolute left-0 right-0 top-[4.25rem] hidden h-px bg-border md:block" />
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-5">
+              {processSteps.map((step, index) => {
+                const Icon = step.icon;
 
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`border-b-2 px-2 py-4 text-sm font-semibold transition-colors md:px-6 md:text-base ${
-                    isActive
-                      ? "border-primary text-primary"
-                      : "border-transparent text-muted-foreground hover:text-foreground"
-                  }`}
-                  aria-pressed={isActive}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
+                return (
+                  <article
+                    key={step.title}
+                    className="glass-card relative flex min-h-[220px] flex-col items-center rounded-2xl border border-border bg-background px-5 py-6 text-center shadow-sm transition-transform duration-200 hover:-translate-y-1 md:px-6"
+                  >
+                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-muted text-primary">
+                      <Icon className="h-6 w-6" aria-hidden />
+                    </div>
+                    <p className="mt-4 text-xs font-semibold tracking-[0.18em] text-muted-foreground">
+                      STEP {index + 1}
+                    </p>
+                    <h3 className="mt-2 text-lg font-semibold">{step.title}</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">{step.description}</p>
+                  </article>
+                );
+              })}
+            </div>
           </div>
         </section>
 
-        {activeTab === "service" ? (
-          <>
-            <section className="mx-auto w-full max-w-6xl px-4 py-16 md:px-6 md:py-24">
-              <h2 className="text-center text-3xl font-semibold tracking-[-0.02em] md:text-4xl">
-                AZEN Core Strengths
-              </h2>
-              <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
-                {strengths.map((item) => (
-                  <article
-                    key={item.title}
-                    className="group relative h-[320px] overflow-hidden rounded-2xl border border-border md:h-[360px]"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={item.image} alt={item.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/20" />
-                    <div className="absolute inset-x-0 bottom-0 z-10 p-6 md:p-8">
-                      <h3 className="text-2xl font-semibold leading-tight text-white">{item.title}</h3>
-                      <p className="mt-3 max-w-[26ch] text-sm leading-6 text-white/80 md:text-base">
-                        {item.description}
-                      </p>
-                    </div>
-                  </article>
+        <section className="mx-auto w-full max-w-6xl px-4 pb-16 md:px-6 md:pb-24">
+          <h2 className="text-center text-3xl font-semibold tracking-[-0.02em] md:text-4xl">Why Choose AZEN</h2>
+          <div className="glass-card mt-12 overflow-x-auto rounded-2xl border border-border bg-background">
+            <table className="min-w-full border-collapse text-left">
+              <thead>
+                <tr className="bg-muted/70">
+                  <th className="px-4 py-4 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                    Service Feature
+                  </th>
+                  <th className="px-4 py-4 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                    General Replacement
+                  </th>
+                  <th className="bg-primary/5 px-4 py-4 text-xs font-semibold uppercase tracking-[0.14em] text-primary">
+                    AZEN Professional Service
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {comparisonRows.map((row) => (
+                  <tr key={row.feature} className="border-t border-border">
+                    <td className="px-4 py-4 font-medium text-foreground">{row.feature}</td>
+                    <td className="px-4 py-4">
+                      <span className="inline-flex rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">
+                        {row.general}
+                      </span>
+                    </td>
+                    <td className="bg-primary/5 px-4 py-4">
+                      <span className="inline-flex rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
+                        {row.azen}
+                      </span>
+                    </td>
+                  </tr>
                 ))}
-              </div>
-            </section>
+              </tbody>
+            </table>
+          </div>
+        </section>
 
-            <section className="mx-auto w-full max-w-6xl px-4 pb-16 md:px-6 md:pb-24">
-              <h2 className="text-center text-3xl font-semibold tracking-[-0.02em] md:text-4xl">
-                Service Process
-              </h2>
-              <div className="relative mt-14">
-                <div className="absolute left-0 right-0 top-[4.25rem] hidden h-px bg-border md:block" />
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-5">
-                  {processSteps.map((step, index) => {
-                    const Icon = step.icon;
-
-                    return (
-                      <article
-                        key={step.title}
-                        className="glass-card relative flex min-h-[220px] flex-col items-center rounded-2xl border border-border bg-background px-5 py-6 text-center shadow-sm transition-transform duration-200 hover:-translate-y-1 md:px-6"
-                      >
-                        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-muted text-primary">
-                          <Icon className="h-6 w-6" aria-hidden />
-                        </div>
-                        <p className="mt-4 text-xs font-semibold tracking-[0.18em] text-muted-foreground">
-                          STEP {index + 1}
-                        </p>
-                        <h3 className="mt-2 text-lg font-semibold">{step.title}</h3>
-                        <p className="mt-1 text-sm text-muted-foreground">{step.description}</p>
-                      </article>
-                    );
-                  })}
-                </div>
-              </div>
-            </section>
-
-            <section className="mx-auto w-full max-w-6xl px-4 pb-16 md:px-6 md:pb-24">
-              <h2 className="text-center text-3xl font-semibold tracking-[-0.02em] md:text-4xl">
-                Why Choose AZEN
-              </h2>
-              <div className="glass-card mt-12 overflow-x-auto rounded-2xl border border-border bg-background">
-                <table className="min-w-full border-collapse text-left">
-                  <thead>
-                    <tr className="bg-muted/70">
-                      <th className="px-4 py-4 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                        Service Feature
-                      </th>
-                      <th className="px-4 py-4 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                        General Replacement
-                      </th>
-                      <th className="bg-primary/5 px-4 py-4 text-xs font-semibold uppercase tracking-[0.14em] text-primary">
-                        AZEN Professional Service
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {comparisonRows.map((row) => (
-                      <tr key={row.feature} className="border-t border-border">
-                        <td className="px-4 py-4 font-medium text-foreground">{row.feature}</td>
-                        <td className="px-4 py-4">
-                          <span className="inline-flex rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">
-                            {row.general}
-                          </span>
-                        </td>
-                        <td className="bg-primary/5 px-4 py-4">
-                          <span className="inline-flex rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
-                            {row.azen}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </section>
-
-            <section className="relative overflow-hidden py-24">
-              <div className="absolute inset-0">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/regist.webp"
-                  alt="Professional industrial engineering facility"
-                  className="h-full w-full object-cover"
-                />
-                <div className="absolute inset-0 bg-black/75" />
-              </div>
-
-              <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center px-4 text-center md:px-6">
-                <h2 className="text-3xl font-semibold tracking-[-0.02em] text-white md:text-5xl">
-                  귀사의 설비 상태가 궁금하신가요?
-                </h2>
-                <p className="mt-4 text-base text-white/80 md:text-lg">지금 무료 현장 진단을 신청하세요.</p>
-                <Link
-                  href="/products?category=filter"
-                  className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-4 text-base font-semibold text-primary-foreground transition-transform duration-200 hover:-translate-y-0.5"
+        <section className="mx-auto w-full max-w-6xl px-4 pb-16 md:px-6 md:pb-24">
+          <h2 className="text-center text-3xl font-semibold tracking-[-0.02em] md:text-4xl">Success Cases</h2>
+          {cases.length === 0 ? (
+            <div className="glass-card mt-12 rounded-3xl border border-border bg-elevated px-8 py-16 text-center">
+              <p className="text-2xl font-semibold text-foreground">등록된 시공사례가 없습니다</p>
+            </div>
+          ) : (
+            <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {cases.map((serviceCase) => (
+                <button
+                  key={serviceCase.id}
+                  type="button"
+                  onClick={() => openCaseModal(serviceCase.id)}
+                  className="glass-card group overflow-hidden rounded-2xl border border-border bg-background text-left transition-transform duration-200 hover:-translate-y-1"
                 >
-                  무료 현장 진단 신청하기
-                  <MoveRight className="h-5 w-5" aria-hidden />
-                </Link>
-              </div>
-            </section>
-          </>
-        ) : (
-          <section className="mx-auto w-full max-w-6xl px-4 py-16 md:px-6 md:py-24">
-            {cases.length === 0 ? (
-              <div className="glass-card rounded-3xl border border-border bg-elevated px-8 py-16 text-center">
-                <p className="text-2xl font-semibold text-foreground">등록된 시공사례가 없습니다</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {cases.map((serviceCase) => (
-                  <button
-                    key={serviceCase.id}
-                    type="button"
-                    onClick={() => openCaseModal(serviceCase.id)}
-                    className="glass-card group overflow-hidden rounded-2xl border border-border bg-background text-left transition-transform duration-200 hover:-translate-y-1"
-                  >
-                    <div className="aspect-[4/3] overflow-hidden bg-elevated">
-                      {serviceCase.thumbnail_url ? (
-                        <>
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={serviceCase.thumbnail_url}
-                            alt={serviceCase.title}
-                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
-                        </>
-                      ) : (
-                        <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
-                          이미지 없음
-                        </div>
-                      )}
-                    </div>
-                    <div className="p-5">
-                      <h3 className="text-lg font-semibold text-foreground">{serviceCase.title}</h3>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            )}
-          </section>
-        )}
+                  <div className="aspect-[4/3] overflow-hidden bg-elevated">
+                    {serviceCase.thumbnail_url ? (
+                      <>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={serviceCase.thumbnail_url}
+                          alt={serviceCase.title}
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      </>
+                    ) : (
+                      <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+                        이미지 없음
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-5">
+                    <h3 className="text-lg font-semibold text-foreground">{serviceCase.title}</h3>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </section>
       </main>
 
       {selectedCase && currentSlide && (

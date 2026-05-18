@@ -359,3 +359,4 @@
 - `app/(public)/about/page.tsx` 오시는 길 구글맵 iframe src를 좌표 기반(`37.2778,127.1147`, `z=17`)으로 변경
 - `app/(public)/about/page.tsx` 오시는 길 구글맵 iframe src를 장소명+좌표 쿼리(`프리미엄원희캐슬+기흥서천`, `ll=37.2778,127.1147`, `z=17`)로 변경
 - `app/(public)/about/page.tsx` 오시는 길 구글맵 iframe을 Google Maps 공식 embed URL(`google.com/maps/embed?pb=...`)로 교체, `referrerPolicy="no-referrer-when-downgrade"` 추가
+- `components/features/PublicServicePageClient.tsx` 구조 개편: 교체시공/시공사례 탭·AZEN Core Strengths·CTA 섹션 제거, Service Process/Why Choose AZEN 단일 페이지 노출, Why Choose AZEN 하단에 `Success Cases` 섹션(기존 시공사례 카드+모달) 추가

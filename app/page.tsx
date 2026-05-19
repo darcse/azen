@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Factory, ShieldCheck, Truck, Wrench } from "lucide-react";
+import { HomeHeroPhoneCtas } from "@/components/features/HomeHeroPhoneCtas";
 import { HomeProductsCarousel } from "@/components/features/HomeProductsCarousel";
 import { createClient } from "@/lib/supabase/server";
 
@@ -88,20 +89,7 @@ export default async function Home() {
               적기 수급부터 정밀 시공까지, 산업용 필터 관리의 모든 과정을 책임집니다. 집진기,
               유공압 부품 등 현장에 필요한 최상의 파츠를 가장 빠르게 연결해 드립니다.
             </p>
-            <div className="flex flex-wrap gap-3">
-              <Link
-                href="/products?category=filter"
-                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white transition-transform duration-200 active:scale-95 dark:bg-[#0A84FF]"
-              >
-                현장 진단 신청
-              </Link>
-              <Link
-                href="/service"
-                className="rounded-md border border-white/30 bg-white/10 px-4 py-2 text-sm font-medium text-white"
-              >
-                교체시공 문의
-              </Link>
-            </div>
+            <HomeHeroPhoneCtas />
           </div>
         </div>
       </section>

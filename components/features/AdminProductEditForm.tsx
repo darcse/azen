@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
@@ -16,6 +16,7 @@ import {
 import { AdminDeleteButton } from "@/components/features/AdminDeleteButton";
 import { AdminImageDeleteButton } from "@/components/features/AdminImageDeleteButton";
 import { RichTextEditor } from "@/components/ui/RichTextEditor";
+import { createClient } from "@/lib/supabase/client";
 import { CATALOG_SUB_LABEL_FALLBACK, WATER_SUB_SLUGS } from "@/lib/products-catalog";
 
 interface CategoryOption {
@@ -139,6 +140,27 @@ const buildLegacyContentHtml = (sections: Array<{ title: string; html: string }>
     .map(({ title, html }) => `<h3>${title}</h3>${html}`)
     .join("");
 
+const createThumbnailStoragePath = (productId: string, filename: string) => {
+  const ext = filename.split(".").pop()?.toLowerCase() ?? "jpg";
+  return `${productId}/thumbnail/${Date.now()}.${ext}`;
+};
+
+const uploadThumbnailToStorage = async (productId: string, file: File): Promise<string> => {
+  const supabase = createClient();
+  const path = createThumbnailStoragePath(productId, file.name);
+  const { error } = await supabase.storage.from("product-images").upload(path, file, {
+    contentType: file.type || "image/jpeg",
+    upsert: false,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  const { data } = supabase.storage.from("product-images").getPublicUrl(path);
+  return data.publicUrl;
+};
+
 export const AdminProductEditForm = ({
   categories,
   product,
@@ -148,7 +170,8 @@ export const AdminProductEditForm = ({
   deleteProductAction,
 }: AdminProductEditFormProps) => {
   const router = useRouter();
-  const [state, formAction, isPending] = useActionState(updateAction, { error: null });
+  const [state, formAction] = useActionState(updateAction, { error: null });
+  const [isPending, startTransition] = useTransition();
   const [isDirty, setIsDirty] = useState(false);
   const [categoryId, setCategoryId] = useState(product.category_id);
   const [specItems, setSpecItems] = useState<SpecItemInput[]>(() => parseSpecItems(product.spec_items));
@@ -156,8 +179,21 @@ export const AdminProductEditForm = ({
   const [technologyHtml, setTechnologyHtml] = useState(product.content_technology ?? "");
   const [applicationHtml, setApplicationHtml] = useState(product.content_application ?? "");
   const [thumbnailMode, setThumbnailMode] = useState<"file" | "url">("file");
+  const [thumbnailPreviewUrl, setThumbnailPreviewUrl] = useState<string | null>(null);
+  const [thumbnailUploadError, setThumbnailUploadError] = useState<string | null>(null);
+  const [isUploadingThumbnail, setIsUploadingThumbnail] = useState(false);
   const [additionalMode, setAdditionalMode] = useState<"file" | "url">("file");
   const [additionalUrlInputs, setAdditionalUrlInputs] = useState([""]);
+
+  useEffect(() => {
+    return () => {
+      if (thumbnailPreviewUrl?.startsWith("blob:")) {
+        URL.revokeObjectURL(thumbnailPreviewUrl);
+      }
+    };
+  }, [thumbnailPreviewUrl]);
+
+  const displayedThumbnailUrl = thumbnailPreviewUrl ?? product.thumbnail_url;
 
   const addSpecItem = () => {
     setSpecItems((prev) => (prev.length >= MAX_SPEC_ITEMS ? prev : [...prev, createEmptySpecItem()]));
@@ -220,9 +256,61 @@ export const AdminProductEditForm = ({
     setAdditionalUrlInputs((prev) => (prev.length === 1 ? prev : prev.filter((_, idx) => idx !== index)));
   };
 
+  const handleThumbnailFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    setThumbnailUploadError(null);
+
+    if (!file) {
+      return;
+    }
+
+    setThumbnailPreviewUrl((prev) => {
+      if (prev?.startsWith("blob:")) {
+        URL.revokeObjectURL(prev);
+      }
+      return URL.createObjectURL(file);
+    });
+    setIsDirty(true);
+  };
+
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setThumbnailUploadError(null);
+
+    const formData = new FormData(event.currentTarget);
+
+    if (thumbnailMode === "file") {
+      const thumbnailFile = formData.get("thumbnail_file");
+      formData.delete("thumbnail_file");
+
+      if (thumbnailFile instanceof File && thumbnailFile.size > 0) {
+        setIsUploadingThumbnail(true);
+        try {
+          const uploadedUrl = await uploadThumbnailToStorage(product.id, thumbnailFile);
+          formData.set("thumbnail_mode", "url");
+          formData.set("thumbnail_url", uploadedUrl);
+        } catch (error) {
+          setThumbnailUploadError(
+            error instanceof Error ? error.message : "대표 이미지 업로드에 실패했습니다.",
+          );
+          setIsUploadingThumbnail(false);
+          return;
+        }
+        setIsUploadingThumbnail(false);
+      }
+    }
+
+    setIsDirty(false);
+    startTransition(() => {
+      formAction(formData);
+    });
+  };
+
+  const isSaving = isPending || isUploadingThumbnail;
+
   return (
     <form
-      action={formAction}
+      onSubmit={handleFormSubmit}
       onChange={() => setIsDirty(true)}
       className="glass-card space-y-5 rounded-2xl border border-border p-5"
     >
@@ -370,12 +458,12 @@ export const AdminProductEditForm = ({
 
       <section className="space-y-3 rounded-xl border border-border p-4">
         <p className="text-sm font-medium">대표 이미지</p>
-        {product.thumbnail_url && (
+        {displayedThumbnailUrl && (
           <div className="flex aspect-square w-64 max-w-full shrink-0 items-center justify-center overflow-hidden rounded-md border border-border bg-elevated">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={product.thumbnail_url}
-              alt="기존 대표 이미지"
+              src={displayedThumbnailUrl}
+              alt="대표 이미지 미리보기"
               className="max-h-full max-w-full object-contain object-center"
             />
           </div>
@@ -383,7 +471,10 @@ export const AdminProductEditForm = ({
         <div className="flex gap-2">
           <button
             type="button"
-            onClick={() => setThumbnailMode("file")}
+            onClick={() => {
+              setThumbnailMode("file");
+              setThumbnailUploadError(null);
+            }}
             className={`inline-flex items-center gap-1 rounded-md border px-3 py-2 text-xs ${
               thumbnailMode === "file" ? "border-primary bg-primary text-white" : "border-border"
             }`}
@@ -393,7 +484,10 @@ export const AdminProductEditForm = ({
           </button>
           <button
             type="button"
-            onClick={() => setThumbnailMode("url")}
+            onClick={() => {
+              setThumbnailMode("url");
+              setThumbnailUploadError(null);
+            }}
             className={`inline-flex items-center gap-1 rounded-md border px-3 py-2 text-xs ${
               thumbnailMode === "url" ? "border-primary bg-primary text-white" : "border-border"
             }`}
@@ -404,12 +498,18 @@ export const AdminProductEditForm = ({
         </div>
         <input type="hidden" name="thumbnail_mode" value={thumbnailMode} />
         {thumbnailMode === "file" ? (
-          <input
-            type="file"
-            name="thumbnail_file"
-            accept="image/*"
-            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
-          />
+          <>
+            <input
+              type="file"
+              name="thumbnail_file"
+              accept="image/*"
+              onChange={handleThumbnailFileChange}
+              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+            />
+            <p className="text-xs text-muted-foreground">
+              파일 선택 후 저장하면 Storage에 업로드되고 대표 이미지(thumbnail_url)가 교체됩니다.
+            </p>
+          </>
         ) : (
           <input
             name="thumbnail_url"
@@ -418,6 +518,7 @@ export const AdminProductEditForm = ({
             className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
           />
         )}
+        {thumbnailUploadError && <p className="text-sm text-red-500">{thumbnailUploadError}</p>}
       </section>
 
       <section className="space-y-3 rounded-xl border border-border p-4">
@@ -556,11 +657,11 @@ export const AdminProductEditForm = ({
       <div className="flex flex-wrap items-center justify-center gap-2">
         <button
           type="submit"
-          disabled={isPending}
+          disabled={isSaving}
           className="inline-flex w-36 items-center justify-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-white disabled:opacity-60"
         >
           <Save size={15} />
-          {isPending ? "저장 중..." : "수정 저장"}
+          {isSaving ? "저장 중..." : "수정 저장"}
         </button>
         <AdminDeleteButton action={deleteProductAction} productId={product.id} productName={product.name}>
           제품 삭제

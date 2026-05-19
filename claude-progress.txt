@@ -373,3 +373,12 @@
 - Revert: `feat: 수처리 탭 제품 목록 및 카드 레이아웃 개선` (e7c9c25, push 완료)
 - `Header.tsx`·`Footer.tsx`·`AdminHeader.tsx`: 인라인 SVG 로고 → `<img src="/logo.png" className="h-16 w-auto" />` (로컬 미커밋)
 - `ProductsCatalogClient.tsx` 수처리 탭: DEPTH/CARBON/PLEATED 카드 내부에 서버 `products` prop 기준 제품 세로 목록(썸네일 w-12 h-12 + 제품명, `border-b`, `/products/[id]`, 없으면 미노출)
+- `next.config.ts` `images.remotePatterns`에 `fdwlnepslsqlfcvdeyqp.supabase.co` 추가
+- `AdminProductEditForm.tsx` 대표 이미지 파일 업로드: 클라이언트 Storage 업로드 후 `thumbnail_url`만 서버 전달(`thumbnail_mode=url`), `azen_product_images` insert 없음, 기존 대표 이미지 URL 교체
+- `AdminProductEditForm.tsx` 폼 submit 시 `useActionState` 액션 호출을 `startTransition`으로 감쌈
+- `app/(public)/purchase/page.tsx` 전화번호: 모바일 `tel:` 유지, 데스크톱(md+) 클릭 시 전화 문의 모달(031-889-0225, 복사·토스트, X/배경 닫기)
+- 메인 히어로(`HomeHeroPhoneCtas`): 견적 문의·교체시공 문의 CTA — 모바일 `tel:031-889-0225`, 데스크톱 전화 문의 모달(복사·토스트). purchase 페이지 모달은 원복
+- `PhoneInquiryModal.tsx` z-index: 오버레이 `z-40`, 모달 컨테이너 `z-50`, 토스트 `z-60`
+- `PhoneInquiryModal.tsx` 레이아웃: 오버레이(`fixed inset-0 bg-black/50 z-40 flex items-center justify-center`) 안에 모달 컨테이너, 토스트 `fixed bottom-8 left-1/2 -translate-x-1/2 z-50`
+- `PhoneInquiryModal.tsx` 토스트: 별도 `fixed` 제거 → 오버레이 div 내부 `absolute bottom-8 left-1/2 -translate-x-1/2`
+- `PhoneInquiryModal.tsx` 복사 버튼: 클립보드 복사 → 모달 즉시 닫기 → `fixed bottom-8 z-50` 토스트 2초 표시

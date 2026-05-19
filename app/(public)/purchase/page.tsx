@@ -71,9 +71,10 @@ export default function PurchasePage() {
           <div className="flex items-center gap-2">
             <Phone className="h-5 w-5 shrink-0 text-primary" aria-hidden />
             <span className="text-sm text-muted-foreground">전화</span>
-            <a href="tel:010-4803-6730" className="font-semibold text-primary hover:underline">
+            <a href="tel:010-4803-6730" className="font-semibold text-primary hover:underline md:hidden">
               010-4803-6730
             </a>
+            <span className="hidden font-semibold text-foreground md:inline">010-4803-6730</span>
           </div>
           <div className="flex items-center gap-2">
             <Mail className="h-5 w-5 shrink-0 text-primary" aria-hidden />

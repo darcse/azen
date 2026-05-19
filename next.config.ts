@@ -24,6 +24,8 @@ const imageRemotePatterns: NonNullable<NextConfig["images"]>["remotePatterns"] =
 
   { protocol: "https", hostname: "imagedelivery.net" },
 
+  { protocol: "https", hostname: "fdwlnepslsqlfcvdeyqp.supabase.co" },
+
   { protocol: "https", hostname: "picsum.photos" },
   { protocol: "https", hostname: "placehold.co" },
   { protocol: "https", hostname: "via.placeholder.com" },

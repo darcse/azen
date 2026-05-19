@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { unstable_cache } from "next/cache";
 import { ClipboardList } from "lucide-react";
 import { createStaticClient } from "@/lib/supabase/static";
-import { WaterSubBackButton } from "@/components/features/WaterSubBackButton";
+import { ProductDetailBackButton } from "@/components/features/ProductDetailBackButton";
 import {
   CATALOG_SUB_LABEL_FALLBACK,
   WATER_SUB_CARDS,
@@ -15,6 +15,11 @@ export const revalidate = 300;
 interface WaterSubPageProps {
   params: Promise<{ sub: string }>;
 }
+
+const crumbLinkClass =
+  "text-muted-foreground underline-offset-2 transition hover:text-foreground hover:underline";
+
+const pageContainer = "mx-auto w-full min-w-0 max-w-6xl px-4";
 
 const getWaterSubProducts = (categorySlug: string) =>
   unstable_cache(
@@ -80,59 +85,76 @@ export default async function WaterSubProductsPage({ params }: WaterSubPageProps
   const productRows = products;
 
   return (
-    <main className="bg-background text-foreground">
-      <section
-        className="relative w-full overflow-hidden bg-cover bg-center"
-        style={{ backgroundImage: "url('/filter-bg.webp')", minHeight: "300px" }}
-      >
-        <div className="absolute inset-0 bg-black/60" />
-        <div className="relative z-10 flex min-h-[300px] items-end">
-          <div className="mx-auto w-full max-w-7xl px-8 py-12">
-            <h1 className="text-3xl font-bold text-white md:text-4xl">{title}</h1>
-            <p className="mt-2 text-sm leading-relaxed text-white/80 md:text-base">수처리 필터 제품 목록</p>
+    <main className="w-full min-w-0 overflow-x-hidden bg-background text-foreground">
+      <div className={`${pageContainer} pb-10 pt-12`}>
+        <div className="flex flex-col gap-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <ProductDetailBackButton />
+            <h1 className="min-w-0 flex-1 truncate text-2xl font-bold text-foreground">{title}</h1>
           </div>
+          <nav
+            aria-label="breadcrumb"
+            className="min-w-0 pl-[calc(2.5rem+0.75rem)] pt-1 text-sm text-muted-foreground"
+          >
+            <span className="flex flex-wrap items-center gap-x-1 gap-y-1">
+              <Link href="/products?category=air_handling" className={crumbLinkClass}>
+                필터
+              </Link>
+              <span className="px-0.5 text-muted-foreground/60" aria-hidden>
+                &gt;
+              </span>
+              <Link href="/products?category=water_treatment" className={crumbLinkClass}>
+                {CATALOG_SUB_LABEL_FALLBACK.water_treatment}
+              </Link>
+              <span className="px-0.5 text-muted-foreground/60" aria-hidden>
+                &gt;
+              </span>
+              <span className="font-medium text-foreground">{title}</span>
+            </span>
+          </nav>
+          <hr className="mt-6 border-border dark:border-white/20" aria-hidden />
         </div>
-      </section>
-
-      <div className="mx-auto max-w-7xl px-8 py-8">
-        <WaterSubBackButton />
       </div>
 
-      <section className="mx-auto max-w-7xl px-8 py-12">
+      <section className={`${pageContainer} pb-16 pt-8`}>
         {productRows.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-border bg-elevated px-6 py-16 text-center">
             <ClipboardList className="h-10 w-10 text-muted-foreground" aria-hidden />
             <p className="font-medium text-foreground">등록된 제품이 없습니다.</p>
           </div>
         ) : (
-          <div className="divide-y divide-border">
-            {productRows.map((product) => (
-              <Link
+          <div>
+            {productRows.map((product, index) => (
+              <div
                 key={product.id}
-                href={`/products/${product.id}?category=filter`}
-                className="flex flex-col gap-6 py-8 transition-colors hover:bg-muted/30 lg:flex-row lg:items-center"
+                className={`flex min-w-0 flex-col gap-6 py-8 lg:flex-row lg:items-start ${
+                  index < productRows.length - 1 ? "border-b border-border" : ""
+                }`}
               >
-                <div className="h-48 w-full shrink-0 overflow-hidden rounded-xl bg-muted lg:w-64">
+                <div className="relative flex h-60 w-full max-w-xs shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white dark:bg-muted">
                   {product.thumbnail_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={product.thumbnail_url}
                       alt={product.name}
-                      className="h-48 w-full object-cover lg:w-64"
+                      className="max-h-full max-w-full object-contain"
                     />
                   ) : (
-                    <div className="flex h-48 w-full items-center justify-center text-sm text-muted-foreground lg:w-64">
+                    <div className="flex h-full w-full items-center justify-center text-sm text-muted-foreground">
                       이미지 없음
                     </div>
                   )}
                 </div>
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 overflow-hidden break-words">
                   <h2 className="text-xl font-bold text-foreground">{product.name}</h2>
                   {product.description ? (
-                    <p className="mt-2 text-muted-foreground">{product.description}</p>
+                    <div
+                      className="mt-2 text-muted-foreground"
+                      dangerouslySetInnerHTML={{ __html: product.description }}
+                    />
                   ) : null}
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         )}

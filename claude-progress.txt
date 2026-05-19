@@ -395,3 +395,8 @@
 - 공개 페이지 CDN 캐싱 최적화: `createStaticClient` 사용 확인·`service/page.tsx` 교체, 6개 공개 페이지 `export const revalidate = 300` 추가 (`/`, `/about`, `/service`, `/products/*`)
 - `lib/supabase/middleware.ts` `isPublicRoute` 추가 — `/`, `/products`, `/about`, `/service`, `/purchase`는 Supabase auth 체크 없이 통과
 - `middleware.ts` matcher 확장(정적 에셋 제외), 공개 경로는 세션 갱신·쿠키 처리 생략
+- `ProductsCatalogClient.tsx` 수처리 탭 카드: DEPTH/CARBON/PLEATED 제목만 표시, 카드 내 제품 목록 미리보기 제거
+- `products/water/[sub]/page.tsx` 제품 상세 링크 제거, 한 페이지에 이미지+제품명+간단설명 정적 목록 표시
+- `ProductsCatalogClient.tsx` 수처리 탭 DEPTH/CARBON/PLEATED 카드 → `/products/water/depth|carbon|pleated` Link 추가
+- `products/water/[sub]/page.tsx` 히어로 제거·제품 상세형 타이틀 바(뒤로가기+브레드크럼), 이미지 w-80 h-60, description `dangerouslySetInnerHTML`
+- `ProductsCatalogClient.tsx` 수처리 서브카테고리 카드: 서버 products prop 기준 첫 제품 썸네일 배경 이미지 카드(DEPTH/CARBON/PLEATED, hover 오버레이)

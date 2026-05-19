@@ -7,7 +7,6 @@ import {
   ELECTRIC_SUB_SLUGS,
   FILTER_SUB_SLUGS,
   WATER_SUB_CARDS,
-  WATER_SUB_SLUGS,
   type ProductCatalogGroup,
 } from "@/lib/products-catalog";
 import { ProductCard, type ProductCardDisplay } from "@/components/features/ProductCard";
@@ -21,15 +20,6 @@ interface CategoryChip {
   slug: string;
   name: string;
 }
-
-type WaterSubSlug = (typeof WATER_SUB_SLUGS)[number];
-type WaterProductsBySlug = Record<WaterSubSlug, CatalogProduct[]>;
-
-const EMPTY_WATER_PRODUCTS: WaterProductsBySlug = {
-  water_depth: [],
-  water_carbon: [],
-  water_pleated: [],
-};
 
 interface ProductsCatalogClientProps {
   products: CatalogProduct[];
@@ -68,21 +58,15 @@ export const ProductsCatalogClient = ({
     return products.filter((p) => p.categorySlug === urlCategorySlug);
   }, [products, group, urlCategorySlug]);
 
-  const waterProductsBySlug = useMemo(() => {
-    const grouped: WaterProductsBySlug = {
-      water_depth: [],
-      water_carbon: [],
-      water_pleated: [],
-    };
+  const waterSubThumbnailBySlug = useMemo(() => {
+    const thumbnails: Record<string, string | null> = {};
 
-    for (const product of products) {
-      const slug = product.categorySlug;
-      if (slug === "water_depth" || slug === "water_carbon" || slug === "water_pleated") {
-        grouped[slug].push(product);
-      }
+    for (const card of WATER_SUB_CARDS) {
+      const firstProduct = products.find((product) => product.categorySlug === card.slug);
+      thumbnails[card.slug] = firstProduct?.thumbnailUrl ?? null;
     }
 
-    return grouped;
+    return thumbnails;
   }, [products]);
 
   const electricFiltered = useMemo(() => {
@@ -134,39 +118,30 @@ export const ProductsCatalogClient = ({
           {isWaterTab ? (
             <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
               {WATER_SUB_CARDS.map((card) => {
-                const subProducts = waterProductsBySlug[card.slug] ?? EMPTY_WATER_PRODUCTS[card.slug];
+                const thumbnailUrl = waterSubThumbnailBySlug[card.slug];
 
                 return (
-                  <div key={card.slug} className="rounded-2xl bg-muted p-8">
-                    <h3 className="text-xl font-bold tracking-wide text-foreground">{card.label}</h3>
-                    {subProducts.length > 0 && (
-                      <div className="mt-6 flex flex-col">
-                        {subProducts.map((product, index) => (
-                          <Link
-                            key={product.id}
-                            href={`/products/${product.id}?category=filter`}
-                            className={`flex items-center gap-3 py-3 transition-colors hover:bg-background/50 ${
-                              index < subProducts.length - 1 ? "border-b border-border" : ""
-                            }`}
-                          >
-                            {product.thumbnailUrl ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img
-                                src={product.thumbnailUrl}
-                                alt={product.name}
-                                className="h-12 w-12 shrink-0 rounded-lg object-cover"
-                              />
-                            ) : (
-                              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-background text-[10px] text-muted-foreground">
-                                없음
-                              </div>
-                            )}
-                            <p className="line-clamp-2 text-sm font-semibold text-foreground">{product.name}</p>
-                          </Link>
-                        ))}
+                  <Link
+                    key={card.slug}
+                    href={`/products/water/${card.path}`}
+                    className="group relative block aspect-[4/3] min-h-[280px] overflow-hidden rounded-2xl bg-white dark:bg-muted"
+                  >
+                    {thumbnailUrl ? (
+                      <div className="absolute inset-0 flex items-center justify-center p-6">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={thumbnailUrl}
+                          alt=""
+                          aria-hidden
+                          className="max-h-full max-w-full object-contain"
+                        />
                       </div>
-                    )}
-                  </div>
+                    ) : null}
+                    <div className="absolute inset-0 bg-black/50 transition-colors group-hover:bg-black/30" />
+                    <div className="relative flex h-full min-h-[280px] items-center justify-center p-8">
+                      <h3 className="text-2xl font-bold text-white">{card.label}</h3>
+                    </div>
+                  </Link>
                 );
               })}
             </div>

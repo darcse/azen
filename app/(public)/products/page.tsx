@@ -13,9 +13,6 @@ import {
 } from "@/lib/products-catalog";
 import { ProductsCatalogClient, type CatalogProduct } from "@/components/features/ProductsCatalogClient";
 
-export const dynamic = "force-static";
-export const revalidate = 60;
-
 interface CategoryRow {
   id: string;
   name: string;

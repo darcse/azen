@@ -67,6 +67,13 @@ interface SpecItemInput {
 
 const MAX_SPEC_ITEMS = 6;
 
+const normalizeDescriptionForSave = (value: string) => {
+  const trimmed = value.trim();
+  return trimmed ? trimmed.replace(/\n/g, "<br>") : "";
+};
+
+const formatDescriptionForEdit = (value: string | null) => value?.replace(/<br\s*\/?>/gi, "\n") ?? "";
+
 const WATER_SUB_LABELS = new Set(
   WATER_SUB_SLUGS.map((slug) => CATALOG_SUB_LABEL_FALLBACK[slug]),
 );
@@ -311,6 +318,9 @@ export const AdminProductEditForm = ({
       }
     }
 
+    const description = String(formData.get("description") ?? "");
+    formData.set("description", normalizeDescriptionForSave(description));
+
     setIsDirty(false);
     startTransition(() => {
       formAction(formData);
@@ -374,7 +384,7 @@ export const AdminProductEditForm = ({
         <textarea
           name="description"
           rows={3}
-          defaultValue={product.description ?? ""}
+          defaultValue={formatDescriptionForEdit(product.description)}
           className="rounded-md border border-border bg-background px-3 py-2"
           placeholder="간단한 소개 문구를 입력하세요"
         />

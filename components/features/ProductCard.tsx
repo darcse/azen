@@ -46,7 +46,7 @@ export const ProductCard = ({ product }: { product: ProductCardDisplay }) => {
           <p className="text-sm text-primary">{product.categoryName}</p>
         ) : null}
         <h3 className="mt-1 font-bold text-foreground">{product.name}</h3>
-        <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
+        <p className="mt-2 line-clamp-2 whitespace-pre-wrap text-sm text-muted-foreground">
           {product.description ?? "제품 상세 페이지에서 더 많은 정보를 확인할 수 있습니다."}
         </p>
       </div>

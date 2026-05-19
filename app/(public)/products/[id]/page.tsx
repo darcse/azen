@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ClipboardList, ListChecks } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { WATER_SUB_SLUGS } from "@/lib/products-catalog";
 import { ProductDetailBackButton } from "@/components/features/ProductDetailBackButton";
 import { ProductDetailHtmlContent } from "@/components/features/ProductDetailHtmlContent";
 import { ProductGallery } from "@/components/features/ProductGallery";
@@ -131,6 +132,14 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   const contentApplication = (data.content_application ?? null) as string | null;
   const spec = (data.spec ?? null) as string | null;
   const specItems = parseSpecItems(data.spec_items);
+  const isWaterSubProduct = category
+    ? (WATER_SUB_SLUGS as readonly string[]).includes(category.slug)
+    : false;
+  const categoryListHref = isWaterSubProduct
+    ? "/products?category=water_treatment"
+    : category
+      ? `/products?category=${encodeURIComponent(category.slug)}`
+      : null;
   const hasContentSections = Boolean(contentOverview || contentTechnology || contentApplication);
 
   return (
@@ -158,7 +167,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                     </Link>
                     <span className="px-0.5 text-muted-foreground/60" aria-hidden>&gt;</span>
                     <Link
-                      href={`/products?category=${encodeURIComponent(category.slug)}`}
+                      href={categoryListHref ?? "#"}
                       className={crumbLinkClass}
                     >
                       {category.name}
@@ -168,7 +177,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                 ) : (
                   <>
                     <Link
-                      href={`/products?category=${encodeURIComponent(category.slug)}`}
+                      href={categoryListHref ?? "#"}
                       className={crumbLinkClass}
                     >
                       {category.name}
@@ -197,9 +206,12 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             {category ? <p className="text-sm text-primary">{category.name}</p> : null}
             <h2 className="mt-1 text-2xl font-bold text-foreground">{name}</h2>
             {description ? (
-              <p className="mt-2 text-muted-foreground">{description}</p>
+              <div
+                className="mt-2 text-muted-foreground"
+                dangerouslySetInnerHTML={{ __html: description }}
+              />
             ) : null}
-            {specItems.length > 0 || spec ? (
+            {!isWaterSubProduct && (specItems.length > 0 || spec) ? (
               <>
                 <hr className="my-4 border-border dark:border-white/20" />
                 <p className="inline-flex items-center gap-2 text-lg font-bold text-foreground">
@@ -237,7 +249,8 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       </div>
 
       {/* 4. 하단 상세설명 */}
-      {hasContentSections ? (
+      {!isWaterSubProduct &&
+        (hasContentSections ? (
         <div className={`${pageContainer} pb-16 pt-12`}>
           <div className="space-y-8">
             {contentOverview ? (
@@ -283,7 +296,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             <p className="text-sm text-muted-foreground">제품 정보는 순차적으로 업데이트됩니다.</p>
           </div>
         </div>
-      )}
+      ))}
 
     </main>
   );

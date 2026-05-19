@@ -383,3 +383,8 @@
 - `PhoneInquiryModal.tsx` 토스트: 별도 `fixed` 제거 → 오버레이 div 내부 `absolute bottom-8 left-1/2 -translate-x-1/2`
 - `PhoneInquiryModal.tsx` 복사 버튼: 클립보드 복사 → 모달 즉시 닫기 → `fixed bottom-8 z-50` 토스트 2초 표시
 - `AdminProductCreateForm.tsx`·`AdminProductEditForm.tsx` 추가 이미지 파일 업로드: 단일 multiple input → 파일 선택 행 목록(행별 input+삭제, 「파일 추가」 버튼)
+- `app/(public)/products/[id]/page.tsx`·`ProductCard.tsx` 간단설명(description)에 `whitespace-pre-wrap` 추가
+- `app/(public)/products/[id]/page.tsx` water_depth·water_carbon·water_pleated 제품: 스펙·본문 3섹션·empty 상태 미노출
+- `AdminProductCreateForm.tsx`·`AdminProductEditForm.tsx` 간단설명 저장 시 `\n` → `<br>` 변환, `products/[id]/page.tsx` description `dangerouslySetInnerHTML` 표시
+- `app/(public)/products/[id]/page.tsx` water 서브카테고리 브레드크럼: `/products?category=water_treatment` 링크로 수정
+- `AdminProductCreateForm.tsx` 폼 submit 시 `useActionState` 액션 호출을 `startTransition`으로 감쌈

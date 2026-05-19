@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, useTransition } from "react";
 import { FileText, ImagePlus, Link as LinkIcon, Plus, Save, Trash2, Upload, Wrench } from "lucide-react";
 import { RichTextEditor } from "@/components/ui/RichTextEditor";
 import { CATALOG_SUB_LABEL_FALLBACK, WATER_SUB_SLUGS } from "@/lib/products-catalog";
@@ -26,6 +26,13 @@ interface AdminProductCreateFormProps {
 }
 
 const MAX_SPEC_ITEMS = 6;
+
+const normalizeDescriptionForSave = (value: string) => {
+  const trimmed = value.trim();
+  return trimmed ? trimmed.replace(/\n/g, "<br>") : "";
+};
+
+const formatDescriptionForEdit = (value: string | null) => value?.replace(/<br\s*\/?>/gi, "\n") ?? "";
 
 const WATER_SUB_LABELS = new Set(
   WATER_SUB_SLUGS.map((slug) => CATALOG_SUB_LABEL_FALLBACK[slug]),
@@ -80,7 +87,8 @@ const buildLegacyContentHtml = (sections: Array<{ title: string; html: string }>
     .join("");
 
 export const AdminProductCreateForm = ({ categories, action }: AdminProductCreateFormProps) => {
-  const [state, formAction, isPending] = useActionState(action, { error: null });
+  const [state, formAction] = useActionState(action, { error: null });
+  const [isPending, startTransition] = useTransition();
   const [categoryId, setCategoryId] = useState("");
   const [specItems, setSpecItems] = useState<SpecItemInput[]>([]);
   const [overviewHtml, setOverviewHtml] = useState("");
@@ -137,8 +145,18 @@ export const AdminProductCreateForm = ({ categories, action }: AdminProductCreat
     setAdditionalFileInputKeys((prev) => (prev.length === 1 ? prev : prev.filter((item) => item !== key)));
   };
 
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const description = String(formData.get("description") ?? "");
+    formData.set("description", normalizeDescriptionForSave(description));
+    startTransition(() => {
+      formAction(formData);
+    });
+  };
+
   return (
-    <form action={formAction} className="glass-card space-y-5 rounded-2xl border border-border p-5">
+    <form onSubmit={handleSubmit} className="glass-card space-y-5 rounded-2xl border border-border p-5">
       <section className="grid gap-4 md:grid-cols-2">
         <label className="flex flex-col gap-1 text-sm">
           제품명 <span className="text-red-500">*</span>

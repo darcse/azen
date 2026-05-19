@@ -89,6 +89,7 @@ export const AdminProductCreateForm = ({ categories, action }: AdminProductCreat
   const [thumbnailMode, setThumbnailMode] = useState<"file" | "url">("file");
   const [additionalMode, setAdditionalMode] = useState<"file" | "url">("file");
   const [additionalUrlInputs, setAdditionalUrlInputs] = useState([""]);
+  const [additionalFileInputKeys, setAdditionalFileInputKeys] = useState([0]);
 
   const addSpecItem = () => {
     setSpecItems((prev) => (prev.length >= MAX_SPEC_ITEMS ? prev : [...prev, createEmptySpecItem()]));
@@ -126,6 +127,14 @@ export const AdminProductCreateForm = ({ categories, action }: AdminProductCreat
 
   const removeAdditionalUrlInput = (index: number) => {
     setAdditionalUrlInputs((prev) => (prev.length === 1 ? prev : prev.filter((_, idx) => idx !== index)));
+  };
+
+  const addAdditionalFileInput = () => {
+    setAdditionalFileInputKeys((prev) => [...prev, prev.length > 0 ? Math.max(...prev) + 1 : 0]);
+  };
+
+  const removeAdditionalFileInput = (key: number) => {
+    setAdditionalFileInputKeys((prev) => (prev.length === 1 ? prev : prev.filter((item) => item !== key)));
   };
 
   return (
@@ -325,13 +334,33 @@ export const AdminProductCreateForm = ({ categories, action }: AdminProductCreat
         </div>
         <input type="hidden" name="additional_mode" value={additionalMode} />
         {additionalMode === "file" ? (
-          <input
-            type="file"
-            name="additional_image_files"
-            accept="image/*"
-            multiple
-            className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
-          />
+          <div className="space-y-2">
+            {additionalFileInputKeys.map((key) => (
+              <div key={`additional-file-${key}`} className="flex gap-2">
+                <input
+                  type="file"
+                  name="additional_image_files"
+                  accept="image/*"
+                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeAdditionalFileInput(key)}
+                  className="inline-flex items-center justify-center rounded-md border border-border px-3 py-2 text-xs hover:bg-muted"
+                  aria-label="추가 이미지 파일 선택칸 삭제"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={addAdditionalFileInput}
+              className="rounded-md border border-border px-3 py-2 text-xs hover:bg-muted"
+            >
+              파일 추가
+            </button>
+          </div>
         ) : (
           <div className="space-y-2">
             {additionalUrlInputs.map((value, index) => (

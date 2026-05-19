@@ -382,3 +382,4 @@
 - `PhoneInquiryModal.tsx` 레이아웃: 오버레이(`fixed inset-0 bg-black/50 z-40 flex items-center justify-center`) 안에 모달 컨테이너, 토스트 `fixed bottom-8 left-1/2 -translate-x-1/2 z-50`
 - `PhoneInquiryModal.tsx` 토스트: 별도 `fixed` 제거 → 오버레이 div 내부 `absolute bottom-8 left-1/2 -translate-x-1/2`
 - `PhoneInquiryModal.tsx` 복사 버튼: 클립보드 복사 → 모달 즉시 닫기 → `fixed bottom-8 z-50` 토스트 2초 표시
+- `AdminProductCreateForm.tsx`·`AdminProductEditForm.tsx` 추가 이미지 파일 업로드: 단일 multiple input → 파일 선택 행 목록(행별 input+삭제, 「파일 추가」 버튼)

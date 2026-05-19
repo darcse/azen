@@ -388,3 +388,5 @@
 - `AdminProductCreateForm.tsx`·`AdminProductEditForm.tsx` 간단설명 저장 시 `\n` → `<br>` 변환, `products/[id]/page.tsx` description `dangerouslySetInnerHTML` 표시
 - `app/(public)/products/[id]/page.tsx` water 서브카테고리 브레드크럼: `/products?category=water_treatment` 링크로 수정
 - `AdminProductCreateForm.tsx` 폼 submit 시 `useActionState` 액션 호출을 `startTransition`으로 감쌈
+- 공개 페이지 Supabase fetch `unstable_cache` 적용(revalidate: 60): `app/page.tsx`(main carousel), `products/page.tsx`(categories·products), `products/[id]/page.tsx`(product detail), `products/water/[sub]/page.tsx`(water sub products)
+- `lib/supabase/static.ts` `createStaticClient` 추가 — cookies() 없이 unstable_cache 내부에서 공개 데이터 조회

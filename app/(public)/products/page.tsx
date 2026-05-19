@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { unstable_cache } from "next/cache";
+import { createStaticClient } from "@/lib/supabase/static";
 import {
   CATALOG_SUB_LABEL_FALLBACK,
   ELECTRIC_SUB_SLUGS,
@@ -49,6 +50,30 @@ const HERO_IMAGE = {
   electric: "/elec.webp",
 };
 
+const getCategories = unstable_cache(
+  async () => {
+    const supabase = createStaticClient();
+    return supabase.from("azen_categories").select("id, name, slug, parent_id");
+  },
+  ["azen-categories"],
+  { revalidate: 60 },
+);
+
+const getProductsByCategoryIds = (categoryIds: string[]) =>
+  unstable_cache(
+    async () => {
+      const supabase = createStaticClient();
+      return supabase
+        .from("azen_products")
+        .select("id, name, description, thumbnail_url, category:azen_categories(name, slug)")
+        .eq("is_published", true)
+        .in("category_id", categoryIds)
+        .order("created_at", { ascending: true });
+    },
+    ["azen-products", categoryIds.slice().sort().join(",")],
+    { revalidate: 60 },
+  )();
+
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const { category: rawCategory } = await searchParams;
   const slug = rawCategory?.trim() ?? "";
@@ -62,11 +87,8 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   }
 
   const group = resolveCatalogGroup(slug);
-  const supabase = await createClient();
 
-  const { data: categoryRows, error: catError } = await supabase
-    .from("azen_categories")
-    .select("id, name, slug, parent_id");
+  const { data: categoryRows, error: catError } = await getCategories();
 
   if (catError) {
     return (
@@ -80,14 +102,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const categoryIds = catalogCategoryIdsForGroup(categories, group);
 
   const { data: rawProducts, error: prodError } =
-    categoryIds.length > 0
-      ? await supabase
-          .from("azen_products")
-          .select("id, name, description, thumbnail_url, category:azen_categories(name, slug)")
-          .eq("is_published", true)
-          .in("category_id", categoryIds)
-          .order("created_at", { ascending: true })
-      : { data: null, error: null };
+    categoryIds.length > 0 ? await getProductsByCategoryIds(categoryIds) : { data: null, error: null };
 
   if (prodError) {
     return (

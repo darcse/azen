@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import { unstable_cache } from "next/cache";
 import { Factory, ShieldCheck, Truck, Wrench } from "lucide-react";
 import { HomeHeroPhoneCtas } from "@/components/features/HomeHeroPhoneCtas";
 import { HomeProductsCarousel } from "@/components/features/HomeProductsCarousel";
-import { createClient } from "@/lib/supabase/server";
+import { createStaticClient } from "@/lib/supabase/static";
 
 const featureCards = [
   {
@@ -36,15 +37,24 @@ const featureCards = [
   },
 ];
 
-export default async function Home() {
-  const supabase = await createClient();
-  const { data: slotRows } = await supabase
-    .from("azen_main_carousel")
-    .select("slot, product:azen_products(id, name, description, thumbnail_url)")
-    .not("product_id", "is", null)
-    .order("slot", { ascending: true });
+const getMainCarousel = unstable_cache(
+  async () => {
+    const supabase = createStaticClient();
+    const { data } = await supabase
+      .from("azen_main_carousel")
+      .select("slot, product:azen_products(id, name, description, thumbnail_url)")
+      .not("product_id", "is", null)
+      .order("slot", { ascending: true });
+    return data ?? [];
+  },
+  ["main-carousel"],
+  { revalidate: 60 },
+);
 
-  const productCards = (slotRows ?? [])
+export default async function Home() {
+  const slotRows = await getMainCarousel();
+
+  const productCards = slotRows
     .map((row) => {
       const product = Array.isArray(row.product) ? row.product[0] : row.product;
       if (!product) return null;

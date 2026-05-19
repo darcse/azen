@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { unstable_cache } from "next/cache";
 import { ClipboardList } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
+import { createStaticClient } from "@/lib/supabase/static";
 import { WaterSubBackButton } from "@/components/features/WaterSubBackButton";
 import {
   CATALOG_SUB_LABEL_FALLBACK,
@@ -12,6 +13,38 @@ import {
 interface WaterSubPageProps {
   params: Promise<{ sub: string }>;
 }
+
+const getWaterSubProducts = (categorySlug: string) =>
+  unstable_cache(
+    async () => {
+      const supabase = createStaticClient();
+
+      const { data: category, error: categoryError } = await supabase
+        .from("azen_categories")
+        .select("id")
+        .eq("slug", categorySlug)
+        .maybeSingle();
+
+      if (categoryError) {
+        return { products: [] as Array<{ id: string; name: string; description: string | null; thumbnail_url: string | null }>, categoryError, productsError: null as { message: string } | null };
+      }
+
+      if (!category) {
+        return { products: [], categoryError: null, productsError: null };
+      }
+
+      const { data: products, error: productsError } = await supabase
+        .from("azen_products")
+        .select("id, name, description, thumbnail_url")
+        .eq("is_published", true)
+        .eq("category_id", category.id)
+        .order("created_at", { ascending: true });
+
+      return { products: products ?? [], categoryError: null, productsError };
+    },
+    ["water-sub-products", categorySlug],
+    { revalidate: 60 },
+  )();
 
 export default async function WaterSubProductsPage({ params }: WaterSubPageProps) {
   const { sub } = await params;
@@ -24,13 +57,7 @@ export default async function WaterSubProductsPage({ params }: WaterSubPageProps
   const card = WATER_SUB_CARDS.find((item) => item.slug === categorySlug);
   const title = card?.label ?? CATALOG_SUB_LABEL_FALLBACK[categorySlug] ?? categorySlug;
 
-  const supabase = await createClient();
-
-  const { data: category, error: categoryError } = await supabase
-    .from("azen_categories")
-    .select("id")
-    .eq("slug", categorySlug)
-    .maybeSingle();
+  const { products, categoryError, productsError } = await getWaterSubProducts(categorySlug);
 
   if (categoryError) {
     return (
@@ -40,15 +67,6 @@ export default async function WaterSubProductsPage({ params }: WaterSubPageProps
     );
   }
 
-  const { data: products, error: productsError } = category
-    ? await supabase
-        .from("azen_products")
-        .select("id, name, description, thumbnail_url")
-        .eq("is_published", true)
-        .eq("category_id", category.id)
-        .order("created_at", { ascending: true })
-    : { data: [], error: null };
-
   if (productsError) {
     return (
       <div className="flex min-h-[40vh] items-center justify-center text-sm text-red-500">
@@ -57,7 +75,7 @@ export default async function WaterSubProductsPage({ params }: WaterSubPageProps
     );
   }
 
-  const productRows = products ?? [];
+  const productRows = products;
 
   return (
     <main className="bg-background text-foreground">

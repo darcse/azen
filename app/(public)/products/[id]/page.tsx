@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { unstable_cache } from "next/cache";
 import { ClipboardList, ListChecks } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
+import { createStaticClient } from "@/lib/supabase/static";
 import { WATER_SUB_SLUGS } from "@/lib/products-catalog";
 import { ProductDetailBackButton } from "@/components/features/ProductDetailBackButton";
 import { ProductDetailHtmlContent } from "@/components/features/ProductDetailHtmlContent";
 import { ProductGallery } from "@/components/features/ProductGallery";
-
-export const revalidate = 3600;
 
 interface ProductDetailPageProps {
   params: Promise<{ id: string }>;
@@ -89,37 +88,53 @@ const crumbLinkClass =
 /** Header.tsx와 동일: `max-w-6xl` + `px-4` */
 const pageContainer = "mx-auto w-full min-w-0 max-w-6xl px-4";
 
-export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
-  const { id } = await params;
-  const supabase = await createClient();
+const getProductDetail = (id: string) =>
+  unstable_cache(
+    async () => {
+      const supabase = createStaticClient();
 
-  const { data, error } = await supabase
-    .from("azen_products")
-    .select(
-      `id, name, description, content, content_overview, content_technology, content_application, spec, spec_items, thumbnail_url,
+      const { data, error } = await supabase
+        .from("azen_products")
+        .select(
+          `id, name, description, content, content_overview, content_technology, content_application, spec, spec_items, thumbnail_url,
        category:azen_categories(name, slug, parent_id),
        images:azen_product_images(id, url, sort_order)`,
-    )
-    .eq("id", id)
-    .eq("is_published", true)
-    .maybeSingle();
+        )
+        .eq("id", id)
+        .eq("is_published", true)
+        .maybeSingle();
+
+      if (error || !data) {
+        return { data: null, error, parentCategory: null as { name: string; slug: string } | null };
+      }
+
+      const category = normalizeCategory(data.category);
+
+      let parentCategory: { name: string; slug: string } | null = null;
+      if (category?.parent_id) {
+        const { data: parentRow } = await supabase
+          .from("azen_categories")
+          .select("name, slug")
+          .eq("id", category.parent_id)
+          .maybeSingle();
+        if (parentRow && typeof parentRow.name === "string" && typeof parentRow.slug === "string") {
+          parentCategory = { name: parentRow.name, slug: parentRow.slug };
+        }
+      }
+
+      return { data, error: null, parentCategory };
+    },
+    ["product-detail", id],
+    { revalidate: 60 },
+  )();
+
+export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
+  const { id } = await params;
+  const { data, error, parentCategory } = await getProductDetail(id);
 
   if (error || !data) notFound();
 
   const category = normalizeCategory(data.category);
-
-  let parentCategory: { name: string; slug: string } | null = null;
-  if (category?.parent_id) {
-    const { data: parentRow } = await supabase
-      .from("azen_categories")
-      .select("name, slug")
-      .eq("id", category.parent_id)
-      .maybeSingle();
-    if (parentRow && typeof parentRow.name === "string" && typeof parentRow.slug === "string") {
-      parentCategory = { name: parentRow.name, slug: parentRow.slug };
-    }
-  }
-
   const galleryUrls = buildGalleryUrls(
     (data.thumbnail_url ?? null) as string | null,
     (data.images ?? null) as Array<{ id: string; url: string; sort_order: number }> | null,

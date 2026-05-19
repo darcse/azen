@@ -1,5 +1,7 @@
 import { PublicServicePageClient } from "@/components/features/PublicServicePageClient";
-import { createClient } from "@/lib/supabase/server";
+import { createStaticClient } from "@/lib/supabase/static";
+
+export const revalidate = 300;
 
 interface ServiceCaseRow {
   id: string;
@@ -19,7 +21,7 @@ interface ServiceCaseRow {
 }
 
 export default async function ServicePage() {
-  const supabase = await createClient();
+  const supabase = createStaticClient();
   const { data } = await supabase
     .from("azen_service_cases")
     .select(

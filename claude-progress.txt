@@ -392,3 +392,6 @@
 - `lib/supabase/static.ts` `createStaticClient` 추가 — cookies() 없이 unstable_cache 내부에서 공개 데이터 조회
 - `app/(public)/products/page.tsx` 상단 `export const dynamic = 'force-static'`, `export const revalidate = 60` 추가
 - `app/(public)/products/page.tsx` `dynamic`·`revalidate` export 제거 (searchParams 동적 라우트와 충돌 방지)
+- 공개 페이지 CDN 캐싱 최적화: `createStaticClient` 사용 확인·`service/page.tsx` 교체, 6개 공개 페이지 `export const revalidate = 300` 추가 (`/`, `/about`, `/service`, `/products/*`)
+- `lib/supabase/middleware.ts` `isPublicRoute` 추가 — `/`, `/products`, `/about`, `/service`, `/purchase`는 Supabase auth 체크 없이 통과
+- `middleware.ts` matcher 확장(정적 에셋 제외), 공개 경로는 세션 갱신·쿠키 처리 생략

@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { Droplets, Factory, LayoutDashboard, ShieldCheck, Wind, Wrench } from "lucide-react";
 
+export const revalidate = 300;
+
 const businessAreas = [
   {
     title: "공조기 필터",

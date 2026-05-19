@@ -6,6 +6,8 @@ import { HomeHeroPhoneCtas } from "@/components/features/HomeHeroPhoneCtas";
 import { HomeProductsCarousel } from "@/components/features/HomeProductsCarousel";
 import { createStaticClient } from "@/lib/supabase/static";
 
+export const revalidate = 300;
+
 const featureCards = [
   {
     title: "산업 현장 맞춤 제안",

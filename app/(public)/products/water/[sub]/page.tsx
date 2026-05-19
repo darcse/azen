@@ -10,6 +10,8 @@ import {
   resolveWaterSubSlug,
 } from "@/lib/products-catalog";
 
+export const revalidate = 300;
+
 interface WaterSubPageProps {
   params: Promise<{ sub: string }>;
 }

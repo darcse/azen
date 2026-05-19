@@ -1,7 +1,16 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+const PUBLIC_PATH_PREFIXES = ["/products", "/about", "/service", "/purchase"] as const;
+
+export const isPublicRoute = (pathname: string) =>
+  pathname === "/" || PUBLIC_PATH_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+
 export const updateSession = async (request: NextRequest) => {
+  if (isPublicRoute(request.nextUrl.pathname)) {
+    return NextResponse.next({ request });
+  }
+
   const response = NextResponse.next({
     request,
   });

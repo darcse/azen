@@ -13,6 +13,8 @@ import {
 } from "@/lib/products-catalog";
 import { ProductsCatalogClient, type CatalogProduct } from "@/components/features/ProductsCatalogClient";
 
+export const revalidate = 300;
+
 interface CategoryRow {
   id: string;
   name: string;

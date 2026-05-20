@@ -156,6 +156,8 @@ export default async function AdminServiceEditPage({ params }: AdminServiceEditP
       }
     }
 
+    revalidatePath("/service");
+    revalidatePath("/admin/service");
     redirect("/admin/service?toast=updated");
   };
 
@@ -174,6 +176,7 @@ export default async function AdminServiceEditPage({ params }: AdminServiceEditP
       await actionClient.storage.from(SERVICE_CASE_IMAGE_BUCKET).remove([storagePath]);
     }
     await actionClient.from("azen_service_case_images").delete().eq("id", imageId).eq("case_id", id);
+    revalidatePath("/service");
     revalidatePath(`/admin/service/${id}/edit`);
   };
 
@@ -198,6 +201,8 @@ export default async function AdminServiceEditPage({ params }: AdminServiceEditP
 
     await actionClient.from("azen_service_case_images").delete().eq("case_id", id);
     await actionClient.from("azen_service_cases").delete().eq("id", id);
+    revalidatePath("/service");
+    revalidatePath("/admin/service");
     redirect("/admin/service?toast=deleted");
   };
 
